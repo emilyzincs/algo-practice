@@ -3,7 +3,6 @@ from typing import List
 class Solution:
   
   # parameters: nums, target
-  # types: List[int] @ int
   def solve(self, nums: List[int], target: int) -> int:
     if nums is None:
       raise ValueError()

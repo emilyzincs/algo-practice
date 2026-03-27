@@ -35,3 +35,9 @@ def get_test_runner_dir_path(lang: str) -> str:
 
 def get_test_runner_file_path(lang: str, extension: str) -> str:
   return os.path.join(get_test_runner_dir_path(lang), to_language_file_case("runner", lang) + extension)
+
+def get_settings_path() -> str:
+  return os.path.join(PROJECT_ROOT, "program_settings", "current.json")
+
+def get_default_settings_path() -> str:
+  return os.path.join(PROJECT_ROOT, "program_settings", "default.json")

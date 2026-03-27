@@ -3,7 +3,6 @@ package problems.binary_search;
 public class Solution {
 
   // parameters: nums, target
-  // types: int[] @ int
   public static int solve(int[] nums, int target) {
     int lo = 0;
     int hi = nums.length - 1;

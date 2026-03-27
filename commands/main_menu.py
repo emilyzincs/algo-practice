@@ -1,5 +1,6 @@
 import sys
 from typing import List, Tuple
+from utils import print_desc
 
 def handle_commands(
     user_input: str,
@@ -18,9 +19,7 @@ def handle_commands(
   match user_input:
     case "help":
       handle_help()
-    case "q":
-      sys.exit(0)
-    case "exit":
+    case "q" | "quit" | "exit": 
       sys.exit(0)
     case "lang" | "language":
       print(f"The current language is {language}.")
@@ -37,14 +36,14 @@ def handle_commands(
 def handle_help():
   command_descriptions = [
     "help: Lists commands",
-    "q/exit: Exits the program.",
-    "lang/language: Prints the current language.",
+    "q/quit/exit: Exits the program",
+    "lang/language: Prints the current language",
     "langs/languages: Lists the languages this program supports",
     "<language>: Updates the program to use the given language",
     "algs/algorithms: Lists the algorithms this program supports and their ids",
-    "<alg id>/<alg name>: Begins a practice session for the given algorithm."
+    "<alg id>/<alg name>: Begins a practice session for the given algorithm"
   ]
-  print("This program supports the following inputs:")
+  print("This menu supports the following inputs:")
   print_desc(command_descriptions)
 
 def handle_languages(language_list: List[str]) -> None: 
@@ -69,8 +68,3 @@ def get_grouped_alg_names(alg_name_to_idx: dict[str, int], num_algs: int) -> Lis
     else:
       ret[idx] += '/' + alg_name
   return ret
-
-def print_desc(descs: List[str]) -> None:
-  for i, desc in enumerate(descs):
-    print(f"{i+1}. {desc}.")
-  print()

@@ -4,8 +4,26 @@ import time
 import subprocess
 import get_file_paths as gfp
 import sys
+import shutil
+import json
+from utils import load_module_from_path
 from pathlib import Path
-from commands import handle_commands
+from commands.main_menu import handle_commands as main_menu_handle_commands
+from commands.practice import handle_commands as practice_handle_commands
+
+if not os.path.exists(gfp.get_settings_path()):
+  actual_settings = gfp.get_settings_path()
+  default_settings = gfp.get_default_settings_path()
+  try:
+    shutil.copyfile(default_settings, actual_settings)
+  except PermissionError:
+    print(f"Error: do not have permission to copy {default_settings} to {actual_settings}.", file=sys.stderr)
+    sys.exit(1)
+  except FileNotFoundError:
+    print(f"At least one of {actual_settings} and {default_settings} must exist.", file=sys.stderr)
+    sys.exit(1)
+
+settings = json.load(gfp.get_settings_path())
 
 ALG_NAME_TO_IDX = {
   "binary search": 0,
@@ -20,7 +38,7 @@ LANGUAGE_LIST = [
   "python",
   "java",
 ]
-DEFAULT_LANGUAGE = "python"
+DEFAULT_LANGUAGE = settings['default_language']
 LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL = {
   "python": (".py", "#"),
   "java": (".java", "//"),
@@ -41,17 +59,20 @@ EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
 PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
 
 COMMANDS = {
-  "help", "q", "exit", "lang", "language", "langs", "languages", "algs", "algorithms"
+  "main_menu": {"help", "q", "quit", "exit", "lang", 
+                "language", "langs", "languages", "algs", 
+                "algorithms", "settings"},
+  "practice": {"help", "q", "quit", "exit", "b", "back"},
+  "settings": {}
 }
-for lang in LANGUAGE_LIST:
-  COMMANDS.add(lang)
+COMMANDS['main_menu'].update(LANGUAGE_LIST)
 
 def main():  
   while True:
     user_input = input("\nEnter the algorithm (name or id) you would like to practice, or 'help' for options:\n")
-    while (handle_commands(
+    while (main_menu_handle_commands(
       user_input,
-      COMMANDS,
+      COMMANDS['main_menu'],
       LANGUAGE,
       LANGUAGE_LIST,
       LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
@@ -63,19 +84,22 @@ def main():
       user_input = input("Input: ")
 
     idx = None
+    error_str = "Invalid algorithm id. To list the valid algorithm names and ids, type 'algorithms'." 
     if is_int(user_input):
       idx = int(user_input)
       if idx < 0 or idx >= NUM_ALGS:
-        print("Invalid algorithm id. To list the valid algorithm names and ids, type 'help'.")
+        print(error_str, file=sys.stderr)
         continue
     else:
       if user_input not in ALG_NAME_TO_IDX:
-        print("Invalid algorithm name. To list the valid algorithm names and ids, type 'help'.")
+        print(error_str, file=sys.stderr)
         continue
       idx = ALG_NAME_TO_IDX[user_input]
 
     alg = ALG_LIST[idx]
     time_spent = handle_practice(alg)
+    if time_spent < 0:
+      continue
     print(f"Successfully completed {alg} in {time_spent:.2f} seconds!")
 
 def set_language(lang: str) -> None:
@@ -101,7 +125,17 @@ def handle_practice(alg: str) -> float:
   start_time = time.perf_counter()
   correct = False
   while not correct:
-    user_input = input("Type anything when you are finished: ")
+    user_input = input("Type 'done' when you are finished, or 'help' to see all commands.\n")
+    while (practice_handle_commands(
+      user_input,
+      COMMANDS['practice']
+    )):
+      user_input = input("Input: ")
+    if user_input == "back" or user_input == "b":
+      return -1
+    elif user_input != 'done' and user_input != 'd':
+      print("Invalid input.", file=sys.stderr)
+      continue
     potential_end_time = time.perf_counter()
     correct = run_tests(alg)
   total_time = potential_end_time - start_time
