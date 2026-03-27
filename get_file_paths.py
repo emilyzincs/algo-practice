@@ -24,7 +24,6 @@ def get_solution_file_dir(alg: str):
   return os.path.join(PROJECT_ROOT, "problems", alg)
 
 def get_solution_file_path(alg: str, lang: str, extension: str) -> str:
-  print("THE SOLUTION FILE PATH EXTENSION IS", extension)
   return os.path.join(get_solution_file_dir(alg),
                       to_language_file_case("solution", lang) + extension)
 
@@ -35,4 +34,4 @@ def get_test_runner_dir_path(lang: str) -> str:
   return os.path.join(PROJECT_ROOT, "test_runners", lang.lower())
 
 def get_test_runner_file_path(lang: str, extension: str) -> str:
-  return os.path.join(get_test_runner_dir_path(lang), "runner" + extension)
+  return os.path.join(get_test_runner_dir_path(lang), to_language_file_case("runner", lang) + extension)

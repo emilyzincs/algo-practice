@@ -4,6 +4,7 @@ import time
 import subprocess
 import get_file_paths as gfp
 import sys
+from pathlib import Path
 from commands import handle_commands
 
 ALG_NAME_TO_IDX = {
@@ -115,14 +116,8 @@ def reset_practice_file(alg: str) -> None:
 
 def get_starting_practice_text(alg_sol_file: str) -> List[str]:
   line_to_copy = None
-  print("PREFIX:", PARAMETER_LINE_PREFIX)
-  print("COMMENT SYM:", COMMENT_SYMBOL)
-  print("EXTENSION:", EXTENSION)
-  print("LANGUAGE:", LANGUAGE)
   with open(alg_sol_file, "r") as f:
     for line in f:
-      print("LINE:", line)
-
       line = line.strip()
       if line.startswith(PARAMETER_LINE_PREFIX):
         line_to_copy = line
@@ -161,6 +156,7 @@ def run_tests(alg: str) -> bool:
         print(f"Failed the compile java test runner:\n")
         raise e
       runtime_cp_entries =[
+        gfp.PROJECT_ROOT,
         test_runner_dir,
         practice_file_dir,
         solution_file_dir
@@ -168,7 +164,12 @@ def run_tests(alg: str) -> bool:
       java_add_jars(runtime_cp_entries, test_runner_dir)
 
       additional_args = [alg, test_file]
-      cmd = ["java", "-cp", os.pathsep.join(runtime_cp_entries), "Runner"] + additional_args
+      class_path_for_cmd = os.path.join(test_runner_dir, "Runner")
+      class_path_for_cmd = class_path_for_cmd.replace(gfp.PROJECT_ROOT, "")
+      class_path_for_cmd = class_path_for_cmd.replace(os.sep, "", 1)
+      class_path_for_cmd = class_path_for_cmd.replace(os.sep, ".")
+      gfp.PROJECT_ROOT
+      cmd = ["java", "-cp", os.pathsep.join(runtime_cp_entries), class_path_for_cmd] + additional_args
     case _:
       raise NameError("Could not find language:", LANGUAGE)
     
@@ -190,7 +191,10 @@ def java_compile_if_necessary(java_file: str, cwd: str, additional_dependencies:
     raise ValueError(f"Could not find {java_file}")
 
   class_path = java_to_class_path(java_file)
-  if not os.path.exists(class_path) or os.path.getmtime(java_file) > os.path.getmtime(class_path):
+  print("CLASS PATH", class_path)
+  if os.path.exists(class_path) and os.path.getmtime(java_file) > os.path.getmtime(class_path):
+    os.remove(class_path)
+  if not os.path.exists(class_path): 
     cp_entries = [cwd]
     java_add_jars(cp_entries, cwd)
     if additional_dependencies:
@@ -199,15 +203,18 @@ def java_compile_if_necessary(java_file: str, cwd: str, additional_dependencies:
     cp = os.pathsep.join(cp_entries)
     compile_cmd = ["javac", "-cp", cp, java_file]
     result = subprocess.run(compile_cmd, cwd=cwd, capture_output=True, text=True) 
+    if result.returncode == 0 and not os.path.exists(class_path):
+      raise RuntimeError(f"Failed to compile into file {class_path}." +
+                         " ensure the .java file contains a public class with the same name as the file")
     if result.returncode != 0:
       raise RuntimeError(f"Compilation failed:\n{result.stderr}")
   
 def java_add_jars(cp_entries: List[str], dir: str) -> None:
   lib_dir = os.path.join(dir, "lib")
   if os.path.exists(lib_dir):
-    for f in lib_dir: 
-      if f.endswith(".jar"):
-        cp_entries.append(os.path.join(dir, f))
+    for f in Path(lib_dir).iterdir(): 
+      if f.name.endswith(".jar"):
+        cp_entries.append(os.path.join(lib_dir, f.name))
 
 if __name__ == "__main__":
   main()

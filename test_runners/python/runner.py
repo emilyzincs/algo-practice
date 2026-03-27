@@ -19,15 +19,20 @@ def standardize(output):
 def run_test(solution_instance, test_file_path: str) -> bool:
   with open(test_file_path) as f:
     data = json.load(f)
-  
+  if (data['answer_amount'] != "single" and data['answer_amount'] != "multiple"):
+    raise AttributeError("Invalid answer_amount field in json test file")
+  unique_answer = (data['answer_amount'] == "single")
   tests = data['tests']
-  for test in tests:
-    number = test['number']
+  for i, test in enumerate(tests):
     inputs = test['inputs']
     expected = test['expected']
-    actual = standardize(solution_instance.solve(**inputs))
-    if actual != expected:
-      print(f"TEST FAILED: Actual value of {actual} does not match expected value of {expected} for test {number}.", file=sys.stderr)
+    actual = standardize(solution_instance.solve(*inputs))
+      
+    if (unique_answer and actual != expected) or (not unique_answer and actual not in expected):
+      actual_as_string = str(actual)
+      optional_part = " Output: " + actual_as_string if len(actual_as_string) <= 100 else ""
+      optional_part = actual if len(str(actual)) <= 100 else ""
+      print(f"Test {i + 1} failed.{optional_part}", file=sys.stderr)
       return False
   return True
 
