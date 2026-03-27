@@ -1,22 +1,30 @@
 import sys
-from utils import print_desc
+from utils import print_desc, in_either
+from command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
-    user_input: str,
-    commands: set[str]
+    local_commands: set[str],
+    alg: str,
+    run_tests_func,
+    exit_func
 ) -> bool:
-  if user_input not in commands:
-    return False
-  match user_input:
-    case "help":
-      handle_help()
-    case "q" | "quit" | "exit":
-      sys.exit(0)
-    case "b" | "back":
-      return False
-    case _:
-      raise ValueError("Reached default case when previous cases should have handled all commands")
-  return True
+  correct = False
+  while not correct:
+    user_input = input("Type 'done' when you are finished or 'help' for help.\n")
+    if not in_either(user_input, GLOBAL_COMMANDS, local_commands):
+      print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
+      continue
+    
+    if user_input in GLOBAL_COMMANDS:
+      if not handle_global_command(user_input, handle_help, exit_func):
+        return False
+    else:
+      match user_input:
+        case "d" | "done":
+          correct = run_tests_func(alg)
+        case _:
+          raise ValueError(f"Unhandled case {user_input}.")
+    return True
 
 def handle_help():
   command_descriptions = [

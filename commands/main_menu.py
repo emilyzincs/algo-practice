@@ -1,37 +1,80 @@
 import sys
 from typing import List, Tuple
-from utils import print_desc
+from utils import print_desc, is_int, in_either
+from command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
-    user_input: str,
-    commands: set[str],
+    local_commands: set[str],
     language: str,
     language_list: List[str],
     lang_to_ext_and_comment_symbol: dict[str, Tuple[str, str]],
     set_language_func,
+    alg_list: List[str],
     alg_name_to_idx: dict[str, int],
     num_algs: int,
-    tab: str  
-  ) -> bool:
-  user_input = user_input.strip().lower()
-  if user_input not in commands:
-    return False
-  match user_input:
-    case "help":
-      handle_help()
-    case "q" | "quit" | "exit": 
-      sys.exit(0)
-    case "lang" | "language":
-      print(f"The current language is {language}.")
-    case "langs" | "languages":
-      handle_languages(language_list)
-    case "algs" | "algorithms":
-      handle_algorithms(alg_name_to_idx, num_algs, tab)
-    case _:
-      if user_input not in lang_to_ext_and_comment_symbol:
-        raise ValueError("Reached default case but input is not a language")
-      set_language_func(user_input)
-  return True
+    tab: str,
+    handle_practice_func,
+    handle_settings_func,
+    exit_func
+  ) -> None:
+  responses = [
+    "\nEnter the algorithm (name or id) you" +
+                  " would like to practice, or 'help' for options:\n",
+    "Input: "
+  ]
+  input_message = responses[0]
+  while True:
+    user_input = input(input_message).strip().lower()
+    input_is_alg_id = is_int(user_input) and 0 <= int(user_input) < num_algs
+    if (not in_either(user_input, GLOBAL_COMMANDS, local_commands) and 
+                    user_input not in lang_to_ext_and_comment_symbol and
+                    user_input not in alg_name_to_idx and
+                    not input_is_alg_id):
+      print(f"Invalid algorithm name or id: {user_input}.", file=sys.stderr)
+      input_message = responses[0]
+
+    if user_input in GLOBAL_COMMANDS:
+      if not handle_global_command(user_input, handle_help, exit_func):
+        return
+      input_message = responses[1]
+    else:
+      match user_input:
+        case "lang" | "language":
+          print(f"The current language is {language}.")
+          input_message = responses[1]
+        case "langs" | "languages":
+          handle_languages(language_list)
+          input_message = responses[0]
+        case "algs" | "algorithms":
+          handle_algorithms(alg_name_to_idx, num_algs, tab)
+          input_message = responses[0]
+        case "settings":
+          handle_settings_func()
+          input_message = responses[0]
+        case _:
+          if user_input in lang_to_ext_and_comment_symbol:
+            set_language_func(user_input)
+            input_message = responses[0]
+          elif user_input in alg_name_to_idx or is_int(user_input):
+            alg = get_alg(user_input, alg_list, alg_name_to_idx, num_algs)
+            if alg is not None:
+              time_spent = handle_practice_func(alg)
+              if time_spent >= 0:
+                print(f"Successfully completed {alg} in {time_spent:.2f} seconds!")
+            else:
+              print(f"Invalid algorithm name or id: {user_input}.", file=sys.stderr)
+            input_message = responses[0]
+
+def get_alg(user_input: str, alg_list: List[str], alg_name_to_idx: dict[str, int], num_algs) -> str|None:
+  if is_int(user_input):
+    idx = int(user_input)
+    if idx < 0 or idx >= num_algs:
+      return None
+  else:
+    if user_input not in alg_name_to_idx:
+      return None
+    idx = alg_name_to_idx[user_input]
+  return alg_list[idx]
 
 def handle_help():
   command_descriptions = [

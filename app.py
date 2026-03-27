@@ -10,6 +10,7 @@ from utils import load_module_from_path
 from pathlib import Path
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice import handle_commands as practice_handle_commands
+from commands.settings import handle_commands as settings_handle_commands
 
 if not os.path.exists(gfp.get_settings_path()):
   actual_settings = gfp.get_settings_path()
@@ -58,49 +59,29 @@ elif len(sys.argv) == 2:
 EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
 PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
 
-COMMANDS = {
-  "main_menu": {"help", "q", "quit", "exit", "lang", 
-                "language", "langs", "languages", "algs", 
+LOCAL_COMMANDS = {
+  "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "settings"},
-  "practice": {"help", "q", "quit", "exit", "b", "back"},
-  "settings": {}
+  "practice": {"d", "done"},
+  "settings": {"default_language"}
 }
-COMMANDS['main_menu'].update(LANGUAGE_LIST)
+LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
 
 def main():  
-  while True:
-    user_input = input("\nEnter the algorithm (name or id) you would like to practice, or 'help' for options:\n")
-    while (main_menu_handle_commands(
-      user_input,
-      COMMANDS['main_menu'],
-      LANGUAGE,
-      LANGUAGE_LIST,
-      LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
-      set_language,
-      ALG_NAME_TO_IDX,
-      NUM_ALGS,
-      TAB
-    )):
-      user_input = input("Input: ")
-
-    idx = None
-    error_str = "Invalid algorithm id. To list the valid algorithm names and ids, type 'algorithms'." 
-    if is_int(user_input):
-      idx = int(user_input)
-      if idx < 0 or idx >= NUM_ALGS:
-        print(error_str, file=sys.stderr)
-        continue
-    else:
-      if user_input not in ALG_NAME_TO_IDX:
-        print(error_str, file=sys.stderr)
-        continue
-      idx = ALG_NAME_TO_IDX[user_input]
-
-    alg = ALG_LIST[idx]
-    time_spent = handle_practice(alg)
-    if time_spent < 0:
-      continue
-    print(f"Successfully completed {alg} in {time_spent:.2f} seconds!")
+  main_menu_handle_commands(
+    LOCAL_COMMANDS['main_menu'],
+    LANGUAGE,
+    LANGUAGE_LIST,
+    LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
+    set_language,
+    ALG_LIST,
+    ALG_NAME_TO_IDX,
+    NUM_ALGS,
+    TAB,
+    handle_practice,
+    handle_settings,
+    exit_program
+  )
 
 def set_language(lang: str) -> None:
   lang = lang.strip().lower()
@@ -112,33 +93,18 @@ def set_language(lang: str) -> None:
   EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
   PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
   print(f"Successfully set language to {lang}.")
-  
-def is_int(str: str) -> bool:
-  try:
-    int(str)
-    return True
-  except ValueError:
-    return False
 
 def handle_practice(alg: str) -> float:
   reset_practice_file(alg)
   start_time = time.perf_counter()
-  correct = False
-  while not correct:
-    user_input = input("Type 'done' when you are finished, or 'help' to see all commands.\n")
-    while (practice_handle_commands(
-      user_input,
-      COMMANDS['practice']
-    )):
-      user_input = input("Input: ")
-    if user_input == "back" or user_input == "b":
-      return -1
-    elif user_input != 'done' and user_input != 'd':
-      print("Invalid input.", file=sys.stderr)
-      continue
-    potential_end_time = time.perf_counter()
-    correct = run_tests(alg)
-  total_time = potential_end_time - start_time
+  completed = practice_handle_commands(
+    LOCAL_COMMANDS['practice'],
+    alg,
+    run_tests, 
+    exit_program
+  )
+  end_time = time.perf_counter if completed else start_time - 1
+  total_time = end_time - start_time
   return total_time
 
 def reset_practice_file(alg: str) -> None:
@@ -249,6 +215,15 @@ def java_add_jars(cp_entries: List[str], dir: str) -> None:
     for f in Path(lib_dir).iterdir(): 
       if f.name.endswith(".jar"):
         cp_entries.append(os.path.join(lib_dir, f.name))
+      
+def handle_settings() -> None:
+  settings_handle_commands(
+    LOCAL_COMMANDS,
+    exit_program
+  )
+
+def exit_program() -> None:
+  sys.exit(0)
 
 if __name__ == "__main__":
   main()
