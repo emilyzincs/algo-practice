@@ -4,7 +4,6 @@ import time
 import get_file_paths as gfp
 import sys
 from utils import read_json, copy_file
-from pathlib import Path
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
@@ -127,6 +126,7 @@ def handle_settings() -> None:
   settings_handle_commands(
     LOCAL_COMMANDS['settings'],
     LANGUAGES,
+    TAB,
     exit_program
   )
 

@@ -3,6 +3,7 @@ import json
 from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
 from typing import List
+from io import IOBase
 
 def read_json(path: str):
   try:
@@ -17,17 +18,23 @@ def read_json(path: str):
     print(f"File is not valid json: {path}.", file=sys.stderr)
     raise e
    
-def dump_json(path: str, data) -> None:
+def dump_json_to_path(path: str, data) -> None:
   try:
     if not path.endswith(".json"):
       raise FileNotFoundError
     with open(path, "w", encoding="utf-8") as f:
-      json.dump(data, path, indent=2)
+      json.dump(data, f, indent=2)
   except FileNotFoundError as e:
     print(f"Path must be a (existing) json file. Was {path}", file=sys.stderr)
     raise e
+
+def dump_json_to_instance(file_instance, data) -> None:
+  if not isinstance(file_instance, IOBase):
+    raise ValueError(f"Note a file instance: {file_instance}")
+  try:
+    json.dump(data, file_instance, indent=2)
   except TypeError as e:
-    print(f"File does not contain valid json: {path}.", file=sys.stderr)
+    print(f"File does not contain valid json: {file_instance.name}.", file=sys.stderr)
     raise e
 
 def copy_file(src: str, dest: str) -> None:

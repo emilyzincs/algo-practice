@@ -1,11 +1,12 @@
 import sys
-from utils import print_desc, read_json, dump_json, copy_file
+from utils import print_desc, read_json, dump_json_to_instance, copy_file
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from get_file_paths import get_settings_path, get_default_settings_path
 
 def handle_commands(
     local_commands_and_actual_settings: tuple[set[str], set[str]],
     languages,
+    tab: str,
     exit_func
 ) -> None:
   local_commands, actual_settings = local_commands_and_actual_settings 
@@ -13,16 +14,16 @@ def handle_commands(
   settings_path = get_settings_path()
   default_settings, default_settings_file = read_json(default_settings_path)
   settings, settings_file = read_json(settings_path)
+  if not isinstance(default_settings, dict) or not isinstance(settings, dict):
+    raise ValueError("Settings and default settings must be represented as json dicts")
   
   while True:
-    if not isinstance(default_settings, dict) or not isinstance(settings, dict):
-      raise ValueError("Settings and default settings must be represented as json dicts")
     user_input = input("Enter a setting and new corresponding value" + 
                        " (<setting> <new val>)," + 
                        " or 'help' for options:\n").strip().lower().split()
     is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
-    is_local_cmd = len(user_input) == 2 and user_input[0] in local_commands 
-    is_setting = len(user_input) == 1 and user_input[0] in actual_settings
+    is_local_cmd = len(user_input) == 1 and user_input[0] in local_commands 
+    is_setting = len(user_input) == 2 and user_input[0] in actual_settings
     if not (is_global_cmd or is_local_cmd or is_setting):
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
@@ -34,8 +35,9 @@ def handle_commands(
     elif is_local_cmd:
       match user_input[0]:
         case "list":
+          print("Current settings:")
           for setting, value in settings.items():
-            print(f"{setting}: {value}")
+            print(f"{tab}{setting}: {value}")
         case "reset":
           next_input = input("Confirm resetting all settings to default?" +
                              " To confirm type 'y' or 'yes', to cancel" + 
@@ -50,20 +52,16 @@ def handle_commands(
       setting, new_val = user_input
       if new_val == "default":
         settings[setting] = default_settings[setting]
-        settings_file.close()
-        dump_json(settings_path, settings)
-        settings, settings_file = read_json(settings_path)
+        dump_json_to_instance(settings_file, settings)
       else:
         match setting:
           case "default_language":
-            if setting not in languages:
+            if new_val not in languages:
               print(f"Invalid language", file=sys.stderr)
               continue
             else:
               settings[setting] = new_val
-              settings_file.close()
-              dump_json(settings_path, settings)
-              settings, settings_file = read_json(settings_path)
+              dump_json_to_instance(settings_file, settings)
           case _:
             raise ValueError(f"Unhandled setting: {user_input[0]}.")
     else:
@@ -72,11 +70,11 @@ def handle_commands(
 def handle_help():
   command_descriptions = get_global_command_descriptions()
   command_descriptions.extend([
-    "list: Shows the current settings.",
-    "reset: Resets all settings to default (asks for confirmation).",
-    "<setting> default: Changes the given setting to have the default value.",
+    "list: Shows the current settings",
+    "reset: Resets all settings to default (asks for confirmation)",
+    "<setting> default: Changes the given setting to have the default value",
     "<setting> <new value>: Changes the given setting to have the" + 
-                          " given new value, if possible."
+                          " given new value, if possible"
 
   ])
   print("This menu supports the following inputs:")
