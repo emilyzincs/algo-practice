@@ -1,6 +1,6 @@
 import sys
 from typing import List, Tuple
-from utils import print_desc, is_int, in_either
+from utils import print_desc, is_type, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
@@ -26,7 +26,7 @@ def handle_commands(
   while True:
     input_message = responses[0]
     user_input = input(input_message).strip().lower()
-    input_is_alg_id = is_int(user_input) and 0 <= int(user_input) < num_algs
+    input_is_alg_id = is_type(user_input, int) and 0 <= int(user_input) < num_algs
     if (not in_either(user_input, GLOBAL_COMMANDS, local_commands) and 
                     user_input not in lang_to_ext_and_comment_symbol and
                     user_input not in alg_name_to_idx and
@@ -56,7 +56,7 @@ def handle_commands(
           if user_input in lang_to_ext_and_comment_symbol:
             set_language_func(user_input)
             input_message = responses[0]
-          elif user_input in alg_name_to_idx or is_int(user_input):
+          elif user_input in alg_name_to_idx or is_type(user_input, int):
             alg = get_alg(user_input, alg_list, alg_name_to_idx, num_algs)
             if alg is not None:
               time_spent = handle_practice_func(alg)
@@ -67,7 +67,7 @@ def handle_commands(
             input_message = responses[0]
 
 def get_alg(user_input: str, alg_list: List[str], alg_name_to_idx: dict[str, int], num_algs) -> str|None:
-  if is_int(user_input):
+  if is_type(user_input, int):
     idx = int(user_input)
     if idx < 0 or idx >= num_algs:
       return None

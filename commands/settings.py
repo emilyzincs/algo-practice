@@ -1,5 +1,5 @@
 import sys
-from utils import print_desc, read_json, dump_json, copy_file
+from utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from get_file_paths import get_settings_path, get_default_settings_path
 
@@ -43,6 +43,7 @@ def handle_commands(
           if next_input == 'y' or next_input == 'yes':
             copy_file(default_settings_path, settings_path)
             settings = default_settings.copy()
+            print("Successfully reset settings to default.")
         case _:
           raise ValueError(f"Unhandled local command: {user_input[0]}.")
     elif is_setting:
@@ -56,11 +57,17 @@ def handle_commands(
             if new_val not in languages:
               print(f"Invalid language", file=sys.stderr)
               continue
-            else:
-              settings[setting] = new_val
-              dump_json(settings_path, settings)
+          case "delete_attempts":
+            if not is_type(new_val, string_to_bool):
+              print(f"New value must be a bool for this setting.", file=sys.stderr)
+              continue
+            new_val = string_to_bool(new_val)
           case _:
             raise ValueError(f"Unhandled setting: {user_input[0]}.")
+          
+        settings[setting] = new_val
+        dump_json(settings_path, settings)
+        print(f"Successfully updated {setting} to {new_val}.")
     else:
       raise ValueError(f"Unhandled case: {user_input}")
 

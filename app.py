@@ -3,17 +3,18 @@ import os.path
 import time
 import get_file_paths as gfp
 import sys
-from utils import read_json, copy_file
+from utils import read_json, copy_file, match_json_keys
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
 
-if not os.path.exists(gfp.get_settings_path()):
-  actual_settings = gfp.get_settings_path()
-  default_settings = gfp.get_default_settings_path()
-  copy_file(default_settings, actual_settings)
+default_settings_path = gfp.get_default_settings_path()
+settings_path = gfp.get_settings_path()
+if not os.path.exists(settings_path):
+  copy_file(default_settings_path, settings_path)
 
-settings = read_json(gfp.get_settings_path())
+match_json_keys(default_settings_path, settings_path)
+settings = read_json(settings_path)
 
 ALG_NAME_TO_IDX = {
   "binary search": 0,
@@ -53,7 +54,7 @@ LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "s", "settings"},
   "practice": {"d", "done"},
-  "settings": ({"list", "reset"}, {"default_language"})
+  "settings": ({"list", "reset"}, {"default_language", "delete_attempts"})
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
 

@@ -45,6 +45,15 @@ def copy_file(src: str, dest: str) -> None:
       print(f"File does not exist: {src}.", file=sys.stderr)
       raise e
 
+def match_json_keys(to_match_path: str, to_edit_path: str):
+  to_match, to_edit = read_json(to_match_path), read_json(to_edit_path)
+  for key in to_match.keys():
+    if key not in to_edit:
+      to_edit[key] = to_match[key]
+  if len(to_edit) > len(to_match):
+    to_edit = {key: val for key, val in to_edit.items() if key in to_match}
+  dump_json(to_edit_path, to_edit)
+
 def in_either(str: str, first: set, second: set) -> bool:
   return str in first or str in second
 
@@ -61,9 +70,18 @@ def load_module_from_path(module_name, file_path):
     spec.loader.exec_module(module)
     return module
 
-def is_int(str: str) -> bool:
+def is_type(str: str, type_constructor) -> bool:
   try:
-    int(str)
+    type_constructor(str)
     return True
   except ValueError:
     return False
+
+def string_to_bool(str: str) -> bool:
+  str = str.strip().lower()
+  if str == "true":
+    return True
+  elif str == "false":
+    return False
+  else:
+    raise ValueError(f"Str must be either 'true' or 'false'. Was {str}")
