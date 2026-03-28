@@ -19,3 +19,10 @@ def handle_global_command(
       raise ValueError("Reached default case when previous cases should " + 
                        "have handled all global commands")
   return False
+
+def get_global_command_descriptions() -> List[str]:
+  return [
+    "help: Lists commands",
+    "q/quit/exit: Exits the program",
+    "b/back: Returns to the previous menu",
+  ]

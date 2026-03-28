@@ -1,12 +1,11 @@
 from typing import List
 import os.path
 import time
-import subprocess
 import get_file_paths as gfp
 import sys
 import shutil
 import json
-from utils import load_module_from_path
+from utils import read_json, copy_file
 from pathlib import Path
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
@@ -15,16 +14,9 @@ from commands.settings import handle_commands as settings_handle_commands
 if not os.path.exists(gfp.get_settings_path()):
   actual_settings = gfp.get_settings_path()
   default_settings = gfp.get_default_settings_path()
-  try:
-    shutil.copyfile(default_settings, actual_settings)
-  except PermissionError:
-    print(f"Error: do not have permission to copy {default_settings} to {actual_settings}.", file=sys.stderr)
-    sys.exit(1)
-  except FileNotFoundError:
-    print(f"At least one of {actual_settings} and {default_settings} must exist.", file=sys.stderr)
-    sys.exit(1)
+  copy_file(actual_settings, default_settings)
 
-settings = json.load(gfp.get_settings_path())
+settings, settings_file = read_json(gfp.get_settings_path())
 
 ALG_NAME_TO_IDX = {
   "binary search": 0,
@@ -39,6 +31,7 @@ LANGUAGE_LIST = [
   "python",
   "java",
 ]
+LANGUAGES = set(LANGUAGE_LIST)
 DEFAULT_LANGUAGE = settings['default_language']
 LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL = {
   "python": (".py", "#"),
@@ -63,9 +56,10 @@ LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "settings"},
   "practice": {"d", "done"},
-  "settings": {"default_language"}
+  "settings": ({"list"}, {"default_language"})
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
+settings_file.close()
 
 def main():  
   main_menu_handle_commands(
@@ -111,13 +105,13 @@ def handle_practice(alg: str) -> float:
 def reset_practice_file(alg: str) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
   solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
-  with open(practice_file, "w") as f:
+  with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(solution_file))
     f.close()
 
 def get_starting_practice_text(alg_sol_file: str) -> List[str]:
   line_to_copy = None
-  with open(alg_sol_file, "r") as f:
+  with open(alg_sol_file, "r", encoding="utf-8") as f:
     for line in f:
       line = line.strip()
       if line.startswith(PARAMETER_LINE_PREFIX):
@@ -131,6 +125,7 @@ def get_starting_practice_text(alg_sol_file: str) -> List[str]:
 def handle_settings() -> None:
   settings_handle_commands(
     LOCAL_COMMANDS['settings'],
+    LANGUAGES,
     exit_program
   )
 

@@ -1,6 +1,6 @@
 import json
-import importlib.util
 import sys
+from utils import load_module_from_path
 
 def main():
   if len(sys.argv) != 3:
@@ -17,7 +17,7 @@ def standardize(output):
   return output
 
 def run_test(solution_instance, test_file_path: str) -> bool:
-  with open(test_file_path) as f:
+  with open(test_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
   if (data['answer_amount'] != "single" and data['answer_amount'] != "multiple"):
     raise AttributeError("Invalid answer_amount field in json test file")
