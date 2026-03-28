@@ -1,6 +1,6 @@
 import sys
 from utils import print_desc, read_json, dump_json, copy_file
-from commands.command_util import GLOBAL_COMMANDS, handle_global_command
+from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from get_file_paths import get_settings_path, get_default_settings_path
 
 def handle_commands(
@@ -17,7 +17,9 @@ def handle_commands(
   while True:
     if not isinstance(default_settings, dict) or not isinstance(settings, dict):
       raise ValueError("Settings and default settings must be represented as json dicts")
-    user_input = input("Input: ").strip().lower().split()
+    user_input = input("Enter a setting and new corresponding value" + 
+                       " (<setting> <new val>)," + 
+                       " or 'help' for options:\n").strip().lower().split()
     is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
     is_local_cmd = len(user_input) == 2 and user_input[0] in local_commands 
     is_setting = len(user_input) == 1 and user_input[0] in actual_settings
@@ -68,13 +70,14 @@ def handle_commands(
       raise ValueError(f"Unhandled case: {user_input}")
 
 def handle_help():
-  command_descriptions = [
+  command_descriptions = get_global_command_descriptions()
+  command_descriptions.extend([
     "list: Shows the current settings.",
     "reset: Resets all settings to default (asks for confirmation).",
     "<setting> default: Changes the given setting to have the default value.",
     "<setting> <new value>: Changes the given setting to have the" + 
                           " given new value, if possible."
 
-  ]
+  ])
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

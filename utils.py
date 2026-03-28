@@ -46,7 +46,6 @@ def in_either(str: str, first: set, second: set) -> bool:
 def print_desc(descs: List[str]) -> None:
   for i, desc in enumerate(descs):
     print(f"{i+1}. {desc}.")
-  print()
 
 def load_module_from_path(module_name, file_path):
     spec = lib_util.spec_from_file_location(module_name, file_path)

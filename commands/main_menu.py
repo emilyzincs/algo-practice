@@ -5,7 +5,7 @@ from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
     local_commands: set[str],
-    language: str,
+    get_language_func: str,
     language_list: List[str],
     lang_to_ext_and_comment_symbol: dict[str, Tuple[str, str]],
     set_language_func,
@@ -24,6 +24,7 @@ def handle_commands(
   ]
   input_message = responses[0]
   while True:
+    input_message = responses[0]
     user_input = input(input_message).strip().lower()
     input_is_alg_id = is_int(user_input) and 0 <= int(user_input) < num_algs
     if (not in_either(user_input, GLOBAL_COMMANDS, local_commands) and 
@@ -40,7 +41,7 @@ def handle_commands(
     else:
       match user_input:
         case "lang" | "language":
-          print(f"The current language is {language}.")
+          print(f"The current language is {get_language_func()}.")
           input_message = responses[1]
         case "langs" | "languages":
           handle_languages(language_list)
@@ -101,7 +102,6 @@ def print_help_message(grouped_alg_names: List[str], tab: str) -> None:
   print("This program supports practicing the following algorithms:")
   for i, grouped_alg_name in enumerate(grouped_alg_names):
     print(f"{tab} ID: {i} {tab} Name: {grouped_alg_name}")
-  print()
  
 def get_grouped_alg_names(alg_name_to_idx: dict[str, int], num_algs: int) -> List[str]:
   ret = [None for _ in range(num_algs)] 

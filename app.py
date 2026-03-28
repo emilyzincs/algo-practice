@@ -62,7 +62,7 @@ settings_file.close()
 def main():  
   main_menu_handle_commands(
     LOCAL_COMMANDS['main_menu'],
-    LANGUAGE,
+    get_language,
     LANGUAGE_LIST,
     LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
     set_language,
@@ -74,6 +74,9 @@ def main():
     handle_settings,
     exit_program
   )
+
+def get_language() -> str:
+  return LANGUAGE
 
 def set_language(lang: str) -> None:
   lang = lang.strip().lower()
