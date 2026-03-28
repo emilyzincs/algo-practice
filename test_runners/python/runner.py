@@ -1,11 +1,17 @@
 import json
 import sys
+
+if len(sys.argv) != 4:
+  print("Must have exactly three command line arguments, was "
+          + str(len(sys.argv) - 1), file=sys.stderr)
+  sys.exit(1)
+PROJECT_ROOT = sys.argv[3]
+sys.path.insert(0, PROJECT_ROOT) 
+
 from utils import load_module_from_path
 
 def main():
-  if len(sys.argv) != 3:
-    print("Must have exactly two command line arguments, was " + str(len(sys.argv) - 1), file=sys.stderr)
-    sys.exit(1)
+  
   practice_file_path = sys.argv[1]
   practice_module = load_module_from_path("practice_module", practice_file_path)
   Attempt = practice_module.Attempt

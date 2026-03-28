@@ -96,7 +96,7 @@ def handle_practice(alg: str) -> float:
     EXTENSION,
     exit_program
   )
-  end_time = time.perf_counter if completed else start_time - 1
+  end_time = time.perf_counter() if completed else start_time - 1
   total_time = end_time - start_time
   return total_time
 

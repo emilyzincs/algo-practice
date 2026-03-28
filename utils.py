@@ -1,6 +1,6 @@
-import importlib
 import sys
 import json
+from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
 from typing import List
 
@@ -49,10 +49,10 @@ def print_desc(descs: List[str]) -> None:
   print()
 
 def load_module_from_path(module_name, file_path):
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    spec = lib_util.spec_from_file_location(module_name, file_path)
     if spec is None:
         raise ImportError(f"Could not load spec for {file_path}")
-    module = importlib.util.module_from_spec(spec)
+    module = lib_util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module
