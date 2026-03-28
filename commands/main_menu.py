@@ -1,7 +1,7 @@
 import sys
 from typing import List, Tuple
 from utils import print_desc, is_int, in_either
-from command_util import GLOBAL_COMMANDS, handle_global_command
+from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
     local_commands: set[str],

@@ -1,8 +1,6 @@
 import sys
-import json
-import os.path
 from utils import print_desc, read_json, dump_json, copy_file
-from command_util import GLOBAL_COMMANDS, handle_global_command
+from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 from get_file_paths import get_settings_path, get_default_settings_path
 
 def handle_commands(

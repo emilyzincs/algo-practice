@@ -3,8 +3,6 @@ import os.path
 import time
 import get_file_paths as gfp
 import sys
-import shutil
-import json
 from utils import read_json, copy_file
 from pathlib import Path
 from commands.main_menu import handle_commands as main_menu_handle_commands
@@ -14,7 +12,7 @@ from commands.settings import handle_commands as settings_handle_commands
 if not os.path.exists(gfp.get_settings_path()):
   actual_settings = gfp.get_settings_path()
   default_settings = gfp.get_default_settings_path()
-  copy_file(actual_settings, default_settings)
+  copy_file(default_settings, actual_settings)
 
 settings, settings_file = read_json(gfp.get_settings_path())
 

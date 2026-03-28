@@ -32,7 +32,7 @@ def dump_json(path: str, data) -> None:
 
 def copy_file(src: str, dest: str) -> None:
     try:
-      shutil_copy_file()
+      shutil_copy_file(src, dest)
     except PermissionError as e:
       print(f"Error: do not have permission to copy {src} to {dest}.", file=sys.stderr)
       raise e

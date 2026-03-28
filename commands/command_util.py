@@ -1,3 +1,5 @@
+from typing import List
+
 GLOBAL_COMMANDS = {"help", "q", "quit", "exit", "b", "back"}
 
 def handle_global_command(
@@ -18,7 +20,7 @@ def handle_global_command(
     case _:
       raise ValueError("Reached default case when previous cases should " + 
                        "have handled all global commands")
-  return False
+  return True
 
 def get_global_command_descriptions() -> List[str]:
   return [
