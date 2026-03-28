@@ -4,13 +4,15 @@ from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
 from typing import List
 from io import IOBase
+from tempfile import NamedTemporaryFile as TempFile
+from os import path as os_path, replace as os_replace
 
 def read_json(path: str):
   try:
     if not path.endswith(".json"):
       raise json.JSONDecodeError
     with open(path, "r", encoding="utf-8") as f:
-      return json.load(f), f
+      return json.load(f)
   except FileNotFoundError as e:
     print(f"Path must be a (existing) json file. Was {path}.", file=sys.stderr)
     raise e
@@ -18,23 +20,19 @@ def read_json(path: str):
     print(f"File is not valid json: {path}.", file=sys.stderr)
     raise e
    
-def dump_json_to_path(path: str, data) -> None:
+def dump_json(path: str, data) -> None:
   try:
     if not path.endswith(".json"):
       raise FileNotFoundError
-    with open(path, "w", encoding="utf-8") as f:
-      json.dump(data, f, indent=2)
+    dir = os_path.dirname(path)
+    with TempFile(mode="w", dir=dir, delete=False, encoding="utf-8") as temp:
+      json.dump(data, temp, indent=2)
+    os_replace(temp.name, path)
   except FileNotFoundError as e:
     print(f"Path must be a (existing) json file. Was {path}", file=sys.stderr)
     raise e
-
-def dump_json_to_instance(file_instance, data) -> None:
-  if not isinstance(file_instance, IOBase):
-    raise ValueError(f"Note a file instance: {file_instance}")
-  try:
-    json.dump(data, file_instance, indent=2)
   except TypeError as e:
-    print(f"File does not contain valid json: {file_instance.name}.", file=sys.stderr)
+    print(f"Data cannot be converted to valid json: {data}.", file=sys.stderr)
     raise e
 
 def copy_file(src: str, dest: str) -> None:

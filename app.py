@@ -13,7 +13,7 @@ if not os.path.exists(gfp.get_settings_path()):
   default_settings = gfp.get_default_settings_path()
   copy_file(default_settings, actual_settings)
 
-settings, settings_file = read_json(gfp.get_settings_path())
+settings = read_json(gfp.get_settings_path())
 
 ALG_NAME_TO_IDX = {
   "binary search": 0,
@@ -51,12 +51,11 @@ PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
 
 LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
-                "algorithms", "settings"},
+                "algorithms", "s", "settings"},
   "practice": {"d", "done"},
-  "settings": ({"list"}, {"default_language"})
+  "settings": ({"list", "reset"}, {"default_language"})
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
-settings_file.close()
 
 def main():  
   main_menu_handle_commands(

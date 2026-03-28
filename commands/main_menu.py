@@ -49,7 +49,7 @@ def handle_commands(
         case "algs" | "algorithms":
           handle_algorithms(alg_name_to_idx, num_algs, tab)
           input_message = responses[0]
-        case "settings":
+        case "s" | "settings":
           handle_settings_func()
           input_message = responses[0]
         case _:
@@ -85,7 +85,8 @@ def handle_help():
     "langs/languages: Lists the languages this program supports",
     "<language>: Updates the program to use the given language",
     "algs/algorithms: Lists the algorithms this program supports and their ids",
-    "<alg id>/<alg name>: Begins a practice session for the given algorithm"
+    "<alg id>/<alg name>: Begins a practice session for the given algorithm",
+    "s/settings: Goes to the settings menu"
   ]
   print("This menu supports the following inputs:")
   print_desc(command_descriptions)

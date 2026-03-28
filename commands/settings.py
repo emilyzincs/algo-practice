@@ -1,5 +1,5 @@
 import sys
-from utils import print_desc, read_json, dump_json_to_instance, copy_file
+from utils import print_desc, read_json, dump_json, copy_file
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from get_file_paths import get_settings_path, get_default_settings_path
 
@@ -12,15 +12,15 @@ def handle_commands(
   local_commands, actual_settings = local_commands_and_actual_settings 
   default_settings_path = get_default_settings_path()
   settings_path = get_settings_path()
-  default_settings, default_settings_file = read_json(default_settings_path)
-  settings, settings_file = read_json(settings_path)
+  default_settings = read_json(default_settings_path)
+  settings = read_json(settings_path)
   if not isinstance(default_settings, dict) or not isinstance(settings, dict):
     raise ValueError("Settings and default settings must be represented as json dicts")
-  
+
   while True:
     user_input = input("Enter a setting and new corresponding value" + 
-                       " (<setting> <new val>)," + 
-                       " or 'help' for options:\n").strip().lower().split()
+                      " (<setting> <new val>)," + 
+                      " or 'help' for options:\n").strip().lower().split()
     is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
     is_local_cmd = len(user_input) == 1 and user_input[0] in local_commands 
     is_setting = len(user_input) == 2 and user_input[0] in actual_settings
@@ -29,8 +29,6 @@ def handle_commands(
       continue
     if is_global_cmd:
       if not handle_global_command(user_input[0], handle_help, exit_func):
-        default_settings_file.close()
-        settings_file.close()
         return
     elif is_local_cmd:
       match user_input[0]:
@@ -40,19 +38,18 @@ def handle_commands(
             print(f"{tab}{setting}: {value}")
         case "reset":
           next_input = input("Confirm resetting all settings to default?" +
-                             " To confirm type 'y' or 'yes', to cancel" + 
-                             " type anything else.").strip().lower()
+                            " To confirm type 'y' or 'yes', to cancel" + 
+                            " type anything else:\n").strip().lower()
           if next_input == 'y' or next_input == 'yes':
-            settings_file.close()
             copy_file(default_settings_path, settings_path)
-            settings, settings_file = read_json(settings_path)          
+            settings = default_settings.copy()
         case _:
           raise ValueError(f"Unhandled local command: {user_input[0]}.")
     elif is_setting:
       setting, new_val = user_input
       if new_val == "default":
         settings[setting] = default_settings[setting]
-        dump_json_to_instance(settings_file, settings)
+        dump_json(settings_path, settings)
       else:
         match setting:
           case "default_language":
@@ -61,7 +58,7 @@ def handle_commands(
               continue
             else:
               settings[setting] = new_val
-              dump_json_to_instance(settings_file, settings)
+              dump_json(settings_path, settings)
           case _:
             raise ValueError(f"Unhandled setting: {user_input[0]}.")
     else:
