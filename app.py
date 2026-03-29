@@ -125,9 +125,9 @@ def get_starting_practice_text(info_file_path: str) -> List[str]:
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
   info = read_json(info_file_path)
   parameter_names = info['parameters']
-  parameter_info_line = COMMENT_SYMBOL + " " + ", ".join(parameter_names)
+  parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
   return (COMMENT_SYMBOL + 
-        " write 'solve' method in 'Solution' class\n\n\n" 
+        " Write 'solve' method in 'Solution' class.\n\n\n" 
         + parameter_info_line)
 
 def load_solution_into_practice(alg: str) -> None:
