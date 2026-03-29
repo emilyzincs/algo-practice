@@ -128,7 +128,7 @@ def main():
   tests = data["tests"]
 
   input_types = data.get("input_types", [])
-  expected_type = data.get("expected_type", None)
+  expected_type = data.get("expected_type_wrapper", None)
 
   sol = Solution()
 
@@ -154,6 +154,8 @@ def main():
           ]
         else:
           expected = parse_value(expected, expected_type)
+          # print(f"EXPECTED: {expected}. TYPE: {type(expected)}")
+          # print(f"ACTUAL: {actual}. TYPE: {type(actual)}")
 
       ok = (
         actual == expected if unique_answer
@@ -161,7 +163,7 @@ def main():
       )
 
       if not ok:
-        print(f"Test {i + 1} failed. Output: {actual}", file=sys.stderr)
+        print(f"Test {i + 1} failed.\nExpected {expected}.\nBut was {actual}.", file=sys.stderr)
         return False
 
     except Exception as e:
