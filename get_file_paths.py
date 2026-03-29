@@ -18,7 +18,7 @@ def get_practice_file_dir() -> str:
 
 def get_practice_file_path(lang: str, extension: str) -> str: 
   return os.path.join(get_practice_file_dir(), 
-                      to_language_file_case("attempt", lang) + extension)
+                      to_language_file_case("solution", lang) + extension)
 
 def get_solution_file_dir(alg: str):
   return os.path.join(PROJECT_ROOT, "problems", alg)

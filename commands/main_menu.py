@@ -36,8 +36,8 @@ def handle_commands(
 
     if user_input in GLOBAL_COMMANDS:
       if not handle_global_command(user_input, handle_help, exit_func):
-        return
-      input_message = responses[1]
+        print("Cannot go back from root menu.", file=sys.stderr)
+      input_message = responses[0]
     else:
       match user_input:
         case "lang" | "language":

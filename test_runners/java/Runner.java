@@ -25,7 +25,7 @@ public class Runner {
     refMethod = findSolveMethod(refClass);
 
     // Load user class and find method matching reference's parameter types
-    Class<?> userClass = Class.forName("practice.Attempt");
+    Class<?> userClass = Class.forName("practice.Solution");
     userMethod = findSolveMethod(userClass, refMethod.getParameterTypes());
     checkMethodCompatibility();
 

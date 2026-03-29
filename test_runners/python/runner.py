@@ -14,7 +14,7 @@ def main():
   
   practice_file_path = sys.argv[1]
   practice_module = load_module_from_path("practice_module", practice_file_path)
-  Attempt = practice_module.Attempt
+  Attempt = practice_module.Solution
   test_file_path = sys.argv[2]
   if (not run_test(Attempt(), test_file_path)):
     sys.exit(1)

@@ -54,7 +54,7 @@ PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
 LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "s", "settings"},
-  "practice": {"d", "done"},
+  "practice": {"d", "done, s, sol, solution"},
   "settings": ({"list", "reset"}, {"default_language", "delete_attempts"})
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
@@ -105,6 +105,7 @@ def handle_practice(alg: str) -> float:
     LANGUAGE,
     EXTENSION,
     delete_all_attempts if settings['delete_attempts'] else no_op,
+    load_solution_into_practice,
     exit_program
   )
   end_time = time.perf_counter() if completed else start_time - 1
@@ -131,6 +132,15 @@ def get_starting_practice_text(alg_sol_file: str) -> List[str]:
   if not line_to_copy:
     raise RuntimeError("Could not find parameters in", alg_sol_file)
   return COMMENT_SYMBOL + " write 'solve' method in 'Attempt' class\n\n\n" + line_to_copy
+
+def load_solution_into_practice(alg: str) -> None:
+  practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
+  if not os.path.exists(practice_file):
+    raise RuntimeError(f"Practice file does not exist: {practice_file}.")
+  solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
+  if not os.path.exists(solution_file):
+    raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
+  copy_file(solution_file, practice_file)
 
 def handle_settings() -> None:
   settings_handle_commands(
