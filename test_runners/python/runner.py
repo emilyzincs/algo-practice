@@ -1,45 +1,168 @@
 import json
 import sys
+from collections import deque
 
 if len(sys.argv) != 4:
   print("Must have exactly three command line arguments, was "
-          + str(len(sys.argv) - 1), file=sys.stderr)
+        + str(len(sys.argv) - 1), file=sys.stderr)
   sys.exit(1)
+
 PROJECT_ROOT = sys.argv[3]
-sys.path.insert(0, PROJECT_ROOT) 
+sys.path.insert(0, PROJECT_ROOT)
 
 from utils import load_module_from_path
 
+# =========================
+# TYPE PARSING
+# =========================
+
+def parse_value(val, typ):
+  match typ["type"]:
+    case "int":
+      return int(val)
+    case "long":
+      return int(val)
+    case "double":
+      return float(val)
+    case "boolean":
+      return bool(val)
+    case "string":
+      return str(val)
+    case "array":
+      return [parse_value(v, typ["items"]) for v in val]
+    case "list":
+      return [parse_value(v, typ["items"]) for v in val]
+    case "set":
+      return {parse_value(v, typ["items"]) for v in val}
+    case "map":
+      return {
+        parse_value(k, typ["keys"]): parse_value(v, typ["values"])
+        for k, v in val.items()
+      }
+    case "ListNode":
+      return build_listnode(val)
+    case "TreeNode":
+      return build_treenode(val)
+    case _:
+      raise Exception(f"Unknown type: {typ["type"]}")
+
+
+# =========================
+# LINKED LIST
+# =========================
+
+class ListNode:
+  def __init__(self, val=0, next=None):
+    self.val = val
+    self.next = next
+
+
+def build_listnode(arr):
+  dummy = ListNode()
+  cur = dummy
+  for x in arr:
+    cur.next = ListNode(x)
+    cur = cur.next
+  return dummy.next
+
+
+# =========================
+# BINARY TREE
+# =========================
+
+class TreeNode:
+  def __init__(self, val=0, left=None, right=None):
+    self.val = val
+    self.left = left
+    self.right = right
+
+
+def build_treenode(arr):
+  if not arr:
+    return None
+
+  nodes = [
+    None if x is None else TreeNode(x)
+    for x in arr
+  ]
+
+  children = deque(nodes[1:])
+  root = nodes[0]
+  queue = deque([root])
+
+  while queue and children:
+    node = queue.popleft()
+    if node is None:
+      continue
+
+    if children:
+      node.left = children.popleft()
+      queue.append(node.left)
+
+    if children:
+      node.right = children.popleft()
+      queue.append(node.right)
+
+  return root
+
+
+# =========================
+# MAIN TEST RUNNER
+# =========================
+
 def main():
   practice_file_path = sys.argv[1]
-  practice_module = load_module_from_path("practice_module", practice_file_path)
-  Attempt = practice_module.Solution
   test_file_path = sys.argv[2]
-  if (not run_test(Attempt(), test_file_path)):
-    sys.exit(1)
 
-def standardize(output):
-  return output
+  practice_module = load_module_from_path("practice_module", practice_file_path)
+  Solution = practice_module.Solution
 
-def run_test(solution_instance, test_file_path: str) -> bool:
   with open(test_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
-  if (data['answer_amount'] != "single" and data['answer_amount'] != "multiple"):
-    raise AttributeError("Invalid answer_amount field in json test file")
-  unique_answer = (data['answer_amount'] == "single")
-  tests = data['tests']
+
+  unique_answer = (data["answer_amount"] == "single")
+  tests = data["tests"]
+
+  input_types = data.get("input_types", [])
+  expected_type = data.get("expected_type", None)
+
+  sol = Solution()
+
   for i, test in enumerate(tests):
-    inputs = test['inputs']
-    expected = test['expected']
-    actual = standardize(solution_instance.solve(*inputs))
-      
-    if (unique_answer and actual != expected) or (not unique_answer and actual not in expected):
-      actual_as_string = str(actual)
-      optional_part = " Output: " + actual_as_string if len(actual_as_string) <= 100 else ""
-      optional_part = actual if len(str(actual)) <= 100 else ""
-      print(f"Test {i + 1} failed.{optional_part}", file=sys.stderr)
+    try:
+      args = [
+        parse_value(v, input_types[idx])
+        for idx, v in enumerate(test["inputs"])
+      ]
+
+      actual = sol.solve(*args)
+
+      expected = test["expected"]
+
+      if expected_type:
+        if isinstance(expected, list) and not unique_answer:
+          expected = [
+            parse_value(e, expected_type)
+            for e in expected
+          ]
+        else:
+          expected = parse_value(expected, expected_type)
+
+      ok = (
+        actual == expected if unique_answer
+        else actual in expected
+      )
+
+      if not ok:
+        print(f"Test {i + 1} failed. Output: {actual}", file=sys.stderr)
+        return False
+
+    except Exception as e:
+      print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
       return False
+
   return True
 
 if __name__ == "__main__":
-  main()
+  if not main():
+    sys.exit(1)
