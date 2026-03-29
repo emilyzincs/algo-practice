@@ -60,20 +60,27 @@ LOCAL_COMMANDS = {
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
 
 def main():  
-  main_menu_handle_commands(
-    LOCAL_COMMANDS['main_menu'],
-    get_language,
-    LANGUAGE_LIST,
-    LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
-    set_language,
-    ALG_LIST,
-    ALG_NAME_TO_IDX,
-    NUM_ALGS,
-    TAB,
-    handle_practice,
-    handle_settings,
-    exit_program
+  try:  
+    main_menu_handle_commands(
+      LOCAL_COMMANDS['main_menu'],
+      get_language,
+      LANGUAGE_LIST,
+      LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
+      set_language,
+      ALG_LIST,
+      ALG_NAME_TO_IDX,
+      NUM_ALGS,
+      TAB,
+      handle_practice,
+      handle_settings,
+      exit_program
   )
+  except (Exception, KeyboardInterrupt) as e:
+    if not (isinstance(e, KeyboardInterrupt) or isinstance(e, EOFError)):
+      print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
+    else:
+      print()
+    exit_program(1)
 
 def get_language() -> str:
   return LANGUAGE
@@ -145,8 +152,11 @@ def delete_all_attempts() -> None:
   shutil.rmtree(practice_file_dir)
   os.makedirs(practice_file_dir)
 
-def exit_program() -> None:
-  sys.exit(0)
+def exit_program(code: int) -> None:
+  print("Exiting...")
+  if settings['delete_attempts']:
+    delete_all_attempts()
+  sys.exit(code)
 
 if __name__ == "__main__":
   main()

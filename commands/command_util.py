@@ -14,7 +14,7 @@ def handle_global_command(
     case "help":
       help_func()
     case "q" | "quit" | "exit":
-      exit_func()
+      exit_func(0)
     case "b" | "back":
       return False
     case _:
