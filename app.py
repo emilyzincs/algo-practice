@@ -8,6 +8,7 @@ from utils import read_json, copy_file, match_json_keys, no_op
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
+from commands.practice.java import path_to_package
 
 default_settings_path = gfp.get_default_settings_path()
 settings_path = gfp.get_settings_path()
@@ -54,7 +55,7 @@ PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
 LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "s", "settings"},
-  "practice": {"d", "done, s, sol, solution"},
+  "practice": {"d", "done", "s", "sol", "solution"},
   "settings": ({"list", "reset"}, {"default_language", "delete_attempts"})
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
@@ -131,16 +132,27 @@ def get_starting_practice_text(alg_sol_file: str) -> List[str]:
   f.close()
   if not line_to_copy:
     raise RuntimeError("Could not find parameters in", alg_sol_file)
-  return COMMENT_SYMBOL + " write 'solve' method in 'Attempt' class\n\n\n" + line_to_copy
+  return COMMENT_SYMBOL + " write 'solve' method in 'Solution' class\n\n\n" + line_to_copy
 
 def load_solution_into_practice(alg: str) -> None:
+  practice_file_dir = gfp.get_practice_file_dir()
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
   if not os.path.exists(practice_file):
     raise RuntimeError(f"Practice file does not exist: {practice_file}.")
   solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
-  copy_file(solution_file, practice_file)
+  match LANGUAGE:
+    case "java":
+      with open(solution_file, "r", encoding="utf-8") as sol:
+        lines = sol.readlines()
+        for i, line in enumerate(lines):
+          if line.strip().startswith("package"):
+            lines[i] = "package " + path_to_package(practice_file_dir) + ";"
+      return
+    case _:
+      copy_file(solution_file, practice_file)
+
 
 def handle_settings() -> None:
   settings_handle_commands(

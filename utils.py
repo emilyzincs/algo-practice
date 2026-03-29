@@ -1,11 +1,11 @@
 import sys
+import os
 import json
 from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
 from typing import List
-from io import IOBase
 from tempfile import NamedTemporaryFile as TempFile
-from os import path as os_path, replace as os_replace
+
 
 def read_json(path: str):
   try:
@@ -24,10 +24,10 @@ def dump_json(path: str, data) -> None:
   try:
     if not path.endswith(".json"):
       raise FileNotFoundError
-    dir = os_path.dirname(path)
+    dir = os.path.dirname(path)
     with TempFile(mode="w", dir=dir, delete=False, encoding="utf-8") as temp:
       json.dump(data, temp, indent=2)
-    os_replace(temp.name, path)
+    os.replace(temp.name, path)
   except FileNotFoundError as e:
     print(f"Path must be a (existing) json file. Was {path}", file=sys.stderr)
     raise e
