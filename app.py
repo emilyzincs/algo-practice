@@ -118,7 +118,6 @@ def reset_practice_file(alg: str) -> None:
   solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(solution_file))
-    f.close()
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
 def get_starting_practice_text(alg_sol_file: str) -> List[str]:
@@ -129,7 +128,6 @@ def get_starting_practice_text(alg_sol_file: str) -> List[str]:
       if line.startswith(PARAMETER_LINE_PREFIX):
         line_to_copy = line
         break   
-  f.close()
   if not line_to_copy:
     raise RuntimeError("Could not find parameters in", alg_sol_file)
   return COMMENT_SYMBOL + " write 'solve' method in 'Solution' class\n\n\n" + line_to_copy
@@ -144,11 +142,21 @@ def load_solution_into_practice(alg: str) -> None:
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
     case "java":
+      lines = None
       with open(solution_file, "r", encoding="utf-8") as sol:
         lines = sol.readlines()
+        new_package_line = "package " + path_to_package(practice_file_dir, gfp.PROJECT_ROOT) + ";\n"
+        replaced_package = False
         for i, line in enumerate(lines):
           if line.strip().startswith("package"):
-            lines[i] = "package " + path_to_package(practice_file_dir) + ";"
+            lines[i] = new_package_line
+            replaced_package = True
+        if not replaced_package:
+          lines.insert(0, new_package_line)
+      if lines is None:
+        raise RuntimeError(f"Did not read lines from solution file: {solution_file}.")
+      with open(practice_file, "w", encoding="utf-8") as prac:
+        prac.writelines(lines)
       return
     case _:
       copy_file(solution_file, practice_file)
