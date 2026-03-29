@@ -20,6 +20,7 @@ settings = read_json(settings_path)
 
 ALG_NAME_TO_IDX = {
   "binary search": 0,
+  "bfs": 1,
   "breadth first search": 1
 }
 ALG_LIST = [
