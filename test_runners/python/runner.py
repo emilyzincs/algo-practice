@@ -105,7 +105,6 @@ def build_treenode(arr):
 
   return root
 
-
 # =========================
 # MAIN TEST RUNNER
 # =========================
@@ -115,12 +114,17 @@ def main():
   test_file_path = sys.argv[2]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
-  Solution = practice_module.Solution
-
+  incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" + 
+                        " class with appropriate 'solve' method.")
+  try:
+    Solution = practice_module.Solution
+  except AttributeError:
+    print(incorrect_setup_msg, file=sys.stderr)
+    return False 
   with open(test_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-  unique_answer = (data["answer_amount"] == "single")
+  unique_answer = data["unique_answer"]
   tests = data["tests"]
 
   input_types = data.get("input_types", [])
@@ -134,9 +138,12 @@ def main():
         parse_value(v, input_types[idx])
         for idx, v in enumerate(test["inputs"])
       ]
-
-      actual = sol.solve(*args)
-
+      
+      try:
+        actual = sol.solve(*args)
+      except AttributeError:
+        print(incorrect_setup_msg, file=sys.stderr)
+        return False
       expected = test["expected"]
 
       if expected_type:

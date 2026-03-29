@@ -28,7 +28,7 @@ def get_solution_file_path(alg: str, lang: str, extension: str) -> str:
                       to_language_file_case("solution", lang) + extension)
 
 def get_test_file_path(alg: str) -> str:
-  return os.path.join(get_solution_file_dir(), "test.json")
+  return os.path.join(get_solution_file_dir(alg), "test.json")
 
 def get_test_runner_dir_path(lang: str) -> str:
   return os.path.join(PROJECT_ROOT, "test_runners", lang.lower())

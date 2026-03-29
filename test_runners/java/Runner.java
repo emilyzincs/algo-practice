@@ -11,13 +11,13 @@ public class Runner {
   private static final ObjectMapper mapper = new ObjectMapper();
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 1) {
-      System.err.println("Usage: java Runner <test.json>");
+    if (args.length != 2) {
+      System.err.println("Usage: java Runner <alg> <test.json>");
       System.exit(1);
     }
 
     Map<String, Object> root = mapper.readValue(
-        Files.readAllBytes(Paths.get(args[0])), Map.class);
+        Files.readAllBytes(Paths.get(args[1])), Map.class);
 
     List<Map<String, Object>> inputDefs =
         (List<Map<String, Object>>) root.get("input_types");
@@ -27,8 +27,14 @@ public class Runner {
       paramTypes[i] = parseType(inputDefs.get(i));
     }
 
-    Class<?> clazz = Class.forName("practice.Solution");
-    userMethod = clazz.getDeclaredMethod("solve", paramTypes);
+    try {
+      Class<?> clazz = Class.forName("practice.Solution");
+      userMethod = clazz.getDeclaredMethod("solve", paramTypes);
+    } catch (NoSuchMethodException e) {
+      System.err.println("Error: Practice file must contain" + 
+                          " public 'Solution' class with appropriate public static 'solve' method.");
+      System.exit(1);
+    }
 
     if (!Modifier.isStatic(userMethod.getModifiers())) {
       throw new RuntimeException("solve must be static");
@@ -36,7 +42,7 @@ public class Runner {
 
     boolean unique = (boolean) root.get("unique_answer");
     Map<String, Object> expectedType =
-        (Map<String, Object>) root.get("expected_type");
+        (Map<String, Object>) root.get("expected_type_wrapper");
 
     List<Map<String, Object>> tests =
         (List<Map<String, Object>>) root.get("tests");
@@ -73,8 +79,8 @@ public class Runner {
       }
 
       if (fail) {
-        System.err.println("Test " + (i + 1) + " failed. Value: "
-            + deepToString(actual));
+        System.err.println("Test " + (i + 1) + " failed. Incorrect value: "
+            + deepToString(actual) + ".");
         System.exit(1);
       }
     }

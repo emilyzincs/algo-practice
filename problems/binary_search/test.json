@@ -3,19 +3,14 @@
   "input_types": [
     {
       "type": "array",
-      "inner": {
-        "type": "int"
-      }
+      "items": { "type": "int" }
     },
     {
       "type": "int"
     }
   ],
   "expected_type_wrapper": {
-    "type": "array",
-    "inner": {
-      "type": "int"
-    }
+    "type": "int"
   },
   "tests": [
     {
