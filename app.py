@@ -110,6 +110,7 @@ def reset_practice_file(alg: str) -> None:
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(solution_file))
     f.close()
+  print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
 def get_starting_practice_text(alg_sol_file: str) -> List[str]:
   line_to_copy = None
