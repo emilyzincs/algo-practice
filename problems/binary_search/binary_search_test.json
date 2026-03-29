@@ -1,5 +1,22 @@
 {
-  "answer_amount": "multiple",
+  "unique_answer": false,
+  "input_types": [
+    {
+      "type": "array",
+      "inner": {
+        "type": "int"
+      }
+    },
+    {
+      "type": "int"
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "array",
+    "inner": {
+      "type": "int"
+    }
+  },
   "tests": [
     {
       "inputs": [
@@ -14,13 +31,6 @@
         17
       ],
       "expected": [2, 3, 4]
-    },
-    {
-      "inputs": [
-        [1, 3, 17, 17, 17, 29, 35, 72, 100, 109],
-        17
-      ],
-      "expected": [4, 2, 3]
     },
     {
       "inputs": [

@@ -11,7 +11,6 @@ sys.path.insert(0, PROJECT_ROOT)
 from utils import load_module_from_path
 
 def main():
-  
   practice_file_path = sys.argv[1]
   practice_module = load_module_from_path("practice_module", practice_file_path)
   Attempt = practice_module.Solution
