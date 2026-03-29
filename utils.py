@@ -85,3 +85,6 @@ def string_to_bool(str: str) -> bool:
     return False
   else:
     raise ValueError(f"Str must be either 'true' or 'false'. Was {str}")
+
+def no_op() -> None:
+  pass

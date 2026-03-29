@@ -3,7 +3,8 @@ import os.path
 import time
 import get_file_paths as gfp
 import sys
-from utils import read_json, copy_file, match_json_keys
+import shutil
+from utils import read_json, copy_file, match_json_keys, no_op
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
@@ -96,6 +97,7 @@ def handle_practice(alg: str) -> float:
     alg,
     LANGUAGE,
     EXTENSION,
+    delete_all_attempts if settings['delete_attempts'] else no_op,
     exit_program
   )
   end_time = time.perf_counter() if completed else start_time - 1
@@ -127,8 +129,20 @@ def handle_settings() -> None:
     LOCAL_COMMANDS['settings'],
     LANGUAGES,
     TAB,
+    refresh_settings,
     exit_program
   )
+
+def refresh_settings() -> None:
+  global settings 
+  settings = read_json(settings_path)
+
+def delete_all_attempts() -> None:
+  practice_file_dir = gfp.get_practice_file_dir()
+  if not os.path.exists(practice_file_dir) or not os.path.isdir(practice_file_dir):
+    raise RuntimeError(f"Incorrect path: {practice_file_dir}.")
+  shutil.rmtree(practice_file_dir)
+  os.makedirs(practice_file_dir)
 
 def exit_program() -> None:
   sys.exit(0)

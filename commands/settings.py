@@ -7,6 +7,7 @@ def handle_commands(
     local_commands_and_actual_settings: tuple[set[str], set[str]],
     languages,
     tab: str,
+    refresh_settings_func,
     exit_func
 ) -> None:
   local_commands, actual_settings = local_commands_and_actual_settings 
@@ -29,6 +30,7 @@ def handle_commands(
       continue
     if is_global_cmd:
       if not handle_global_command(user_input[0], handle_help, exit_func):
+        refresh_settings_func()
         return
     elif is_local_cmd:
       match user_input[0]:
