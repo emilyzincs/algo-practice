@@ -1,8 +1,6 @@
 from typing import List
 
 class Solution:
-  
-  # parameters: nums, target
   def solve(self, nums: List[int], target: int) -> int:
     if nums is None:
       raise ValueError()

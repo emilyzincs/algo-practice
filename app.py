@@ -115,22 +115,20 @@ def handle_practice(alg: str) -> float:
 
 def reset_practice_file(alg: str) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
-  solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
+  info_file = gfp.get_info_file_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
-    f.write(get_starting_practice_text(solution_file))
+    f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
-def get_starting_practice_text(alg_sol_file: str) -> List[str]:
-  line_to_copy = None
-  with open(alg_sol_file, "r", encoding="utf-8") as f:
-    for line in f:
-      line = line.strip()
-      if line.startswith(PARAMETER_LINE_PREFIX):
-        line_to_copy = line
-        break   
-  if not line_to_copy:
-    raise RuntimeError("Could not find parameters in", alg_sol_file)
-  return COMMENT_SYMBOL + " write 'solve' method in 'Solution' class\n\n\n" + line_to_copy
+def get_starting_practice_text(info_file_path: str) -> List[str]:
+  if not os.path.exists(info_file_path):
+    raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
+  info = read_json(info_file_path)
+  parameter_names = info['parameters']
+  parameter_info_line = COMMENT_SYMBOL + " " + ", ".join(parameter_names)
+  return (COMMENT_SYMBOL + 
+        " write 'solve' method in 'Solution' class\n\n\n" 
+        + parameter_info_line)
 
 def load_solution_into_practice(alg: str) -> None:
   practice_file_dir = gfp.get_practice_file_dir()
