@@ -9,6 +9,7 @@ class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     self.gfp_base = "commands.practice.practice.gfp."
+    self.debug = False
 
   def abstract_test_run_tests(self, language, extension, 
                               practice_file_dir, practice_file_name_prefix):
@@ -24,7 +25,6 @@ class AbstractTestRunTests(unittest.TestCase):
       True,
       False, # 10
     ]
-    print("RUNNING")
     json_path_prefix = self.get_json_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
     i = 1
@@ -38,13 +38,13 @@ class AbstractTestRunTests(unittest.TestCase):
                             f"json_path: {json_path},\n" +
                             f"practice_file_path: {practice_file_path}")
         if not os.path.exists(json_path):
-          print(f"Breaking at i={i}")
+          print(f"Breaking at i={i}.")
           break
         with (
           patch(self.gfp_base + "get_test_file_path", return_value=json_path),
           patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
         ):
-          result = run_tests("", language, extension)
+          result = run_tests("", language, extension, self.debug)
         expected = expected_values[i-1]
         error_msg = (f"Expected test {i} to succeed but it failed." 
                     if expected
