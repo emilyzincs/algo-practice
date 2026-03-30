@@ -7,4 +7,4 @@ class TestPythonRunTest(parent.AbstractTestRunTests):
     super().abstract_test_run_tests("python", ".py", self.get_practice_file_dir(), "sol")
          
   def get_practice_file_dir(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "python")
+    return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "python", "solution_files")

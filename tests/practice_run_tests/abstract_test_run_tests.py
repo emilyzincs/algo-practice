@@ -6,8 +6,9 @@ from commands.practice.practice import run_tests
 from get_file_paths import PROJECT_ROOT
 
 class AbstractTestRunTests(unittest.TestCase):
-  def __init__(self):
-    self.gfp_base = "commands.practice.gfp." 
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.gfp_base = "commands.practice.practice.gfp."
 
   def abstract_test_run_tests(self, language, extension, 
                               practice_file_dir, practice_file_name_prefix):
@@ -23,13 +24,14 @@ class AbstractTestRunTests(unittest.TestCase):
       True,
       False, # 10
     ]
+    print("RUNNING")
     json_path_prefix = self.get_json_path_prefix()
-    practice_file_prefix = practice_file_dir + practice_file_name_prefix
+    practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
     i = 1
     with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
       while True:
         json_path = json_path_prefix + f"{i}.json"
-        practice_file_path = practice_file_prefix + f"{i}.{extension}"
+        practice_file_path = practice_file_prefix + f"{i}{extension}"
         if os.path.exists(json_path) != os.path.exists(practice_file_path):
           raise RuntimeError("Json path must exist iff practice file exists." +
                             " Violated for paths:\n" +
@@ -40,13 +42,13 @@ class AbstractTestRunTests(unittest.TestCase):
           break
         with (
           patch(self.gfp_base + "get_test_file_path", return_value=json_path),
-          patch(self.gfp_base + "get_file_practice_path", return_value=practice_file_path)
+          patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
         ):
           result = run_tests("", language, extension)
-        expected = expected_values[i]
-        error_msg = (f"Expected test {i} to fail but it succeeded." 
+        expected = expected_values[i-1]
+        error_msg = (f"Expected test {i} to succeed but it failed." 
                     if expected
-                    else f"Expected test {i} to succeed but it failed.")
+                    else f"Expected test {i} to fail but it succeeded.")
         self.assertEqual(expected, result, error_msg)      
         i += 1
 

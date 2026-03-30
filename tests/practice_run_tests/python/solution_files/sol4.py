@@ -1,3 +1,3 @@
 class Solution:
-  def solve() -> bool:
+  def solve(self) -> bool:
     return False

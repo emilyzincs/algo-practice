@@ -1,3 +1,3 @@
 class Solution:
-  def solve() -> int:
+  def solve(self) -> int:
     return -17
