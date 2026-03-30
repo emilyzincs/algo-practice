@@ -2,19 +2,18 @@
   "unique_answer": true,
   "input_types": [
     { 
-      "type": "list",
-      "items": { "type": "long" }
+      "type": "TreeNode"
     }
   ],
   "expected_type_wrapper": {
-    "type": "ListNode" 
+    "type": "TreeNode" 
   },
   "tests": [
     {
       "inputs": [
-        [1, 2, 3, 4]
+        [1, 2, 3, null, null, 4, null, null, null]
       ],
-      "expected": [2, 3, 4]
+      "expected": [3, null, 4, null, null, null]
     },
     {
       "inputs": [

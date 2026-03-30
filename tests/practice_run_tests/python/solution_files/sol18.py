@@ -1,5 +1,5 @@
 from __future__ import annotations 
-from typing import Optional, List
+from typing import Optional
 
 class ListNode:
   def __init__(self, val, next: Optional[ListNode] = None):
