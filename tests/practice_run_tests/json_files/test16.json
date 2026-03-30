@@ -8,8 +8,8 @@
     }
   ],
   "expected_type_wrapper": {
-    "type": "set",
-    "items": { "type": "float" }
+    "type": "list",
+    "items": { "type": "int" }
   },
   "tests": [
     {
@@ -21,7 +21,7 @@
           "132": true
         }
       ],
-      "expected": [0, 12.7, 132, -1.1]
+      "expected": [-13, 5]
     }
   ]
 }

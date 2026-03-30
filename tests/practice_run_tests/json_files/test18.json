@@ -1,0 +1,26 @@
+{
+  "unique_answer": true,
+  "input_types": [
+    { 
+      "type": "array",
+      "items": { "type": "long" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "ListNode" 
+  },
+  "tests": [
+    {
+      "inputs": [
+        [1, 2, 3, 4]
+      ],
+      "expected": [2, 3, 4]
+    },
+    {
+      "inputs": [
+        []
+      ],
+      "expected": []
+    }
+  ]
+}

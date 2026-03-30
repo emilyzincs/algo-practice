@@ -9,7 +9,7 @@ class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     self.gfp_base = "commands.practice.practice.gfp."
-    self.debug = False
+    self.debug = True
 
   def abstract_test_run_tests(self, language, extension, 
                               practice_file_dir, practice_file_name_prefix):
@@ -27,7 +27,11 @@ class AbstractTestRunTests(unittest.TestCase):
       False,
       True,
       True,
+      True, 
       True, # 15
+      False,
+      True,
+      True,
     ]
     json_path_prefix = self.get_json_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)

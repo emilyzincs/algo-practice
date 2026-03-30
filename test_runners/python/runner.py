@@ -12,6 +12,63 @@ sys.path.insert(0, PROJECT_ROOT)
 
 from utils import load_module_from_path
 
+# Global variables that will hold the user's classes (if they exist)
+USER_LISTNODE = None
+USER_TREENODE = None
+
+
+def add_cycle_aware_eq(cls):
+  """Add a cycle-aware __eq__ method to a class if it doesn't already have one."""
+  if cls is None:
+    return
+  # Override any existing __eq__ (the user's might not handle cycles)
+  if cls.__name__ == 'ListNode':
+    def __eq__(self, other, visited=None):
+      # Handle None
+      if self is None and other is None:
+        return True
+      if self is None or other is None:
+        return False
+      if visited is None:
+        visited = set()
+      pair_id = (id(self), id(other))
+      if pair_id in visited:
+        return True
+      visited.add(pair_id)
+      if not isinstance(other, cls):
+        return False
+      if self.val != other.val:
+        return False
+      # Recursively compare next
+      return __eq__(self.next, other.next, visited)
+
+    cls.__eq__ = __eq__
+
+  elif cls.__name__ == 'TreeNode':
+    def __eq__(self, other, visited=None):
+      # Handle None
+      if self is None and other is None:
+        return True
+      if self is None or other is None:
+        return False
+      if visited is None:
+        visited = set()
+      pair_id = (id(self), id(other))
+      if pair_id in visited:
+        return True
+      visited.add(pair_id)
+      if not isinstance(other, cls):
+        return False
+      if self.val != other.val:
+        return False
+      # Recursively compare left and right
+      if not __eq__(self.left, other.left, visited):
+        return False
+      return __eq__(self.right, other.right, visited)
+
+    cls.__eq__ = __eq__
+
+
 # =========================
 # TYPE PARSING
 # =========================
@@ -40,70 +97,48 @@ def parse_value(val, typ):
         for k, v in val.items()
       }
     case "ListNode":
-      return build_listnode(val)
+      if USER_LISTNODE is None:
+        raise Exception("ListNode class not defined in the practice module")
+      dummy = USER_LISTNODE(0)
+      cur = dummy
+      for x in val:
+        cur.next = USER_LISTNODE(x)
+        cur = cur.next
+      return dummy.next
+
     case "TreeNode":
-      return build_treenode(val)
+      if USER_TREENODE is None:
+        raise Exception("TreeNode class not defined in the practice module")
+      if not val:
+        return None
+
+      nodes = [
+        None if x is None else USER_TREENODE(x)
+        for x in val
+      ]
+
+      children = deque(nodes[1:])
+      root = nodes[0]
+      queue = deque([root])
+
+      while queue and children:
+        node = queue.popleft()
+        if node is None:
+          continue
+
+        if children:
+          node.left = children.popleft()
+          queue.append(node.left)
+
+        if children:
+          node.right = children.popleft()
+          queue.append(node.right)
+
+      return root
+
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
 
-
-# =========================
-# LINKED LIST
-# =========================
-
-class ListNode:
-  def __init__(self, val=0, next=None):
-    self.val = val
-    self.next = next
-
-
-def build_listnode(arr):
-  dummy = ListNode()
-  cur = dummy
-  for x in arr:
-    cur.next = ListNode(x)
-    cur = cur.next
-  return dummy.next
-
-
-# =========================
-# BINARY TREE
-# =========================
-
-class TreeNode:
-  def __init__(self, val=0, left=None, right=None):
-    self.val = val
-    self.left = left
-    self.right = right
-
-
-def build_treenode(arr):
-  if not arr:
-    return None
-
-  nodes = [
-    None if x is None else TreeNode(x)
-    for x in arr
-  ]
-
-  children = deque(nodes[1:])
-  root = nodes[0]
-  queue = deque([root])
-
-  while queue and children:
-    node = queue.popleft()
-    if node is None:
-      continue
-
-    if children:
-      node.left = children.popleft()
-      queue.append(node.left)
-
-    if children:
-      node.right = children.popleft()
-      queue.append(node.right)
-
-  return root
 
 # =========================
 # MAIN TEST RUNNER
@@ -114,13 +149,23 @@ def main():
   test_file_path = sys.argv[2]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
-  incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" + 
+  incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
                         " class with appropriate 'solve' method.")
   try:
     Solution = practice_module.Solution
   except AttributeError:
     print(incorrect_setup_msg, file=sys.stderr)
-    return False 
+    return False
+
+  # Load the user's ListNode and TreeNode classes (if defined)
+  global USER_LISTNODE, USER_TREENODE
+  USER_LISTNODE = getattr(practice_module, "ListNode", None)
+  USER_TREENODE = getattr(practice_module, "TreeNode", None)
+
+  # Add cycle-aware __eq__ methods (overrides any existing)
+  add_cycle_aware_eq(USER_LISTNODE)
+  add_cycle_aware_eq(USER_TREENODE)
+
   with open(test_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
@@ -138,7 +183,7 @@ def main():
         parse_value(v, input_types[idx])
         for idx, v in enumerate(test["inputs"])
       ]
-      
+
       try:
         actual = sol.solve(*args)
       except AttributeError:
@@ -154,8 +199,6 @@ def main():
           ]
         else:
           expected = parse_value(expected, expected_type)
-          # print(f"EXPECTED: {expected}. TYPE: {type(expected)}")
-          # print(f"ACTUAL: {actual}. TYPE: {type(actual)}")
 
       ok = (
         actual == expected if unique_answer
