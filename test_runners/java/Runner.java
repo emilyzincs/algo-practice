@@ -96,7 +96,7 @@ public class Runner {
     switch (type) {
       case "int": return int.class;
       case "long": return long.class;
-      case "double": return double.class;
+      case "float": return double.class;
       case "boolean": return boolean.class;
       case "string": return String.class;
 
@@ -142,7 +142,7 @@ public class Runner {
     switch (type) {
       case "int": return ((Number) val).intValue();
       case "long": return ((Number) val).longValue();
-      case "double": return ((Number) val).doubleValue();
+      case "float": return ((Number) val).doubleValue();
       case "boolean": return val;
       case "string": return val;
 
@@ -200,7 +200,7 @@ public class Runner {
     switch (type) {
       case "int": return obj instanceof Integer;
       case "long": return obj instanceof Long;
-      case "double": return obj instanceof Double;
+      case "float": return obj instanceof Double;
       case "boolean": return obj instanceof Boolean;
       case "string": return obj instanceof String;
 

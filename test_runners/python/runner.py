@@ -22,7 +22,7 @@ def parse_value(val, typ):
       return int(val)
     case "long":
       return int(val)
-    case "double":
+    case "float":
       return float(val)
     case "boolean":
       return bool(val)

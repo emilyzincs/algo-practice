@@ -1,0 +1,17 @@
+{
+  "unique_answer": false,
+  "input_types": [
+    { "type": "long" }
+  ],
+  "expected_type_wrapper": {
+    "type": "float"
+  },
+  "tests": [
+    {
+      "inputs": [
+        11
+      ],
+      "expected": [3.7, 16.2, 5.5]
+    }
+  ]
+}

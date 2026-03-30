@@ -24,12 +24,18 @@ class AbstractTestRunTests(unittest.TestCase):
       False,
       True,
       False, # 10
+      False,
+      True,
+      True,
+      True, # 15
     ]
     json_path_prefix = self.get_json_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
     i = 1
     with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
       while True:
+        if self.debug:
+          print(f"\nRunning test {i}:")
         json_path = json_path_prefix + f"{i}.json"
         practice_file_path = practice_file_prefix + f"{i}{extension}"
         if os.path.exists(json_path) != os.path.exists(practice_file_path):

@@ -1,0 +1,26 @@
+{
+  "unique_answer": true,
+  "input_types": [
+    {
+      "type": "map",
+      "keys": { "type": "float" },
+      "values": { "type": "boolean" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "set",
+    "items": { "type": "float" }
+  },
+  "tests": [
+    {
+      "inputs": [
+        {
+          "12.7": false,
+          "-1.1": true,
+          "132": true
+        }
+      ],
+      "expected": [12.7, 132, -1.1]
+    }
+  ]
+}
