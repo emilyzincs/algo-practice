@@ -19,8 +19,10 @@ public class Solution {
       int curr = q.poll();
       reachable.add(curr);
       for (int neighbor : graph.get(curr)) {
-        q.add(neighbor);
-        seen[neighbor] = true;
+        if (!seen[neighbor]) {
+          q.add(neighbor);
+          seen[neighbor] = true;
+        }
       }
     }
     return reachable;

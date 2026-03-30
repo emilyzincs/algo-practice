@@ -1,0 +1,20 @@
+{
+  "unique_answer": true,
+  "input_types": [
+   
+  ],
+  "expected_type_wrapper": {
+    "type": { 
+      "type": "array",
+      "items": { "type": "boolean" }
+    }
+  },
+  "tests": [
+    {
+      "inputs": [
+
+      ],
+      "expected": ["foo", "bar", "biz"]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "unique_answer": true,
+  "input_types": [
+    { "type": "string" },
+    { "type": "long" }
+  ],
+  "expected_type_wrapper": {
+    "type": "string"
+  },
+  "tests": [
+    {
+      "inputs": [
+        "bar",
+        0
+      ],
+      "expected": "foo"
+    }
+  ]
+}

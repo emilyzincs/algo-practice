@@ -1,0 +1,17 @@
+{
+  "unique_answer": false,
+  "input_types": [
+    { "type": "int" }
+  ],
+  "expected_type_wrapper": {
+    "type": "int"
+  },
+  "tests": [
+    {
+      "inputs": [
+
+      ],
+      "expected": -17
+    }
+  ]
+}
