@@ -2,8 +2,8 @@ import json, json.decoder
 import sys
 from collections import deque
 
-if len(sys.argv) != 4:
-  print("Must have exactly three command line arguments, was "
+if len(sys.argv) != 6:
+  print("Must have exactly five command line arguments, was "
         + str(len(sys.argv) - 1), file=sys.stderr)
   sys.exit(1)
 
@@ -87,7 +87,8 @@ def parse_value(val, typ):
       return str(val)
     case "array":
       print("array case, val is", val)
-      # todo handle parsing an array string if type(val) == str
+      if type(val) == str:
+        val = list(val)
       return tuple([parse_value(v, typ["items"]) for v in val])
     case "list":
       return [parse_value(v, typ["items"]) for v in val]
@@ -149,12 +150,15 @@ def parse_value(val, typ):
 def main():
   practice_file_path = sys.argv[1]
   test_file_path = sys.argv[2]
+  required_class_name = sys.argv[4]
+  required_method_name = sys.argv[5]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
                         " class with appropriate 'solve' method.")
   try:
-    Solution = practice_module.Solution
+    # Solution = practice_module.Solution
+    Solution = getattr(practice_module, required_class_name)
   except AttributeError:
     print(incorrect_setup_msg, file=sys.stderr)
     return False
@@ -187,12 +191,15 @@ def main():
       ]
 
       try:
-        actual = sol.solve(*args)
+        # actual = sol.solve(*args)
+        solution_method = getattr(sol, required_method_name)
       except AttributeError:
         print(incorrect_setup_msg, file=sys.stderr)
         return False
-      expected = test["expected"]
+      
+      actual = solution_method(*args)
 
+      expected = test["expected"]
       if expected_type:
         if isinstance(expected, list) and not unique_answer:
           expected = [

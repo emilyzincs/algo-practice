@@ -4,6 +4,7 @@ import os
 from utils import read_json
 from commands.practice.practice import run_tests
 from get_file_paths import PROJECT_ROOT
+from typing import Optional
 
 class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
@@ -11,8 +12,14 @@ class AbstractTestRunTests(unittest.TestCase):
     self.gfp_base = "commands.practice.practice.gfp."
     self.debug = True
 
-  def abstract_test_run_tests(self, language, extension, 
-                              practice_file_dir, practice_file_name_prefix):
+  def abstract_test_run_tests(
+      self,
+      language: str,
+      extension: str, 
+      practice_file_dir: str,
+      practice_file_name_prefix: str,
+      required_class_name_prefix: Optional[str] = None,
+    ):
     expected_values = [
       True,
       False,
@@ -57,7 +64,10 @@ class AbstractTestRunTests(unittest.TestCase):
           patch(self.gfp_base + "get_test_file_path", return_value=json_path),
           patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
         ):
-          result = run_tests("", language, extension, self.debug)
+          result = (
+            run_tests("", language, extension, self.debug) if not required_class_name_prefix
+            else run_tests("", language, extension, self.debug, required_class_name_prefix + str(i))
+          )
         expected = expected_values[i-1]
         error_msg = (f"Expected test {i} to succeed but it failed." 
                     if expected

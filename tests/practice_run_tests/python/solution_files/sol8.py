@@ -1,3 +1,3 @@
 class Solution:
-  def solve(self) -> int:
+  def solve(self) -> str:
     return "biz"

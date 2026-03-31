@@ -11,13 +11,17 @@ public class Runner {
   private static final ObjectMapper mapper = new ObjectMapper();
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2) {
-      System.err.println("Usage: java Runner <alg> <test.json>");
+    if (args.length != 4) {
+      System.err.println("Usage: java Runner <alg>" +
+                        " <testFileName>.json> <SolutionClassName> <SolutionMethodName>");
       System.exit(1);
     }
 
     Map<String, Object> root = mapper.readValue(
         Files.readAllBytes(Paths.get(args[1])), Map.class);
+    
+    String requiredClassName = args[2];
+    String requiredMethodName = args[3];
 
     List<Map<String, Object>> inputDefs =
         (List<Map<String, Object>>) root.get("input_types");
@@ -28,8 +32,8 @@ public class Runner {
     }
 
     try {
-      Class<?> clazz = Class.forName("practice.Solution");
-      userMethod = clazz.getDeclaredMethod("solve", paramTypes);
+      Class<?> clazz = Class.forName("practice." + requiredClassName);
+      userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
     } catch (NoSuchMethodException e) {
       System.err.println("Error: Practice file must contain" + 
                           " public 'Solution' class with appropriate public static 'solve' method.");
