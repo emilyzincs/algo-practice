@@ -15,20 +15,21 @@ class ListNode:
 
 class Solution:
   def solve(self, input: dict[tuple[tuple[float]], 
-                              list[Optional[TreeNode]]]) -> list[tuple[float], list[ListNode]]:
+                              list[Optional[TreeNode]]]) -> dict[tuple[float], list[ListNode]]:
     ret = {}
     for k, v in input.items():
       new_k = tuple([sum(tup) for tup in k])
       new_v = [self.tree_to_linked_list(tree) for tree in v]
-      ret[k] = v
+      ret[new_k] = new_v
     return ret
 
   def tree_to_linked_list(self, root: Optional[TreeNode]) -> Optional[ListNode]:
     self.dummy = ListNode(0)
     self.back = self.dummy
-    self.preorder_add_to_back(root)
+    self.inorder_add_to_back(root)
+    return self.dummy.next
 
-  def preorder_add_to_back(self, root: Optional[TreeNode]) -> None:
+  def inorder_add_to_back(self, root: Optional[TreeNode]) -> None:
     if root is None:
       return
     self.preorder_add_to_back(root.left)
