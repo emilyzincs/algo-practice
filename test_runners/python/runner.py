@@ -74,6 +74,17 @@ def add_cycle_aware_eq(cls):
 # =========================
 
 def parse_value(val, typ):
+   # If the expected type is complex and val is a string, try to parse it as JSON
+  print("val:", val)
+  print("typ:", typ)
+  print()
+  complex_types = {"array", "list", "set", "map", "ListNode", "TreeNode"}
+  if typ["type"] in complex_types and isinstance(val, str):
+    try:
+      val = json.loads(val)  # Convert string to Python object
+    except json.JSONDecodeError:
+      raise Exception(f"Could not parse string as JSON: {val}")
+
   match typ["type"]:
     case "int":
       return int(val)
@@ -87,8 +98,6 @@ def parse_value(val, typ):
       return str(val)
     case "array":
       print("array case, val is", val)
-      if type(val) == str:
-        val = list(val)
       return tuple([parse_value(v, typ["items"]) for v in val])
     case "list":
       return [parse_value(v, typ["items"]) for v in val]
@@ -220,7 +229,8 @@ def main():
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
-      return False
+      raise e
+      # return False
 
   return True
 

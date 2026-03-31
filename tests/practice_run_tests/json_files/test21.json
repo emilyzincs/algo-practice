@@ -14,7 +14,7 @@
         },
         "values": {
           "type": "list",
-          "items": "TreeNode"
+          "items": { "type": "TreeNode" }
         }
       }
     }
@@ -26,11 +26,11 @@
       "keys": {
         "type": "array",
         "items": { "type": "float" }
+      },
+      "values": {
+        "type": "list",
+        "items": { "type": "ListNode" }
       }
-    },
-    "values": {
-      "type": "list",
-      "items": "ListNode"
     }
   },
   "tests": [
