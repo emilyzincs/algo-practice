@@ -9,19 +9,22 @@ import java.util.*;
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
+  private static String fullPackageClassName;
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 4) {
+    if (args.length != 5) {
       System.err.println("Usage: java Runner <alg>" +
-                        " <testFileName>.json> <SolutionClassName> <SolutionMethodName>");
+                        " <testFileName>.json <practiceFilePackage>" +
+                        " <SolutionClassName> <SolutionMethodName>");
       System.exit(1);
     }
 
     Map<String, Object> root = mapper.readValue(
         Files.readAllBytes(Paths.get(args[1])), Map.class);
-    
-    String requiredClassName = args[2];
-    String requiredMethodName = args[3];
+    String practiceFilePackage = args[2];
+    String requiredClassName = args[3];
+    String requiredMethodName = args[4];
+    Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
     List<Map<String, Object>> inputDefs =
         (List<Map<String, Object>>) root.get("input_types");
@@ -32,11 +35,14 @@ public class Runner {
     }
 
     try {
-      Class<?> clazz = Class.forName("practice." + requiredClassName);
+      Class<?> clazz = Class.forName(fullPackageClassName);
+      System.out.println("the full package thing is " + practiceFilePackage + "." + requiredClassName);
+      System.out.println("the req method name is " + requiredMethodName);
       userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
     } catch (NoSuchMethodException e) {
       System.err.println("Error: Practice file must contain" + 
-                          " public 'Solution' class with appropriate public static 'solve' method.");
+        " public " + requiredClassName + " class with appropriate public static " +
+        requiredMethodName + " method.");
       System.exit(1);
     }
 
@@ -116,7 +122,7 @@ public class Runner {
       case "ListNode":
       case "TreeNode":
         try {
-          return Class.forName("practice." + type);
+          return Class.forName(fullPackageClassName + "." + type);
         } catch (Exception e) {
           throw new RuntimeException("Missing class: " + type);
         }
@@ -140,13 +146,50 @@ public class Runner {
     return res;
   }
 
+  private static String getStringParseErrorMessage(String type) {
+    return "Failed to parse what should be a " + type + " from a String.";
+  }
+
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
     String type = (String) def.get("type");
-
+    if (val instanceof String) {
+      String valStr = (String) val;
+      switch (type) {
+        case "int":
+          try {
+            return Integer.parseInt(valStr);
+          } catch (NumberFormatException e) {
+            System.err.println(getStringParseErrorMessage(type));
+            throw e;
+          }
+        case "long":
+          try {
+            return Long.parseLong(valStr);
+          } catch (NumberFormatException e) {
+            System.err.println(getStringParseErrorMessage(type));
+            throw e;
+          }
+        case "float":
+          try {
+            Double ret = Double.parseDouble(valStr);
+            if (ret == 0) return 0.0; // handles -0.0
+            return ret;
+          } catch (NumberFormatException e) {
+            System.err.println(getStringParseErrorMessage(type));
+            throw e;
+          }
+        case "boolean":
+          if (!valStr.equals("true") && !valStr.equals("false")) {
+            System.err.println(getStringParseErrorMessage(type));
+            throw new RuntimeException("Invalid boolean: " + valStr);
+          }
+          return Boolean.parseBoolean(valStr);          
+      }
+    }
     switch (type) {
       case "int": return ((Number) val).intValue();
       case "long": return ((Number) val).longValue();
-      case "float": return ((Number) val).doubleValue();
+      case "float": return ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
       case "boolean": return val;
       case "string": return val;
 
@@ -244,15 +287,19 @@ public class Runner {
         }
         return true;
 
+      case "ListNode":
+      case "TreeNode":
+        return obj.getClass().getName().equals(fullPackageClassName + "." + type);
+
       default:
-        return true;
-    }
+        throw new RuntimeException("Unknown type in validation: " + type);
+          }
   }
 
   // ===== BUILDERS =====
 
   private static Object buildListNode(List<?> vals) throws Exception {
-    Class<?> clazz = Class.forName("practice.ListNode");
+    Class<?> clazz = Class.forName(fullPackageClassName + ".ListNode");
     Constructor<?> ctor = clazz.getConstructor(int.class);
 
     Object dummy = ctor.newInstance(0);
@@ -273,7 +320,7 @@ public class Runner {
   private static Object buildTreeNode(List<?> vals) throws Exception {
     if (vals.isEmpty()) return null;
 
-    Class<?> clazz = Class.forName("practice.TreeNode");
+    Class<?> clazz = Class.forName(fullPackageClassName + ".TreeNode");
     Constructor<?> ctor = clazz.getConstructor(int.class);
 
     Object root = ctor.newInstance(((Number) vals.get(0)).intValue());
@@ -315,7 +362,14 @@ public class Runner {
     if (a == null || b == null) return false;
 
     if (a.getClass().isArray() && b.getClass().isArray()) {
-      return Arrays.deepEquals((Object[]) box(a), (Object[]) box(b));
+      Object ba = box(a);
+      Object bb = box(b);
+
+      if (ba instanceof Object[] && bb instanceof Object[]) {
+        return Arrays.deepEquals((Object[]) ba, (Object[]) bb);
+      }
+
+      return ba.equals(bb);
     }
 
     if (a instanceof Set && b instanceof Set) {
@@ -346,9 +400,15 @@ public class Runner {
       Map<?, ?> m2 = (Map<?, ?>) b;
       if (m1.size() != m2.size()) return false;
 
-      for (Object k : m1.keySet()) {
-        if (!m2.containsKey(k)) return false;
-        if (!deepEquals(m1.get(k), m2.get(k))) return false;
+      outer:
+      for (Object k1 : m1.keySet()) {
+        for (Object k2 : m2.keySet()) {
+          if (deepEquals(k1, k2)) {
+            if (!deepEquals(m1.get(k1), m2.get(k2))) return false;
+            continue outer;
+          }
+        }
+        return false;
       }
       return true;
     }
