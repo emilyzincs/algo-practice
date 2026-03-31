@@ -1,4 +1,4 @@
-import json
+import json, json.decoder
 import sys
 from collections import deque
 
@@ -86,7 +86,9 @@ def parse_value(val, typ):
     case "string":
       return str(val)
     case "array":
-      return [parse_value(v, typ["items"]) for v in val]
+      print("array case, val is", val)
+      # todo handle parsing an array string if type(val) == str
+      return tuple([parse_value(v, typ["items"]) for v in val])
     case "list":
       return [parse_value(v, typ["items"]) for v in val]
     case "set":
@@ -99,10 +101,10 @@ def parse_value(val, typ):
     case "ListNode":
       if USER_LISTNODE is None:
         raise Exception("ListNode class not defined in the practice module")
-      dummy = USER_LISTNODE(0)
+      dummy = USER_LISTNODE(0, None)
       cur = dummy
       for x in val:
-        cur.next = USER_LISTNODE(x)
+        cur.next = USER_LISTNODE(x, None)
         cur = cur.next
       return dummy.next
 
@@ -113,7 +115,7 @@ def parse_value(val, typ):
         return None
 
       nodes = [
-        None if x is None else USER_TREENODE(x)
+        None if x is None else USER_TREENODE(x, None, None)
         for x in val
       ]
 

@@ -13,3 +13,4 @@ class Solution:
     if not root or not root.right:
       return None
     return root.right
+  
