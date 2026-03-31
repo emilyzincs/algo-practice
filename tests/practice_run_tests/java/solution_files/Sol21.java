@@ -8,19 +8,24 @@ public class Sol21 {
   private static ListNode dummy;
   private static ListNode back;
 
-  public static Map<double[], List<ListNode>> solve(Map<double[][], List<TreeNode>> input) {
-    Map<double[], List<ListNode>> ret = new HashMap<>();
-    for (double[][] k : input.keySet()) {
-      List<TreeNode> v = input.get(k);
-      double[] new_k = new double[k.length];
-      for (int i = 0; i < k.length; i++) {
-        for (double num : k[i]) new_k[i] += num;
+  public static List<Map<double[], List<ListNode>>> solve(List<Map<double[][], List<TreeNode>>> input) {
+    List<Map<double[], List<ListNode>>> ret = new ArrayList<>();
+    for (Map<double[][], List<TreeNode>> input_map : input) {
+      Map<double[], List<ListNode>> m = new HashMap<>();
+      for (double[][] k : input_map.keySet()) {
+        List<TreeNode> v = input_map.get(k);
+        double[] new_k = new double[k.length];
+        for (int i = 0; i < k.length; i++) {
+          for (double num : k[i]) new_k[i] += num;
+          new_k[i] = ((double) Math.round(new_k[i] * 1000000)) / 1000000;
+        }
+        List<ListNode> new_v = new ArrayList<>();
+        for (TreeNode root : v) {
+          new_v.add(TreeToLinkedList(root));
+        }
+        m.put(new_k, new_v);
       }
-      List<ListNode> new_v = new ArrayList<>();
-      for (TreeNode root : v) {
-        new_v.add(TreeToLinkedList(root));
-      }
-      ret.put(new_k, new_v);
+      ret.add(m);
     }
     return ret;
   }

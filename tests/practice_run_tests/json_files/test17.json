@@ -1,10 +1,14 @@
 {
   "unique_answer": true,
   "input_types": [
-    { "type": "ListNode" }
+    { 
+      "type": "ListNode",
+      "val": { "type": "int" }
+    }
   ],
   "expected_type_wrapper": {
-    "type": "ListNode" 
+    "type": "ListNode",
+    "val": { "type": "int" } 
   },
   "tests": [
     {

@@ -7,7 +7,8 @@
     }
   ],
   "expected_type_wrapper": {
-    "type": "ListNode" 
+    "type": "ListNode",
+    "val": { "type": "long" } 
   },
   "tests": [
     {

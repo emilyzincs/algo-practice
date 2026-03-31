@@ -192,6 +192,10 @@ public class Runner {
             throw new RuntimeException("Invalid boolean: " + valStr);
           }
           return Boolean.parseBoolean(valStr);
+        case "string":
+          return valStr;
+        default:
+          val = mapper.readValue(valStr, Object.class);
       }
     }
     switch (type) {
@@ -206,8 +210,18 @@ public class Runner {
       case "string":
         return val;
 
-      case "array":
-        return mapper.convertValue(val, parseType(def));
+      case "array": {
+        // val must be a List after parsing
+        List<?> rawList = (List<?>) val;
+        Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
+        Class<?> componentType = parseType(itemDef);
+        Object array = Array.newInstance(componentType, rawList.size());
+
+        for (int i = 0; i < rawList.size(); i++) {
+          Array.set(array, i, parseValue(rawList.get(i), itemDef));
+        }
+        return array;
+      }
 
       case "list": {
         List<?> raw = (List<?>) val;
@@ -241,17 +255,17 @@ public class Runner {
       }
 
       case "ListNode":
-        return buildListNode((List<?>) val);
+        return buildListNode((List<?>) val, (Map<String, Object>) def.get("val"));
 
       case "TreeNode":
-        return buildTreeNode((List<?>) val);
+        return buildTreeNode((List<?>) val, (Map<String, Object>) def.get("val"));
 
       default:
         throw new RuntimeException("Unknown type: " + type);
     }
   }
 
-  // ===== TYPE VALIDATION (NEW) =====
+  // ===== TYPE VALIDATION =====
 
   private static boolean validateType(Object obj, Map<String, Object> def) {
     if (obj == null)
@@ -327,57 +341,86 @@ public class Runner {
 
   // ===== BUILDERS =====
 
-  private static Object buildListNode(List<?> vals) throws Exception {
+  /**
+   * Builds a ListNode from a list of raw values and the definition of its value type.
+   *
+   * @param vals    the list of values (already parsed as JSON objects)
+   * @param valDef  the type definition for the ListNode's "val" field
+   * @return the head ListNode, or null if the list is empty
+   */
+  private static Object buildListNode(List<?> vals, Map<String, Object> valDef) throws Exception {
+    if (vals.isEmpty())
+      return null;
+
     Class<?> clazz = Class.forName(fullPackageClassName + "$ListNode");
-    Constructor<?> ctor = clazz.getConstructor(?, clazz);
+    Class<?> valType = parseType(valDef);
+    Constructor<?> ctor = clazz.getConstructor(valType, clazz);
 
-    Object dummy = ctor.newInstance(?, null);
-    Object cur = dummy;
+    // Build the head node
+    Object headVal = parseValue(vals.get(0), valDef);
+    Object head = ctor.newInstance(headVal, null);
 
-    Field next = clazz.getDeclaredField("next");
-    next.setAccessible(true);
+    // Link the rest
+    Object prev = head;
+    Field nextField = clazz.getDeclaredField("next");
+    nextField.setAccessible(true);
 
-    for (Object v : vals) {
-      Object node = ctor.newInstance(((Number) v).intValue(), null);
-      next.set(cur, node);
-      cur = node;
+    for (int i = 1; i < vals.size(); i++) {
+      Object currVal = parseValue(vals.get(i), valDef);
+      Object curr = ctor.newInstance(currVal, null);
+      nextField.set(prev, curr);
+      prev = curr;
     }
 
-    return next.get(dummy);
+    return head;
   }
 
-  private static Object buildTreeNode(List<?> vals) throws Exception {
+  /**
+   * Builds a TreeNode from a list of level‑order values and the definition of its value type.
+   *
+   * @param vals    the level‑order list (may contain nulls for missing nodes)
+   * @param valDef  the type definition for the TreeNode's "val" field
+   * @return the root TreeNode, or null if the list is empty
+   */
+  private static Object buildTreeNode(List<?> vals, Map<String, Object> valDef) throws Exception {
     if (vals.isEmpty())
       return null;
 
     Class<?> clazz = Class.forName(fullPackageClassName + "$TreeNode");
-    Constructor<?> ctor = clazz.getConstructor(int.class, clazz, clazz);
+    Class<?> valType = parseType(valDef);
+    Constructor<?> ctor = clazz.getConstructor(valType, clazz, clazz);
 
-    Object root = ctor.newInstance(((Number) vals.get(0)).intValue(), null, null);
-    Queue<Object> q = new LinkedList<>();
-    q.add(root);
+    // Parse the root value (first element) – it must not be null
+    Object rootVal = parseValue(vals.get(0), valDef);
+    Object root = ctor.newInstance(rootVal, null, null);
 
-    Field left = clazz.getDeclaredField("left");
-    Field right = clazz.getDeclaredField("right");
-    left.setAccessible(true);
-    right.setAccessible(true);
+    Queue<Object> queue = new LinkedList<>();
+    queue.add(root);
+
+    Field leftField = clazz.getDeclaredField("left");
+    Field rightField = clazz.getDeclaredField("right");
+    leftField.setAccessible(true);
+    rightField.setAccessible(true);
 
     int i = 1;
+    while (!queue.isEmpty() && i < vals.size()) {
+      Object node = queue.poll();
 
-    while (!q.isEmpty() && i < vals.size()) {
-      Object node = q.poll();
-
+      // Left child
       if (vals.get(i) != null) {
-        Object l = ctor.newInstance(((Number) vals.get(i)).intValue(), null, null);
-        left.set(node, l);
-        q.add(l);
+        Object leftVal = parseValue(vals.get(i), valDef);
+        Object leftNode = ctor.newInstance(leftVal, null, null);
+        leftField.set(node, leftNode);
+        queue.add(leftNode);
       }
       i++;
 
+      // Right child
       if (i < vals.size() && vals.get(i) != null) {
-        Object r = ctor.newInstance(((Number) vals.get(i)).intValue(), null, null);
-        right.set(node, r);
-        q.add(r);
+        Object rightVal = parseValue(vals.get(i), valDef);
+        Object rightNode = ctor.newInstance(rightVal, null, null);
+        rightField.set(node, rightNode);
+        queue.add(rightNode);
       }
       i++;
     }

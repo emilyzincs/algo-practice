@@ -3,22 +3,23 @@
   "input_types": [
     { 
       "type": "set",
-      "items": { "type": "array", "items": { "type": "int" } }
+      "items": { "type": "array", "items": { "type": "string" } }
     }
   ],
   "expected_type_wrapper": {
-    "type": "TreeNode" 
+    "type": "TreeNode",
+    "val": { "type": "string" }
   },
   "tests": [
     {
       "inputs": [
         [
-          [1, 2],
+          ["a", "b"],
           [],
-          [3, 4, 5]
+          ["c", "d", "e"]
         ]
       ],
-      "expected": [1, 2, 5, 3, 4]
+      "expected": ["a", "b", "e", "c", "d"]
     },
     {
       "inputs": [

@@ -1,15 +1,19 @@
 package tests.practice_run_tests.java.solution_files;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 
 public class Sol20 {
-  public static TreeNode solve(Set<int[]> input) {
-    ArrayList<Integer> allVals = new ArrayList<>();
-    for (int[] currVals : input) {
-      for (int val : currVals) {
+  public static TreeNode solve(Set<String[]> input) {
+    List<String> allVals = new ArrayList<>();
+    for (String[] currVals : input) {
+      for (String val : currVals) {
         allVals.add(val);
       }
+    }
+    if (allVals.isEmpty()) {
+      return null;
     }
 
     Collections.sort(allVals);
@@ -21,11 +25,11 @@ public class Sol20 {
   }
 
   public static class TreeNode {
-    public int val;
+    public String val;
     public TreeNode left;
     public TreeNode right;
 
-    public TreeNode(int val, TreeNode left, TreeNode right) {
+    public TreeNode(String val, TreeNode left, TreeNode right) {
       this.val = val;
       this.left = left;
       this.right = right;

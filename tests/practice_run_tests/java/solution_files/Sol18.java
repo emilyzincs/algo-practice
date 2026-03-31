@@ -3,8 +3,8 @@ import java.util.List;
 
 public class Sol18 {
   public static ListNode solve(List<Long> list) {
-    if (list.isEmpty()) return null;
-    ListNode ret = new ListNode(list.get(0), null);
+    if (list.size() <= 1) return null;
+    ListNode ret = new ListNode(list.get(1), null);
     ListNode curr = ret;
     for (int i = 2; i < list.size(); i++) {
       curr.next = new ListNode(list.get(i), null);
