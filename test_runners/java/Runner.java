@@ -13,21 +13,18 @@ public class Runner {
 
   public static void main(String[] args) throws Exception {
     if (args.length != 5) {
-      System.err.println("Usage: java Runner <alg>" +
-                        " <testFileName>.json <practiceFilePackage>" +
-                        " <SolutionClassName> <SolutionMethodName>");
+      System.err.println("Usage: java Runner <alg>" + " <testFileName>.json <practiceFilePackage>"
+          + " <SolutionClassName> <SolutionMethodName>");
       System.exit(1);
     }
 
-    Map<String, Object> root = mapper.readValue(
-        Files.readAllBytes(Paths.get(args[1])), Map.class);
+    Map<String, Object> root = mapper.readValue(Files.readAllBytes(Paths.get(args[1])), Map.class);
     String practiceFilePackage = args[2];
     String requiredClassName = args[3];
     String requiredMethodName = args[4];
     Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
-    List<Map<String, Object>> inputDefs =
-        (List<Map<String, Object>>) root.get("input_types");
+    List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
 
     Class<?>[] paramTypes = new Class<?>[inputDefs.size()];
     for (int i = 0; i < inputDefs.size(); i++) {
@@ -36,13 +33,13 @@ public class Runner {
 
     try {
       Class<?> clazz = Class.forName(fullPackageClassName);
-      System.out.println("the full package thing is " + practiceFilePackage + "." + requiredClassName);
+      System.out
+          .println("the full package thing is " + practiceFilePackage + "." + requiredClassName);
       System.out.println("the req method name is " + requiredMethodName);
       userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
     } catch (NoSuchMethodException e) {
-      System.err.println("Error: Practice file must contain" + 
-        " public " + requiredClassName + " class with appropriate public static " +
-        requiredMethodName + " method.");
+      System.err.println("Error: Practice file must contain" + " public " + requiredClassName
+          + " class with appropriate public static " + requiredMethodName + " method.");
       System.exit(1);
     }
 
@@ -51,11 +48,9 @@ public class Runner {
     }
 
     boolean unique = (boolean) root.get("unique_answer");
-    Map<String, Object> expectedType =
-        (Map<String, Object>) root.get("expected_type_wrapper");
+    Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
 
-    List<Map<String, Object>> tests =
-        (List<Map<String, Object>>) root.get("tests");
+    List<Map<String, Object>> tests = (List<Map<String, Object>>) root.get("tests");
 
     for (int i = 0; i < tests.size(); i++) {
       Map<String, Object> test = tests.get(i);
@@ -69,7 +64,8 @@ public class Runner {
 
       if (unique) {
         Object expected = parseValue(test.get("expected"), expectedType);
-        if (!deepEquals(actual, expected)) fail = true;
+        if (!deepEquals(actual, expected))
+          fail = true;
       } else {
         List<?> expectedList = (List<?>) test.get("expected");
         boolean ok = false;
@@ -81,7 +77,8 @@ public class Runner {
             break;
           }
         }
-        if (!ok) fail = true;
+        if (!ok)
+          fail = true;
       }
 
       if (!validateType(actual, expectedType)) {
@@ -89,8 +86,8 @@ public class Runner {
       }
 
       if (fail) {
-        System.err.println("Test " + (i + 1) + " failed. Incorrect value: "
-            + deepToString(actual) + ".");
+        System.err
+            .println("Test " + (i + 1) + " failed. Incorrect value: " + deepToString(actual) + ".");
         System.exit(1);
       }
     }
@@ -104,26 +101,35 @@ public class Runner {
     String type = (String) def.get("type");
 
     switch (type) {
-      case "int": return int.class;
-      case "long": return long.class;
-      case "float": return double.class;
-      case "boolean": return boolean.class;
-      case "string": return String.class;
+      case "int":
+        return int.class;
+      case "long":
+        return long.class;
+      case "float":
+        return double.class;
+      case "boolean":
+        return boolean.class;
+      case "string":
+        return String.class;
 
       case "array": {
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         return Array.newInstance(inner, 0).getClass();
       }
 
-      case "list": return List.class;
-      case "set": return Set.class;
-      case "map": return Map.class;
+      case "list":
+        return List.class;
+      case "set":
+        return Set.class;
+      case "map":
+        return Map.class;
 
       case "ListNode":
       case "TreeNode":
         try {
-          return Class.forName(fullPackageClassName + "." + type);
+          return Class.forName(fullPackageClassName + "$" + type);
         } catch (Exception e) {
+          System.out.println("fullPackageClassName + type " + fullPackageClassName + "." + type);
           throw new RuntimeException("Missing class: " + type);
         }
 
@@ -134,7 +140,8 @@ public class Runner {
 
   // ===== INPUT PARSING =====
 
-  private static Object[] parseInputs(List<?> raw, List<Map<String, Object>> defs) throws Exception {
+  private static Object[] parseInputs(List<?> raw, List<Map<String, Object>> defs)
+      throws Exception {
     if (raw.size() != defs.size()) {
       throw new RuntimeException("Input length mismatch");
     }
@@ -172,7 +179,8 @@ public class Runner {
         case "float":
           try {
             Double ret = Double.parseDouble(valStr);
-            if (ret == 0) return 0.0; // handles -0.0
+            if (ret == 0)
+              return 0.0; // handles -0.0
             return ret;
           } catch (NumberFormatException e) {
             System.err.println(getStringParseErrorMessage(type));
@@ -183,15 +191,20 @@ public class Runner {
             System.err.println(getStringParseErrorMessage(type));
             throw new RuntimeException("Invalid boolean: " + valStr);
           }
-          return Boolean.parseBoolean(valStr);          
+          return Boolean.parseBoolean(valStr);
       }
     }
     switch (type) {
-      case "int": return ((Number) val).intValue();
-      case "long": return ((Number) val).longValue();
-      case "float": return ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
-      case "boolean": return val;
-      case "string": return val;
+      case "int":
+        return ((Number) val).intValue();
+      case "long":
+        return ((Number) val).longValue();
+      case "float":
+        return ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
+      case "boolean":
+        return val;
+      case "string":
+        return val;
 
       case "array":
         return mapper.convertValue(val, parseType(def));
@@ -200,7 +213,8 @@ public class Runner {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw) list.add(parseValue(o, inner));
+        for (Object o : raw)
+          list.add(parseValue(o, inner));
         return list;
       }
 
@@ -208,7 +222,8 @@ public class Runner {
         List<?> raw = (List<?>) val;
         Set<Object> set = new HashSet<>();
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw) set.add(parseValue(o, inner));
+        for (Object o : raw)
+          set.add(parseValue(o, inner));
         return set;
       }
 
@@ -220,8 +235,7 @@ public class Runner {
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
 
         for (Object k : raw.keySet()) {
-          map.put(parseValue(k, keyDef),
-                  parseValue(raw.get(k), valDef));
+          map.put(parseValue(k, keyDef), parseValue(raw.get(k), valDef));
         }
         return map;
       }
@@ -240,76 +254,91 @@ public class Runner {
   // ===== TYPE VALIDATION (NEW) =====
 
   private static boolean validateType(Object obj, Map<String, Object> def) {
-    if (obj == null) return true;
+    if (obj == null)
+      return true;
 
     String type = (String) def.get("type");
 
     switch (type) {
-      case "int": return obj instanceof Integer;
-      case "long": return obj instanceof Long;
-      case "float": return obj instanceof Double;
-      case "boolean": return obj instanceof Boolean;
-      case "string": return obj instanceof String;
+      case "int":
+        return obj instanceof Integer;
+      case "long":
+        return obj instanceof Long;
+      case "float":
+        return obj instanceof Double;
+      case "boolean":
+        return obj instanceof Boolean;
+      case "string":
+        return obj instanceof String;
 
       case "array":
-        if (!obj.getClass().isArray()) return false;
+        if (!obj.getClass().isArray())
+          return false;
         int len = Array.getLength(obj);
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (int i = 0; i < len; i++) {
-          if (!validateType(Array.get(obj, i), inner)) return false;
+          if (!validateType(Array.get(obj, i), inner))
+            return false;
         }
         return true;
 
       case "list":
-        if (!(obj instanceof List)) return false;
+        if (!(obj instanceof List))
+          return false;
         Map<String, Object> listInner = (Map<String, Object>) def.get("items");
         for (Object o : (List<?>) obj) {
-          if (!validateType(o, listInner)) return false;
+          if (!validateType(o, listInner))
+            return false;
         }
         return true;
 
       case "set":
-        if (!(obj instanceof Set)) return false;
+        if (!(obj instanceof Set))
+          return false;
         Map<String, Object> setInner = (Map<String, Object>) def.get("items");
         for (Object o : (Set<?>) obj) {
-          if (!validateType(o, setInner)) return false;
+          if (!validateType(o, setInner))
+            return false;
         }
         return true;
 
       case "map":
-        if (!(obj instanceof Map)) return false;
+        if (!(obj instanceof Map))
+          return false;
         Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
 
         for (Map.Entry<?, ?> e : ((Map<?, ?>) obj).entrySet()) {
-          if (!validateType(e.getKey(), keyDef)) return false;
-          if (!validateType(e.getValue(), valDef)) return false;
+          if (!validateType(e.getKey(), keyDef))
+            return false;
+          if (!validateType(e.getValue(), valDef))
+            return false;
         }
         return true;
 
       case "ListNode":
       case "TreeNode":
-        return obj.getClass().getName().equals(fullPackageClassName + "." + type);
+        return obj.getClass().getName().equals(fullPackageClassName + "$" + type);
 
       default:
         throw new RuntimeException("Unknown type in validation: " + type);
-          }
+    }
   }
 
   // ===== BUILDERS =====
 
   private static Object buildListNode(List<?> vals) throws Exception {
-    Class<?> clazz = Class.forName(fullPackageClassName + ".ListNode");
-    Constructor<?> ctor = clazz.getConstructor(int.class);
+    Class<?> clazz = Class.forName(fullPackageClassName + "$ListNode");
+    Constructor<?> ctor = clazz.getConstructor(?, clazz);
 
-    Object dummy = ctor.newInstance(0);
+    Object dummy = ctor.newInstance(?, null);
     Object cur = dummy;
 
     Field next = clazz.getDeclaredField("next");
     next.setAccessible(true);
 
     for (Object v : vals) {
-      Object node = ctor.newInstance(((Number) v).intValue());
+      Object node = ctor.newInstance(((Number) v).intValue(), null);
       next.set(cur, node);
       cur = node;
     }
@@ -318,12 +347,13 @@ public class Runner {
   }
 
   private static Object buildTreeNode(List<?> vals) throws Exception {
-    if (vals.isEmpty()) return null;
+    if (vals.isEmpty())
+      return null;
 
-    Class<?> clazz = Class.forName(fullPackageClassName + ".TreeNode");
-    Constructor<?> ctor = clazz.getConstructor(int.class);
+    Class<?> clazz = Class.forName(fullPackageClassName + "$TreeNode");
+    Constructor<?> ctor = clazz.getConstructor(int.class, clazz, clazz);
 
-    Object root = ctor.newInstance(((Number) vals.get(0)).intValue());
+    Object root = ctor.newInstance(((Number) vals.get(0)).intValue(), null, null);
     Queue<Object> q = new LinkedList<>();
     q.add(root);
 
@@ -338,14 +368,14 @@ public class Runner {
       Object node = q.poll();
 
       if (vals.get(i) != null) {
-        Object l = ctor.newInstance(((Number) vals.get(i)).intValue());
+        Object l = ctor.newInstance(((Number) vals.get(i)).intValue(), null, null);
         left.set(node, l);
         q.add(l);
       }
       i++;
 
       if (i < vals.size() && vals.get(i) != null) {
-        Object r = ctor.newInstance(((Number) vals.get(i)).intValue());
+        Object r = ctor.newInstance(((Number) vals.get(i)).intValue(), null, null);
         right.set(node, r);
         q.add(r);
       }
@@ -357,9 +387,19 @@ public class Runner {
 
   // ===== DEEP EQUALS =====
 
+  private static boolean isListNode(Object o) {
+    return o != null && o.getClass().getName().endsWith("$ListNode");
+  }
+
+  private static boolean isTreeNode(Object o) {
+    return o != null && o.getClass().getName().endsWith("$TreeNode");
+  }
+
   private static boolean deepEquals(Object a, Object b) {
-    if (a == b) return true;
-    if (a == null || b == null) return false;
+    if (a == b)
+      return true;
+    if (a == null || b == null)
+      return false;
 
     if (a.getClass().isArray() && b.getClass().isArray()) {
       Object ba = box(a);
@@ -374,12 +414,13 @@ public class Runner {
 
     if (a instanceof Set && b instanceof Set) {
       Set<?> s1 = (Set<?>) a, s2 = (Set<?>) b;
-      if (s1.size() != s2.size()) return false;
+      if (s1.size() != s2.size())
+        return false;
 
-      outer:
-      for (Object x : s1) {
+      outer: for (Object x : s1) {
         for (Object y : s2) {
-          if (deepEquals(x, y)) continue outer;
+          if (deepEquals(x, y))
+            continue outer;
         }
         return false;
       }
@@ -390,7 +431,8 @@ public class Runner {
       Iterator<?> i1 = ((Collection<?>) a).iterator();
       Iterator<?> i2 = ((Collection<?>) b).iterator();
       while (i1.hasNext()) {
-        if (!i2.hasNext() || !deepEquals(i1.next(), i2.next())) return false;
+        if (!i2.hasNext() || !deepEquals(i1.next(), i2.next()))
+          return false;
       }
       return !i2.hasNext();
     }
@@ -398,13 +440,14 @@ public class Runner {
     if (a instanceof Map && b instanceof Map) {
       Map<?, ?> m1 = (Map<?, ?>) a;
       Map<?, ?> m2 = (Map<?, ?>) b;
-      if (m1.size() != m2.size()) return false;
+      if (m1.size() != m2.size())
+        return false;
 
-      outer:
-      for (Object k1 : m1.keySet()) {
+      outer: for (Object k1 : m1.keySet()) {
         for (Object k2 : m2.keySet()) {
           if (deepEquals(k1, k2)) {
-            if (!deepEquals(m1.get(k1), m2.get(k2))) return false;
+            if (!deepEquals(m1.get(k1), m2.get(k2)))
+              return false;
             continue outer;
           }
         }
@@ -413,40 +456,130 @@ public class Runner {
       return true;
     }
 
+    if (isListNode(a) && isListNode(b)) {
+      return compareListNode(a, b, new HashSet<>());
+    }
+
+    if (isTreeNode(a) && isTreeNode(b)) {
+      return compareTreeNode(a, b, new HashSet<>());
+    }
+
     return a.equals(b);
+  }
+
+  private static boolean compareListNode(Object a, Object b, Set<String> visited) {
+    if (a == b)
+      return true;
+    if (a == null || b == null)
+      return false;
+
+    String key = System.identityHashCode(a) + ":" + System.identityHashCode(b);
+    if (visited.contains(key))
+      return true;
+    visited.add(key);
+
+    try {
+      Class<?> clazz = a.getClass();
+
+      Field val = clazz.getDeclaredField("val");
+      Field next = clazz.getDeclaredField("next");
+      val.setAccessible(true);
+      next.setAccessible(true);
+
+      Object v1 = val.get(a);
+      Object v2 = val.get(b);
+
+      if (!deepEquals(v1, v2))
+        return false;
+
+      Object n1 = next.get(a);
+      Object n2 = next.get(b);
+
+      return compareListNode(n1, n2, visited);
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static boolean compareTreeNode(Object a, Object b, Set<String> visited) {
+    if (a == b)
+      return true;
+    if (a == null || b == null)
+      return false;
+
+    String key = System.identityHashCode(a) + ":" + System.identityHashCode(b);
+    if (visited.contains(key))
+      return true;
+    visited.add(key);
+
+    try {
+      Class<?> clazz = a.getClass();
+
+      Field val = clazz.getDeclaredField("val");
+      Field left = clazz.getDeclaredField("left");
+      Field right = clazz.getDeclaredField("right");
+
+      val.setAccessible(true);
+      left.setAccessible(true);
+      right.setAccessible(true);
+
+      Object v1 = val.get(a);
+      Object v2 = val.get(b);
+
+      if (!deepEquals(v1, v2))
+        return false;
+
+      Object l1 = left.get(a);
+      Object l2 = left.get(b);
+
+      Object r1 = right.get(a);
+      Object r2 = right.get(b);
+
+      return compareTreeNode(l1, l2, visited) && compareTreeNode(r1, r2, visited);
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static Object box(Object arr) {
     if (arr instanceof int[]) {
       int[] a = (int[]) arr;
       Integer[] b = new Integer[a.length];
-      for (int i = 0; i < a.length; i++) b[i] = a[i];
+      for (int i = 0; i < a.length; i++)
+        b[i] = a[i];
       return b;
     }
     if (arr instanceof long[]) {
       long[] a = (long[]) arr;
       Long[] b = new Long[a.length];
-      for (int i = 0; i < a.length; i++) b[i] = a[i];
+      for (int i = 0; i < a.length; i++)
+        b[i] = a[i];
       return b;
     }
     if (arr instanceof double[]) {
       double[] a = (double[]) arr;
       Double[] b = new Double[a.length];
-      for (int i = 0; i < a.length; i++) b[i] = a[i];
+      for (int i = 0; i < a.length; i++)
+        b[i] = a[i];
       return b;
     }
     if (arr instanceof boolean[]) {
       boolean[] a = (boolean[]) arr;
       Boolean[] b = new Boolean[a.length];
-      for (int i = 0; i < a.length; i++) b[i] = a[i];
+      for (int i = 0; i < a.length; i++)
+        b[i] = a[i];
       return b;
     }
     return arr;
   }
 
   private static String deepToString(Object o) {
-    if (o == null) return "null";
-    if (o.getClass().isArray()) return Arrays.deepToString((Object[]) box(o));
+    if (o == null)
+      return "null";
+    if (o.getClass().isArray())
+      return Arrays.deepToString((Object[]) box(o));
     return o.toString();
   }
 }
