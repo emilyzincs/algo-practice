@@ -447,14 +447,13 @@ public class Runner {
       return false;
 
     if (a.getClass().isArray() && b.getClass().isArray()) {
-      Object ba = box(a);
-      Object bb = box(b);
-
-      if (ba instanceof Object[] && bb instanceof Object[]) {
-        return Arrays.deepEquals((Object[]) ba, (Object[]) bb);
+      Object[] ba = (Object[]) box(a);
+      Object[] bb = (Object[]) box(b);
+      if (ba.length != bb.length) return false;
+      for (int i = 0; i < ba.length; i++) {
+        if (!deepEquals(ba[i], bb[i])) return false;
       }
-
-      return ba.equals(bb);
+      return true;
     }
 
     if (a instanceof Set && b instanceof Set) {

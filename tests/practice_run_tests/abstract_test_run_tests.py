@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import os
-from utils import read_json
+from utils import is_type
 from commands.practice.practice import run_tests
 from get_file_paths import PROJECT_ROOT
 from typing import Optional
@@ -42,15 +42,19 @@ class AbstractTestRunTests(unittest.TestCase):
       True,
       True, # 20
       True,
-      True
+      True,
+      True,
+      False,
+      True, # 25
+      False,
     ]
+    test_number = os.getenv("TEST_NUMBER").strip()
+    test_number = int(test_number) if test_number and is_type(test_number, int) else None
     json_path_prefix = self.get_json_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
-    i = 1
+    i = test_number if test_number is not None else 1
     with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
       while True:
-        if self.debug:
-          print(f"\nRunning test {i}:")
         json_path = json_path_prefix + f"{i}.json"
         practice_file_path = practice_file_prefix + f"{i}{extension}"
         if os.path.exists(json_path) != os.path.exists(practice_file_path):
@@ -58,9 +62,11 @@ class AbstractTestRunTests(unittest.TestCase):
                             " Violated for paths:\n" +
                             f"json_path: {json_path},\n" +
                             f"practice_file_path: {practice_file_path}")
-        if not os.path.exists(json_path):
-          print(f"Breaking at i={i}.")
+        if not os.path.exists(json_path) or test_number and i != test_number:
+          print(f"Done.")
           break
+        if self.debug:
+          print(f"\nRunning test {i}:")
         with (
           patch(self.gfp_base + "get_test_file_path", return_value=json_path),
           patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
