@@ -30,13 +30,7 @@
     }
   ],
   "expected_type_wrapper": { 
-    "type": "TreeNode",
-    "val": {
-      "type": "ListNode",
-      "val": {
-        "type": "long"
-      }
-    }
+    "type": "long"
   },
   "tests": [
     {
@@ -66,11 +60,7 @@
           ]
         ]
       ],
-      "expected": [
-        [
-          2
-        ]
-      ]
+      "expected": 2
     }
   ]
 }

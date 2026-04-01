@@ -11,91 +11,94 @@ public class Runner {
   private static final ObjectMapper mapper = new ObjectMapper();
   private static String fullPackageClassName;
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     if (args.length != 5) {
       System.err.println("Usage: java Runner <alg>" + " <testFileName>.json <practiceFilePackage>"
           + " <SolutionClassName> <SolutionMethodName>");
       System.exit(1);
     }
 
-    Map<String, Object> root = mapper.readValue(Files.readAllBytes(Paths.get(args[1])), Map.class);
-    String practiceFilePackage = args[2];
-    String requiredClassName = args[3];
-    String requiredMethodName = args[4];
-    Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
-
-    List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
-
-    Class<?>[] paramTypes = new Class<?>[inputDefs.size()];
-    for (int i = 0; i < inputDefs.size(); i++) {
-      paramTypes[i] = parseType(inputDefs.get(i));
-    }
-
     try {
-      Class<?> clazz = Class.forName(fullPackageClassName);
-      System.out
-          .println("the full package thing is " + practiceFilePackage + "." + requiredClassName);
-      System.out.println("the req method name is " + requiredMethodName);
-      userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
-    } catch (NoSuchMethodException e) {
-      System.err.println("Error: Practice file must contain" + " public " + requiredClassName
-          + " class with appropriate public static " + requiredMethodName + " method.");
-      System.exit(1);
-    }
+      Map<String, Object> root = mapper.readValue(Files.readAllBytes(Paths.get(args[1])), Map.class);
+      String practiceFilePackage = args[2];
+      String requiredClassName = args[3];
+      String requiredMethodName = args[4];
+      Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
-    if (!Modifier.isStatic(userMethod.getModifiers())) {
-      throw new RuntimeException("solve must be static");
-    }
+      List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
 
-    boolean unique = (boolean) root.get("unique_answer");
-    Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
+      Class<?>[] paramTypes = new Class<?>[inputDefs.size()];
+      for (int i = 0; i < inputDefs.size(); i++) {
+        paramTypes[i] = parseType(inputDefs.get(i));
+      }
 
-    List<Map<String, Object>> tests = (List<Map<String, Object>>) root.get("tests");
+      try {
+        Class<?> clazz = Class.forName(fullPackageClassName);
+        userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
+      } catch (NoSuchMethodException e) {
+        printErr("Error: Practice file must contain" + " public " + requiredClassName
+            + " class with appropriate public static " + requiredMethodName + " method.");
+      }
 
-    for (int i = 0; i < tests.size(); i++) {
-      Map<String, Object> test = tests.get(i);
+      if (!Modifier.isStatic(userMethod.getModifiers())) {
+        printErr("solve must be static.");
+      }
 
-      List<?> rawInputs = (List<?>) test.get("inputs");
-      Object[] argsParsed = parseInputs(rawInputs, inputDefs);
-
-      Object actual = userMethod.invoke(null, argsParsed);
-
-      boolean fail = false;
-
-      if (unique) {
-        Object expected = parseValue(test.get("expected"), expectedType);
-        if (!deepEquals(actual, expected))
-          fail = true;
-      } else {
-        List<?> expectedList = (List<?>) test.get("expected");
-        boolean ok = false;
-
-        for (Object exp : expectedList) {
-          Object parsed = parseValue(exp, expectedType);
-          if (deepEquals(actual, parsed)) {
-            ok = true;
-            break;
+      boolean unique = (boolean) root.get("unique_answer");
+      Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
+      
+      List<Map<String, Object>> tests = (List<Map<String, Object>>) root.get("tests");
+      
+      for (int i = 0; i < tests.size(); i++) {
+        Map<String, Object> test = tests.get(i);
+        
+        List<?> rawInputs = (List<?>) test.get("inputs");
+        Object[] argsParsed = parseInputs(rawInputs, inputDefs);
+        
+        Object actual = userMethod.invoke(null, argsParsed);
+        
+        boolean fail = false;
+        
+        if (unique) {
+          Object expected = parseValue(test.get("expected"), expectedType);
+          if (!deepEquals(actual, expected))
+            fail = true;
+        } else {
+          List<?> expectedList = (List<?>) test.get("expected");
+          boolean ok = false;
+          
+          for (Object exp : expectedList) {
+            Object parsed = parseValue(exp, expectedType);
+            if (deepEquals(actual, parsed)) {
+              ok = true;
+              break;
+            }
           }
+          if (!ok)
+            fail = true;
         }
-        if (!ok)
-          fail = true;
+        
+        if (!validateType(actual, expectedType)) {
+          printErr("Return type mismatch with expected_type");
+        }
+        
+        if (fail) {
+          printErr("Test " + (i + 1) + " failed. Incorrect value: " + deepToString(actual) + ".");
+        }
       }
-
-      if (!validateType(actual, expectedType)) {
-        throw new RuntimeException("Return type mismatch with expected_type");
-      }
-
-      if (fail) {
-        System.err
-            .println("Test " + (i + 1) + " failed. Incorrect value: " + deepToString(actual) + ".");
-        System.exit(1);
-      }
+    } catch (Exception e) {
+      printErr(e.toString());
     }
-
+      
     System.out.println("All tests passed");
   }
 
   // ===== TYPE PARSER =====
+
+  private static void printErr(String msg) {
+    System.err.println(msg);
+    System.exit(1);
+  }
 
   private static Class<?> parseType(Map<String, Object> def) {
     String type = (String) def.get("type");
@@ -129,7 +132,6 @@ public class Runner {
         try {
           return Class.forName(fullPackageClassName + "$" + type);
         } catch (Exception e) {
-          System.out.println("fullPackageClassName + type " + fullPackageClassName + "." + type);
           throw new RuntimeException("Missing class: " + type);
         }
 

@@ -26,7 +26,7 @@ class Solution:
 
       curr = curr.next
 
-    return TreeNode(ListNode(total, None), None, None)
+    return total
   
   def inorder_traverse(self, root: Optional[ListNode]) -> int:
     if not root:

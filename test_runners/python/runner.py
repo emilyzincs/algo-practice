@@ -228,11 +228,13 @@ def main():
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
-      raise e
-      # return False
+      # raise e
+      return False
 
   return True
 
 if __name__ == "__main__":
   if not main():
     sys.exit(1)
+  else:
+    print("All tests passed.")
