@@ -1,4 +1,11 @@
-import generation_util as util
+import sys
+if len(sys.argv) < 2:
+  raise ValueError("Must include project root as first CLI")
+PROJECT_ROOT = sys.argv[1].strip()
+print("ROOT", PROJECT_ROOT)
+sys.path.insert(0, PROJECT_ROOT)
+
+import test_generation.generation_util as util
 import get_file_paths as gfp
 from utils import read_json, dump_json
 
@@ -99,11 +106,10 @@ def get_all_test_cases():
 
   return test_cases
 
-
 def main():
   test_cases = get_all_test_cases()
   tests = util.make_tests(test_cases, oracle)
-  test_file_path = gfp.get_test_file_path("binary search")
+  test_file_path = gfp.get_test_file_path("binary_search")
   json = read_json(test_file_path)
   json["tests"] = tests
   dump_json(test_file_path, json)
