@@ -16,10 +16,10 @@ public class Solution {
   private static void dfs(List<List<Integer>> graph, int root, Set<Integer> reachable, boolean[] seen) {
     int n = graph.size();
     if (root < 0 || n <= root) throw new IllegalArgumentException("Invalid root vertex: " + root);
+    reachable.add(root);
     for (int neighbor : graph.get(root)) {
       if (!seen[neighbor]) {
         seen[neighbor] = true;
-        reachable.add(neighbor);
         dfs(graph, neighbor, reachable, seen);
       }
     }

@@ -59,6 +59,7 @@ def handle_commands(
           elif user_input in alg_name_to_idx or is_type(user_input, int):
             alg = get_alg(user_input, alg_list, alg_name_to_idx, num_algs)
             if alg is not None:
+              print(f"Starting {alg} practice.")
               time_spent = handle_practice_func(alg)
               if time_spent >= 0:
                 print(f"Successfully completed {alg} in {time_spent:.2f} seconds!")
