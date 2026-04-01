@@ -40,6 +40,7 @@ class AbstractTestRunTests(unittest.TestCase):
       True,
       True,
       True,
+      True, # 20
       True,
       True
     ]

@@ -14,7 +14,6 @@ class Solution:
     for tup in input:
       all_vals.extend(tup)
     all_vals.sort()
-    print("all_vals", all_vals)
     if not all_vals:
       return None
 

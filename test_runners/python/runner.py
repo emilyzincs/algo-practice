@@ -75,9 +75,9 @@ def add_cycle_aware_eq(cls):
 
 def parse_value(val, typ):
    # If the expected type is complex and val is a string, try to parse it as JSON
-  print("val:", val)
-  print("typ:", typ)
-  print()
+  # print("val:", val)
+  # print("typ:", typ)
+  # print()
   complex_types = {"array", "list", "set", "map", "ListNode", "TreeNode"}
   if typ["type"] in complex_types and isinstance(val, str):
     try:
@@ -97,7 +97,6 @@ def parse_value(val, typ):
     case "string":
       return str(val)
     case "array":
-      print("array case, val is", val)
       return tuple([parse_value(v, typ["items"]) for v in val])
     case "list":
       return [parse_value(v, typ["items"]) for v in val]
@@ -114,7 +113,7 @@ def parse_value(val, typ):
       dummy = USER_LISTNODE(0, None)
       cur = dummy
       for x in val:
-        cur.next = USER_LISTNODE(x, None)
+        cur.next = USER_LISTNODE(parse_value(x, typ["val"]), None)
         cur = cur.next
       return dummy.next
 
@@ -125,7 +124,7 @@ def parse_value(val, typ):
         return None
 
       nodes = [
-        None if x is None else USER_TREENODE(x, None, None)
+        None if x is None else USER_TREENODE(parse_value(x, typ["val"]), None, None)
         for x in val
       ]
 
