@@ -21,11 +21,14 @@ settings = read_json(settings_path)
 ALG_NAME_TO_IDX = {
   "binary search": 0,
   "bfs": 1,
-  "breadth first search": 1
+  "breadth first search": 1,
+  "dfs": 2,
+  "depth first search": 2
 }
 ALG_LIST = [
   "binary_search",
-  "breadth_first_search"
+  "breadth_first_search",
+  "depth_first_search"
 ]
 NUM_ALGS = len(ALG_LIST)
 TAB = "  "

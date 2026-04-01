@@ -1,8 +1,7 @@
 from collections import deque
-from typing import List
 
 class Solution:
-  def solve(self, graph: List[List[int]], root: int) -> set[int]:
+  def solve(self, graph: list[list[int]], root: int) -> set[int]:
     if root < 0 or len(graph) <= root:
       raise ValueError(f"Root is not a vertex: {root}")
     reachable = set()

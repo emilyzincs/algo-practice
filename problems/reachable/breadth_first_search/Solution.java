@@ -1,4 +1,4 @@
-package problems.breadth_first_search;
+package problems.reachable.breadth_first_search;
 
 import java.util.List;
 import java.util.Queue;

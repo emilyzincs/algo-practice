@@ -1,7 +1,5 @@
-from typing import List
-
 class Solution:
-  def solve(self, nums: List[int], target: int) -> int:
+  def solve(self, nums: list[int], target: int) -> int:
     if nums is None:
       raise ValueError()
     lo, hi = 0, len(nums) - 1
