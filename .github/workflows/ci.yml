@@ -14,6 +14,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: action/checkout@v4
+      - uses: actions/checkout@v4
       - run : echo "Running tests"
       - run: ./test.sh all
