@@ -5,7 +5,7 @@ class Solution:
     self.merge_sort(nums, aux, 0, len(nums))
     return tuple(nums)
 
-  def merge_sort(self, nums: tuple[int], aux: tuple[int], lo: int, hi: int):
+  def merge_sort(self, nums: list[int], aux: list[int], lo: int, hi: int):
     if hi <= lo + 1:
       return
     mid = (lo + hi) // 2
