@@ -1,9 +1,8 @@
 class Solution:
-  def solve(self, nums: tuple[int]) -> tuple[int]:
-    nums = list(nums)
+  def solve(self, nums: list[int]) -> list[int]:
     aux = nums.copy()
     self.merge_sort(nums, aux, 0, len(nums))
-    return tuple(nums)
+    return nums
 
   def merge_sort(self, nums: list[int], aux: list[int], lo: int, hi: int):
     if hi <= lo + 1:
