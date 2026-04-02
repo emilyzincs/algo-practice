@@ -1,15 +1,16 @@
 class Solution:
   def solve(self, nums: tuple[int]) -> tuple[int]:
+    nums = list(nums)
     aux = nums.copy()
     self.merge_sort(nums, aux, 0, len(nums))
-    return nums
+    return tuple(nums)
 
   def merge_sort(self, nums: tuple[int], aux: tuple[int], lo: int, hi: int):
     if hi <= lo + 1:
       return
     mid = (lo + hi) // 2
-    self.merge_sort(nums, lo, mid)
-    self.merge_sort(nums, mid, hi)
+    self.merge_sort(nums, aux, lo, mid)
+    self.merge_sort(nums, aux, mid, hi)
     left = lo
     right = mid
     p = left

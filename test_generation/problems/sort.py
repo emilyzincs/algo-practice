@@ -14,30 +14,35 @@ def oracle(arr):
 
 def get_edge_cases():
   return [
-    ([]),
-    ([1]),
-    ([1,1]),
-    ([-1, -2]),
-    ([-2, -1]),
-    ([-1,5]),
+    (tuple([]),),
+    (tuple([1]),),
+    (tuple([1,1]),),
+    (tuple([-1, -2]),),
+    (tuple([-2, -1]),),
+    (tuple([-1,5]),),
   ]
 
-def get_random_case(n: int, lo: int, hi: int) -> tuple[int]:
+def get_random_case(n: int, lo: int, hi: int) -> tuple[tuple[int]]:
   arr = util.rand_array(n, lo, hi)
-  return (arr,)
+  return (tuple(arr),)
 
 def add_random_cases(test_cases, n: int, lo: int, hi: int, num_cases: int) -> None:
   for _ in range(num_cases):
     test_cases.append(get_random_case(n, lo, hi))
 
-def get_big_arr():
+def get_big_arr() -> tuple[int]:
   ret = []
   for i in range(-(10**4), 10**4):
     if util.rand_bool():
       ret.append(i)
       while util.rand_bool(0.2):
         ret.append(i)
-  return ret
+  return tuple(ret)
+
+def remove_redundant_cases(test_cases):
+  test_cases = list(set(test_cases))
+  test_cases.sort(key=lambda x: len(x))
+  return test_cases
 
 def get_all_test_cases():
   test_cases = get_edge_cases()
@@ -68,8 +73,9 @@ def get_all_test_cases():
 
   for _ in range(4):
     big_arr = get_big_arr()
-    test_cases.append((big_arr))
+    test_cases.append((big_arr,))
 
+  test_cases = remove_redundant_cases(test_cases)
   return test_cases
 
 def main():
