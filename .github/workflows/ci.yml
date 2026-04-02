@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Build step (nothing to do)"
-    
+  
   test:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
+      - name: Install package
+        run: pip install -e .
       - uses: actions/checkout@v4
       - run: echo "Running tests"
       - run: ./test.sh all
