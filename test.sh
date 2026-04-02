@@ -1,3 +1,4 @@
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 if [ "$1" == "all" ]; then
   export TEST_SPECIFIER="ALL"
   cmd="python -m unittest tests.practice_run_tests.abstract_test_run_tests"
