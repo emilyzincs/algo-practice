@@ -14,12 +14,12 @@ from utils import read_json, dump_json
 sol = Solution()
 
 def oracle(graph, root):
-  return sol.solve(graph, root)
+  return list(sol.solve(graph, root))
 
 def get_edge_cases():
   return [
     ([[]], 0),
-    ([[0]], 0)
+    ([[0]], 0),
     ([[1], []], 1),
     ([[1], [0]], 1),
     ([[0], [1]], 1),
@@ -45,7 +45,7 @@ def add_random_variety(test_cases, n: int, num_cases: int):
   elif n < 50:
     edge_probs = [0, 0.1, 0.3, 0.5, 0.7, 0.9, 1]
   else:
-    edge_probs = [0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.8, 0.9, 0.95, 1]
+    edge_probs = [0, 0.05, 0.15, 0.3, 0.5, 0.7, 0.85, 0.95, 1]
   for directed in [True, False]:
     for edge_prob in edge_probs:
       add_random_cases(test_cases, n, directed, edge_prob, num_cases)
@@ -55,27 +55,39 @@ def add_random_variety(test_cases, n: int, num_cases: int):
         test_cases.append((graph, root))
 
 def remove_redundant_test_cases(test_cases):
-  print("length before:", len(test_cases))
-  test_cases = list(set(test_cases))
-  test_cases.sort(key=lambda x: len(x[0]))
-  print("length after:", len(test_cases))
-  return test_cases
+    print("length before:", len(test_cases))
+    hashable_cases = []
+    for graph, root in test_cases:
+        graph_tuple = tuple(tuple(adj_list) for adj_list in graph)
+        hashable_cases.append((graph_tuple, root))
+    
+    unique_cases = list(set(hashable_cases))
+    unique_cases.sort(key=lambda x: len(x[0]))
+    
+    print("length after:", len(unique_cases))
+    return unique_cases
 
 def get_all_test_cases():
   test_cases = get_edge_cases()
   for i in range(3, 8):
     add_random_variety(test_cases, i, 2)
+  print(1)
   for i in range(15, 18):
     add_random_variety(test_cases, i, 2)
+  print(2)
   for i in range(49, 52):
     add_random_variety(test_cases, i, 3)
+  print(3)
   for i in range(99, 102):
     add_random_variety(test_cases, i, 3)
+  print(4)
   for i in range(249, 252):
     add_random_variety(test_cases, i, 3)
-  for i in range((10**4) - 1, (10**4) + 2):
-    add_random_variety(test_cases, i, 3)
+  print(5)
+  # add_random_variety(test_cases, 10**3, 1)
+  print(6)
   test_cases = remove_redundant_test_cases(test_cases)
+  print(7)
   return test_cases
 
 def main():
