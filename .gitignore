@@ -113,7 +113,7 @@ dmypy.json
 
 # Java build artifacts
 *.class
-*.jar
+# *.jar
 *.war
 *.ear
 target/
