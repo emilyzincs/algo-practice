@@ -114,7 +114,8 @@ public class Runner {
         return boolean.class;
       case "string":
         return String.class;
-
+      
+      case "immutable_list":
       case "array": {
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         return Array.newInstance(inner, 0).getClass();
@@ -211,7 +212,8 @@ public class Runner {
         return val;
       case "string":
         return val;
-
+      
+      case "immutable_list":
       case "array": {
         // val must be a List after parsing
         List<?> rawList = (List<?>) val;
@@ -287,6 +289,7 @@ public class Runner {
       case "string":
         return obj instanceof String;
 
+      case "immutable_list":
       case "array":
         if (!obj.getClass().isArray())
           return false;

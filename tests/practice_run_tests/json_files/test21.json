@@ -6,9 +6,9 @@
       "items": {
         "type": "map",
         "keys": {
-          "type": "array",
+          "type": "immutable_list",
           "items": {
-            "type": "array",
+            "type": "immutable_list",
             "items": { "type": "float" }
           }
         },
@@ -24,7 +24,7 @@
     "items": {
       "type": "map",
       "keys": {
-        "type": "array",
+        "type": "immutable_list",
         "items": { "type": "float" }
       },
       "values": {

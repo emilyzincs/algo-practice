@@ -3,7 +3,7 @@
   "input_types": [
     { 
       "type": "set",
-      "items": { "type": "array", "items": { "type": "string" } }
+      "items": { "type": "immutable_list", "items": { "type": "string" } }
     }
   ],
   "expected_type_wrapper": {

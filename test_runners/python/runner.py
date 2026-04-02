@@ -1,4 +1,4 @@
-import json, json.decoder
+import json
 import sys
 from collections import deque
 
@@ -78,7 +78,7 @@ def parse_value(val, typ):
   # print("val:", val)
   # print("typ:", typ)
   # print()
-  complex_types = {"array", "list", "set", "map", "ListNode", "TreeNode"}
+  complex_types = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
   if typ["type"] in complex_types and isinstance(val, str):
     try:
       val = json.loads(val)  # Convert string to Python object
@@ -97,9 +97,11 @@ def parse_value(val, typ):
     case "string":
       return str(val)
     case "array":
-      return tuple([parse_value(v, typ["items"]) for v in val])
+      return [parse_value(v, typ["items"]) for v in val]
     case "list":
       return [parse_value(v, typ["items"]) for v in val]
+    case "immutable_list":
+      return tuple([parse_value(v, typ["items"]) for v in val])
     case "set":
       return {parse_value(v, typ["items"]) for v in val}
     case "map":

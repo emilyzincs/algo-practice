@@ -1,3 +1,3 @@
 class Solution:
-  def solve(self) -> tuple[str]:
-    return ("foo", "bar", "biz")
+  def solve(self) -> list[str]:
+    return ["foo", "bar", "biz"]
