@@ -52,6 +52,12 @@ def rand_graph(n: int, directed: bool, edge_prob: float = 0.2) -> list[list[int]
           graph[j].append(i)
   return graph
 
+def rand_vertex(graph: list[list[int]]) -> int:
+  n = len(graph)
+  if n == 0:
+    raise ValueError("Cannot pick random vertex since graph has no vertices")
+  return random.randint(0, n-1)
+
 def connect_graph(graph: list[list[int]]) -> None:
   n = len(graph)
   if n == 0:
