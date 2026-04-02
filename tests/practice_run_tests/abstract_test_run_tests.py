@@ -3,8 +3,9 @@ from unittest.mock import patch
 import os
 from utils import is_type
 from commands.practice.practice import run_tests
-from get_file_paths import PROJECT_ROOT
+from get_file_paths import PROJECT_ROOT, get_solution_file_dir, get_solution_file_path
 from typing import Optional
+from app import ALG_LIST
 
 class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
@@ -81,6 +82,28 @@ class AbstractTestRunTests(unittest.TestCase):
                     else f"Expected test {i} to fail but it succeeded.")
         self.assertEqual(expected, result, error_msg)      
         i += 1
+  
+  def abstract_test_solutions(
+      self,
+      language: str,
+      extension: str   
+  ) -> None:
+    for alg in ALG_LIST:
+      solution_file_dir = get_solution_file_dir(alg)
+      solution_file = get_solution_file_path(alg, language, extension)
+      if not os.path.exists(solution_file_dir):
+        print(f"Path {solution_file_dir} does not exist. Continuing")
+        continue
+      if not os.path.exists(solution_file):
+        print(f"Path {solution_file} does not exist. Continuing")
+        continue
+      with (patch(self.gfp_base + "get_practice_file_dir", 
+                  return_value=solution_file_dir), 
+            patch(self.gfp_base + "get_practice_file_path", 
+                  return_value=solution_file)):
+        result = run_tests(alg, language, extension, self.debug)
+        error_msg = f"Solution for {alg} in {language} failed."
+        self.assertEqual(True, result, error_msg)
 
   def get_json_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "json_files", "test")
