@@ -15,8 +15,8 @@ jobs:
     name: Run tests
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Install package
         run: pip install -e .
-      - uses: actions/checkout@v4
       - run: echo "Running tests"
       - run: ./test.sh all
