@@ -17,6 +17,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install package
-        run: pip install -e .
+        run: |
+          pip install -e . -v
+          pip list | grep algo-practice
       - run: echo "Running tests"
       - run: ./test.sh all
