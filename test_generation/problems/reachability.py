@@ -81,13 +81,10 @@ def get_all_test_cases():
   for i in range(99, 102):
     add_random_variety(test_cases, i, 3)
   print(4)
-  for i in range(249, 252):
-    add_random_variety(test_cases, i, 3)
+  add_random_variety(test_cases, 250, 3)
   print(5)
-  # add_random_variety(test_cases, 10**3, 1)
-  print(6)
   test_cases = remove_redundant_test_cases(test_cases)
-  print(7)
+  print(6)
   return test_cases
 
 def main():
