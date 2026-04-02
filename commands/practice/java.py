@@ -63,7 +63,7 @@ def compile_if_necessary(java_file: str, cwd: str,
       raise RuntimeError(f"Compilation failed:\n{result.stderr}")
   
 def add_jars(cp_entries: List[str], dir: str) -> None:
-  lib_dir = os.path.join(dir, "lib")
+  lib_dir = os.path.join(dir, "jarlib")
   if os.path.exists(lib_dir):
     for f in Path(lib_dir).iterdir(): 
       if f.name.endswith(".jar"):
