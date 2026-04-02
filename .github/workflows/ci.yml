@@ -1,0 +1,19 @@
+name: Project CI
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Build step (nothing to do)"
+    
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: action/checkout@v4
+      - run : echo "Running tests"
+      - run: ./test.sh all
