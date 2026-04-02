@@ -11,7 +11,8 @@ class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     self.gfp_base = "commands.practice.practice.gfp."
-    self.debug = True
+    self.debug = False
+    self.specific_test = os.getenv("SPECIFIC_TEST").strip().lower()
 
   def abstract_test_run_tests(
       self,
@@ -20,7 +21,11 @@ class AbstractTestRunTests(unittest.TestCase):
       practice_file_dir: str,
       practice_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
-    ):
+  ):
+    if self.specific_test and not is_type(self.specific_test, int):
+      print("\n\nSKIPPING " + language.upper() + " run_test TESTS.")
+      return
+    print("\n\nRUNNING " + language.upper() + " run_test TESTS.")
     expected_values = [
       True,
       False,
@@ -49,8 +54,7 @@ class AbstractTestRunTests(unittest.TestCase):
       True, # 25
       False,
     ]
-    test_number = os.getenv("TEST_NUMBER").strip()
-    test_number = int(test_number) if test_number and is_type(test_number, int) else None
+    test_number = int(self.specific_test) if self.specific_test and is_type(self.specific_test, int) else None
     json_path_prefix = self.get_json_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
     i = test_number if test_number is not None else 1
@@ -66,8 +70,7 @@ class AbstractTestRunTests(unittest.TestCase):
         if not os.path.exists(json_path) or test_number and i != test_number:
           print(f"Done.")
           break
-        if self.debug:
-          print(f"\nRunning test {i}:")
+        print(f"\nRunning test {i}:")
         with (
           patch(self.gfp_base + "get_test_file_path", return_value=json_path),
           patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
@@ -80,7 +83,8 @@ class AbstractTestRunTests(unittest.TestCase):
         error_msg = (f"Expected test {i} to succeed but it failed." 
                     if expected
                     else f"Expected test {i} to fail but it succeeded.")
-        self.assertEqual(expected, result, error_msg)      
+        self.assertEqual(expected, result, error_msg)
+        print("Test passed.")      
         i += 1
   
   def abstract_test_solutions(
@@ -88,15 +92,20 @@ class AbstractTestRunTests(unittest.TestCase):
       language: str,
       extension: str   
   ) -> None:
-    for alg in ALG_LIST:
+    if self.specific_test and self.specific_test not in ALG_LIST:
+      print("\nSKIPPING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
+      return
+    print("\n\nRUNNING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
+    specific_alg = self.specific_test if self.specific_test else None
+
+    def abstract_test_alg_solution(alg: str, language: str, extension: str) -> None:
+      print(f"\nTesting solution for {alg}.")
       solution_file_dir = get_solution_file_dir(alg)
       solution_file = get_solution_file_path(alg, language, extension)
-      if not os.path.exists(solution_file_dir):
-        print(f"Path {solution_file_dir} does not exist. Continuing")
-        continue
+      self.assertEqual(True, os.path.exists(solution_file_dir), f"Path {solution_file_dir} does not exist.")
       if not os.path.exists(solution_file):
-        print(f"Path {solution_file} does not exist. Continuing")
-        continue
+        print(f"Path {solution_file} does not exist.\nContinuing.")
+        return
       with (patch(self.gfp_base + "get_practice_file_dir", 
                   return_value=solution_file_dir), 
             patch(self.gfp_base + "get_practice_file_path", 
@@ -104,6 +113,14 @@ class AbstractTestRunTests(unittest.TestCase):
         result = run_tests(alg, language, extension, self.debug)
         error_msg = f"Solution for {alg} in {language} failed."
         self.assertEqual(True, result, error_msg)
+        print("Solution correct.")
+
+    if specific_alg is not None:
+      abstract_test_alg_solution(specific_alg, language, extension)
+    else:
+      for alg in ALG_LIST:
+        abstract_test_alg_solution(alg, language, extension)
+    print("Done.")
 
   def get_json_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "json_files", "test")

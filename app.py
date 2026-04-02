@@ -52,8 +52,9 @@ if len(sys.argv) > 2:
 elif len(sys.argv) == 2:
   lang = sys.argv[1].strip().lower()
   if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
-    print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
-          " Type 'languages' for supported languages or <language> to switch to that language.")
+    if __name__ == "__main__":
+      print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
+            " Type 'languages' for supported languages or <language> to switch to that language.")
   else:
     LANGUAGE = lang
 
