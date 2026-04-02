@@ -7,6 +7,8 @@ from get_file_paths import PROJECT_ROOT, get_solution_file_dir, get_solution_fil
 from typing import Optional
 from app import ALG_LIST
 
+UNIT_TESTS = {"run_tests", "solution"}
+
 class AbstractTestRunTests(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
@@ -22,7 +24,8 @@ class AbstractTestRunTests(unittest.TestCase):
       practice_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
   ):
-    if self.specific_test and not is_type(self.specific_test, int):
+    if self.specific_test and not (self.specific_test == "run_tests"
+                                  or is_type(self.specific_test, int)):
       print("\n\nSKIPPING " + language.upper() + " run_test TESTS.")
       return
     print("\n\nRUNNING " + language.upper() + " run_test TESTS.")
@@ -92,11 +95,13 @@ class AbstractTestRunTests(unittest.TestCase):
       language: str,
       extension: str   
   ) -> None:
-    if self.specific_test and self.specific_test not in ALG_LIST:
+    if self.specific_test and not (self.specific_test == "solution" 
+                                  or self.specific_test in ALG_LIST):
       print("\nSKIPPING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
       return
     print("\n\nRUNNING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
-    specific_alg = self.specific_test if self.specific_test else None
+    specific_alg = self.specific_test if (self.specific_test and
+                                          self.specific_test != "solution") else None
 
     def abstract_test_alg_solution(alg: str, language: str, extension: str) -> None:
       print(f"\nTesting solution for {alg}.")
