@@ -23,12 +23,14 @@ ALG_NAME_TO_IDX = {
   "bfs": 1,
   "breadth first search": 1,
   "dfs": 2,
-  "depth first search": 2
+  "depth first search": 2,
+  "merge sort": 3
 }
 ALG_LIST = [
   "binary_search",
   "breadth_first_search",
-  "depth_first_search"
+  "depth_first_search",
+  "merge_sort"
 ]
 NUM_ALGS = len(ALG_LIST)
 TAB = "  "

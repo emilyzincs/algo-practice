@@ -3,7 +3,8 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 SPECIFIC_TO_GEN_ALG = {
   "breadth_first_search": "reachable",
-  "depth_first_search": "reachable"
+  "depth_first_search": "reachable",
+  "merge_sort": "sort"
 }
 
 def to_language_file_case(str: str, lang: str) -> str:
