@@ -154,6 +154,7 @@ def get_starting_practice_text(test_file_path: str) -> List[str]:
     # useful for knowing what types need to be imported in java and whether future needs to be
     # imported in python
     # build each part of the starting_text string as a variable, then call join
+    included_types = pts.recursively_get_included_types(input_types, expected_type)
     match LANGUAGE:
       case "python":
         starting_text = (

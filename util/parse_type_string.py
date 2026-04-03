@@ -8,6 +8,27 @@ def parse_type_string(typ, language: str) -> str:
     raise ValueError(f"Unrecognized language: {language}.")
   func(typ)
 
+def recursively_get_included_types(input_types, expected_type) -> set[str]:
+  def get_nested_included_types(typ, s: set[str]):
+    s.add(typ["type"])
+    match typ["type"]:
+      case "int" | "long" | "float" | "boolean" | "string":
+        pass
+      case "array" | "list" | "immutable_list" | "set":
+        get_nested_included_types(typ["items"], s)
+      case "map":
+        get_nested_included_types(typ["keys"])
+        get_nested_included_types(typ["values"])
+      case "ListNode" | "TreeNode":
+        get_nested_included_types(typ["val"])
+      case _:
+        raise Exception(f"Unknown type: {typ["type"]}")
+  ret = set()
+  for input_type in input_types:
+    get_nested_included_types(input_type, ret)
+  get_nested_included_types(expected_type, ret)
+  return ret
+
 def get_required_method_line(parameter_names: list[str], parameter_types: list[str], 
                              return_type: str, indent: str, 
                              required_method_name: str, language: str) -> str:
@@ -20,13 +41,7 @@ def get_required_method_line(parameter_names: list[str], parameter_types: list[s
     raise ValueError(f"Unrecognized language: {language}.")
   func(parameter_names, parameter_types, return_type, indent, required_method_name)
 
-def python_parse_type_string(typ) -> str:
-  if typ["type"] in COMPLEX_TYPES and isinstance(val, str):
-    try:
-      val = json.loads(val)  # Convert string to Python object
-    except json.JSONDecodeError:
-      raise Exception(f"Could not parse string as JSON: {val}")
-    
+def python_parse_type_string(typ) -> str:  
   match typ["type"]:
     case "int":
       return "int"
@@ -56,7 +71,6 @@ def python_parse_type_string(typ) -> str:
       raise Exception(f"Unknown type: {typ["type"]}")
 
 def java_parse_type_string(typ, should_box_if_primitive: False) -> str:
-
   match typ["type"]:
     case "int":
       return "int" if not should_box_if_primitive else "Integer"
