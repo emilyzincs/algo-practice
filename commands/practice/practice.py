@@ -1,8 +1,8 @@
 import sys
-import get_file_paths as gfp
+import util.get_file_paths as gfp
 import subprocess
 from commands.practice.java import get_test_cmd as java_get_test_cmd
-from utils import print_desc, in_either
+from util.utils import print_desc, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 
 def handle_commands(

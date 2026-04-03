@@ -1,5 +1,5 @@
 import os, sys, subprocess
-from get_file_paths import PROJECT_ROOT
+from util.get_file_paths import PROJECT_ROOT
 from typing import List
 from pathlib import Path
 

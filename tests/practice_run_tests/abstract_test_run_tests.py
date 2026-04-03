@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 import os
-from utils import is_type
+from util.utils import is_type
 from commands.practice.practice import run_tests
-from get_file_paths import PROJECT_ROOT, get_solution_file_dir, get_solution_file_path, to_language_file_case
+from util.get_file_paths import PROJECT_ROOT, get_solution_file_dir, get_solution_file_path, to_language_file_case
 from typing import Optional
 from app import ALG_LIST, LANGUAGE_LIST, LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL
 

@@ -1,5 +1,6 @@
 {
   "unique_answer": false,
+  "parameter_names": ["nums", "target"],
   "input_types": [
     {
       "type": "array",

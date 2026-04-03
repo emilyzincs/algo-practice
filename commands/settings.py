@@ -1,7 +1,7 @@
 import sys
-from utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
+from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
-from get_file_paths import get_settings_path, get_default_settings_path
+from util.get_file_paths import get_settings_path, get_default_settings_path
 
 def handle_commands(
     local_commands_and_actual_settings: tuple[set[str], set[str]],
