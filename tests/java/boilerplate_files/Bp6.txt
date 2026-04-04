@@ -1,0 +1,7 @@
+package tests.java.boilerplate_files;
+
+public class Bp6 {
+  public static String solve(String s, long l) {
+    
+  }
+}

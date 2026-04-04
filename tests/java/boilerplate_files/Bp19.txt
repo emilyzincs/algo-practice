@@ -1,0 +1,20 @@
+package tests.java.boilerplate_files;
+
+public class Bp19 {
+  public static TreeNode solve(TreeNode root) {
+    
+  }
+
+
+  public static class TreeNode {
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+      this.val = val;
+      this.left = left;
+      this.right = right;
+    }
+  }
+}

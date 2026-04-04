@@ -1,0 +1,34 @@
+package tests.java.boilerplate_files;
+
+import java.util.List;
+import java.util.Map;
+
+public class Bp21 {
+  public static List<Map<double[], List<ListNode>>> solve(List<Map<double[][], List<TreeNode>>> input) {
+    
+  }
+
+
+  public static class ListNode {
+    public int val;
+    public ListNode next;
+
+    public ListNode(int val, ListNode next) {
+      this.val = val;
+      this.next = next;
+    }
+  }
+
+
+  public static class TreeNode {
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+
+    public TreeNode(int val, TreeNode left, TreeNode right) {
+      this.val = val;
+      this.left = left;
+      this.right = right;
+    }
+  }
+}

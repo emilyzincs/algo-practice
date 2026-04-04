@@ -1,0 +1,18 @@
+package tests.java.boilerplate_files;
+
+public class Bp17 {
+  public static ListNode solve(ListNode head) {
+    
+  }
+
+
+  public static class ListNode {
+    public int val;
+    public ListNode next;
+
+    public ListNode(int val, ListNode next) {
+      this.val = val;
+      this.next = next;
+    }
+  }
+}

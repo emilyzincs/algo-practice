@@ -150,7 +150,7 @@ def get_ending(one_indent, language: str) -> str:
     case "python":
       return ""
     case "java":
-      return "}"
+      return "}\n"
     case _:
       raise ValueError(f"Unrecognized language: {language}.")
 
@@ -184,7 +184,7 @@ def python_parse_type_string(typ) -> str:
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
 
-def java_parse_type_string(typ, should_box_if_primitive: False) -> str:
+def java_parse_type_string(typ, should_box_if_primitive: bool = False) -> str:
   match typ["type"]:
     case "int":
       return "int" if not should_box_if_primitive else "Integer"
@@ -205,12 +205,12 @@ def java_parse_type_string(typ, should_box_if_primitive: False) -> str:
     case "set":
       return f"Set<{java_parse_type_string(typ["items"], True)}>"
     case "map":
-      return (f"Map<[{java_parse_type_string(typ["keys"], True)}," + 
+      return (f"Map<{java_parse_type_string(typ["keys"], True)}," + 
              f" {java_parse_type_string(typ["values"], True)}>")
     case "ListNode":
-      return "Optional[ListNode]"
+      return "ListNode"
     case "TreeNode":
-      return "Optional[TreeNode]"
+      return "TreeNode"
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
     
@@ -231,11 +231,11 @@ def java_get_method_line(parameter_names: list[str], parameter_types: list[str],
   if n == 0:
     in_parentheses = ""
   else:
-    in_parentheses = f"{parameter_names[0]}: {parameter_types[0]}"
+    in_parentheses = f"{parameter_types[0]} {parameter_names[0]}"
     for i in range(1, n):
       in_parentheses += f", {parameter_types[i]} {parameter_names[i]}"
   return (f"{one_indent}public static {return_type} {require_method_name}({in_parentheses})" +
-          " {\n" + (one_indent * 2) + "\n}\n")
+          " {\n" + (one_indent * 2) + f"\n{one_indent}" + "}\n")
 
 def find_type(typ, to_find):
   if typ["type"] == to_find:
@@ -306,7 +306,7 @@ def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) ->
     f"{base_indent}{one_indent * 2}self.right = right\n"
   )
 
-def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
+def java_tree_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
   return (
     "\n\n" + 
     f"{base_indent}public static class TreeNode" + " {\n" +

@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 import os
-from util.utils import is_type, read_json
+from util.utils import read_json
 from util.boilerplate import get_boilerplate_text
-from util.get_file_paths import PROJECT_ROOT, get_solution_file_dir, get_solution_file_path, to_language_file_case
+from util.get_file_paths import PROJECT_ROOT
 from typing import Optional
 from app import settings
 
@@ -13,7 +13,7 @@ UNIT_TESTS = {"run_tests", "solution"}
 class AbstractTestBoilerplate(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
-    self.gfp_base = "commands.practice.practice.gfp."
+    self.gfp_base = "util.boilerplate."
     self.debug = True
     # self.test_specifier = ""
 

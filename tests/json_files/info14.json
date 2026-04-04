@@ -1,6 +1,6 @@
 {
   "unique_answer": true,
-"parameter_names": ["m"],
+  "parameter_names": ["m"],
   "input_types": [
     {
       "type": "map",

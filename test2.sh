@@ -1,3 +1,3 @@
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-cmd="python -m unittest tests.python.test_python_boilerplate"
+cmd="python -m unittest tests.java.test_java_boilerplate"
 eval "$cmd"
