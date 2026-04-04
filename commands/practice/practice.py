@@ -60,10 +60,11 @@ def run_tests(
   practice_file = gfp.get_practice_file_path(language, extension)
   test_runner_dir = gfp.get_test_runner_dir_path(language)
   test_runner_file = gfp.get_test_runner_file_path(language, extension)
+  info_file = gfp.get_info_file_path(alg)
   test_file = gfp.get_test_file_path(alg)
   match language:
     case "python":
-      cmd = ["python", test_runner_file, practice_file, test_file, gfp.PROJECT_ROOT]
+      cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT]
     case "java":
       cmd = java_get_test_cmd(
         alg,
@@ -71,6 +72,7 @@ def run_tests(
         practice_file,
         test_runner_dir,
         test_runner_file,
+        info_file,
         test_file
       )
     case _:

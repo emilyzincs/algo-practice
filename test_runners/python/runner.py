@@ -2,12 +2,12 @@ import json
 import sys
 from collections import deque
 
-if len(sys.argv) != 6:
-  print("Must have exactly five command line arguments, was "
+if len(sys.argv) != 7:
+  print("Must have exactly six command line arguments, was "
         + str(len(sys.argv) - 1), file=sys.stderr)
   sys.exit(1)
 
-PROJECT_ROOT = sys.argv[3]
+PROJECT_ROOT = sys.argv[4]
 sys.path.insert(0, PROJECT_ROOT)
 
 from util.utils import load_module_from_path
@@ -159,9 +159,10 @@ def parse_value(val, typ):
 
 def main():
   practice_file_path = sys.argv[1]
-  test_file_path = sys.argv[2]
-  required_class_name = sys.argv[4]
-  required_method_name = sys.argv[5]
+  info_file_path = sys.argv[2]
+  test_file_path = sys.argv[3]
+  required_class_name = sys.argv[5]
+  required_method_name = sys.argv[6]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
@@ -182,14 +183,15 @@ def main():
   add_cycle_aware_eq(USER_LISTNODE)
   add_cycle_aware_eq(USER_TREENODE)
 
-  with open(test_file_path, "r", encoding="utf-8") as f:
+  with open(info_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
-
+  
   unique_answer = data["unique_answer"]
-  tests = data["tests"]
+  input_types = data.get("input_types")
+  expected_type = data.get("expected_type_wrapper")
 
-  input_types = data.get("input_types", [])
-  expected_type = data.get("expected_type_wrapper", None)
+  with open(test_file_path, "r", encoding="utf-8") as f:
+    tests = json.load(f)
 
   sol = Solution()
 

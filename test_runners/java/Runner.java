@@ -1,6 +1,7 @@
 package test_runners.java;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,14 +13,22 @@ public class Runner {
   private static String fullPackageClassName;
 
   public static void main(String[] args) {
-    if (args.length != 5) {
-      System.err.println("Usage: java Runner <alg>" + " <testFileName>.json <practiceFilePackage>"
-          + " <SolutionClassName> <SolutionMethodName>");
+    if (args.length != 6) {
+      System.err.println(
+        "Usage: java Runner <alg>" + 
+        " <practiceFilePackage>" +
+        " <infoFilePath>.json" +
+        " <testFilePath>.json" + 
+        " <SolutionClassName>" + 
+        " <SolutionMethodName>");
       System.exit(1);
     }
 
     try {
-      Map<String, Object> root = mapper.readValue(Files.readAllBytes(Paths.get(args[1])), Map.class);
+      Map<String, Object> root = mapper.readValue(
+        Files.readAllBytes(Paths.get(args[1])),
+        new TypeReference<Map<String, Object>>() {}
+      );
       String practiceFilePackage = args[2];
       String requiredClassName = args[3];
       String requiredMethodName = args[4];
@@ -47,7 +56,10 @@ public class Runner {
       boolean unique = (boolean) root.get("unique_answer");
       Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
       
-      List<Map<String, Object>> tests = (List<Map<String, Object>>) root.get("tests");
+      List<Map<String, Object>> tests = mapper.readValue(
+          Files.readAllBytes(Paths.get(args[2])),
+          new TypeReference<List<Map<String, Object>>>() {}
+      );
       
       for (int i = 0; i < tests.size(); i++) {
         Map<String, Object> test = tests.get(i);
