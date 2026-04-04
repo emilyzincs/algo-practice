@@ -1,0 +1,37 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["input"],
+  "input_types": [
+    { 
+      "type": "list",
+      "items": {
+        "type": "map",
+        "keys": {
+          "type": "immutable_list",
+          "items": {
+            "type": "immutable_list",
+            "items": { "type": "float" }
+          }
+        },
+        "values": {
+          "type": "list",
+          "items": { "type": "TreeNode", "val": { "type": "int" } }
+        }
+      }
+    }
+  ],
+  "expected_type_wrapper": { 
+    "type": "list",
+    "items": {
+      "type": "map",
+      "keys": {
+        "type": "immutable_list",
+        "items": { "type": "float" }
+      },
+      "values": {
+        "type": "list",
+        "items": { "type": "ListNode", "val": { "type": "int" } }
+      }
+    }
+  } 
+}

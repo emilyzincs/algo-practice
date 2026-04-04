@@ -1,23 +1,9 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["f", "a"],
-  "input_types": [
-    { "type": "float" },
-    { 
-      "type": "array",
-      "items": { "type": "float" }
-    }
-  ],
-  "expected_type_wrapper": {
-    "type": "long"
-  },
-  "tests": [
-    {
-      "inputs": [
-        3.7,
-        [1.6, 2, -3.0]
-      ],
-      "expected": 4
-    }
-  ]
-}
+[
+  {
+    "inputs": [
+      3.7,
+      [1.6, 2, -3.0]
+    ],
+    "expected": 4
+  }
+]

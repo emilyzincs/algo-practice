@@ -1,0 +1,10 @@
+{
+  "unique_answer": true,
+  "parameter_names": [],
+  "input_types": [
+   
+  ],
+  "expected_type_wrapper": {
+    "type": "boolean"
+  }
+}

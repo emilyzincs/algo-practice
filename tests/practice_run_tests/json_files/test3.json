@@ -1,20 +1,8 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["b1", "i", "b2"],
-  "input_types": [
-    { "type": "boolean" },
-    { "type": "int" },
-    { "type": "boolean" }
-  ],
-  "expected_type_wrapper": {
-    "type": "int"
-  },
-  "tests": [
-    {
-      "inputs": [
-        true, 20, false
-      ],
-      "expected": -17
-    }
-  ]
-}
+[
+  {
+    "inputs": [
+      true, 20, false
+    ],
+    "expected": -17
+  }
+]

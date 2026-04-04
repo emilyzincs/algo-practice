@@ -1,28 +1,13 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["m"],
-  "input_types": [
-    {
-      "type": "map",
-      "keys": { "type": "float" },
-      "values": { "type": "boolean" }
-    }
-  ],
-  "expected_type_wrapper": {
-    "type": "list",
-    "items": { "type": "int" }
-  },
-  "tests": [
-    {
-      "inputs": [
-        {
-          "12.7": false,
-          "-1.1": true,
-          "-0.0": true,
-          "132": true
-        }
-      ],
-      "expected": [-13, 5]
-    }
-  ]
-}
+[
+  {
+    "inputs": [
+      {
+        "12.7": false,
+        "-1.1": true,
+        "-0.0": true,
+        "132": true
+      }
+    ],
+    "expected": [-13, 5]
+  }
+]

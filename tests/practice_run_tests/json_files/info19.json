@@ -1,0 +1,14 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["root"],
+  "input_types": [
+    { 
+      "type": "TreeNode",
+      "val": { "type": "int" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "TreeNode",
+    "val": { "type": "int" }
+  }
+}

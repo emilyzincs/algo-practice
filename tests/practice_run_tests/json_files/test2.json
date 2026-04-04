@@ -1,18 +1,6 @@
-{
-  "unique_answer": false,
-  "parameter_names": [],
-  "input_types": [
-
-  ],
-  "expected_type_wrapper": {
-    "type": "int"
-  },
-  "tests": [
-    {
-      "inputs": [
-
-      ],
-      "expected": -17
-    }
-  ]
-}
+[
+  {
+    "inputs": [],
+    "expected": -17
+  }
+]

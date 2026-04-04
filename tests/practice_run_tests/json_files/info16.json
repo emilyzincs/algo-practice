@@ -1,0 +1,15 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["head"],
+  "input_types": [
+    {
+      "type": "map",
+      "keys": { "type": "float" },
+      "values": { "type": "boolean" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "list",
+    "items": { "type": "int" }
+  }
+}

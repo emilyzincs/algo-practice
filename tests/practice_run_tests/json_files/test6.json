@@ -1,20 +1,9 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["s", "l"],
-  "input_types": [
-    { "type": "string" },
-    { "type": "long" }
-  ],
-  "expected_type_wrapper": {
-    "type": "string"
-  },
-  "tests": [
-    {
-      "inputs": [
-        "bar",
-        0
-      ],
-      "expected": "foo"
-    }
-  ]
-}
+[
+  {
+    "inputs": [
+      "bar",
+      0
+    ],
+    "expected": "foo"
+  }
+]

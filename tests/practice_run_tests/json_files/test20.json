@@ -1,32 +1,18 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["input"],
-  "input_types": [
-    { 
-      "type": "set",
-      "items": { "type": "immutable_list", "items": { "type": "string" } }
-    }
-  ],
-  "expected_type_wrapper": {
-    "type": "TreeNode",
-    "val": { "type": "string" }
+[
+  {
+    "inputs": [
+      [
+        ["a", "b"],
+        [],
+        ["c", "d", "e"]
+      ]
+    ],
+    "expected": ["a", "b", "e", "c", "d"]
   },
-  "tests": [
-    {
-      "inputs": [
-        [
-          ["a", "b"],
-          [],
-          ["c", "d", "e"]
-        ]
-      ],
-      "expected": ["a", "b", "e", "c", "d"]
-    },
-    {
-      "inputs": [
-        [[]]
-      ],
-      "expected": []
-    }
-  ]
-}
+  {
+    "inputs": [
+      [[]]
+    ],
+    "expected": []
+  }
+]

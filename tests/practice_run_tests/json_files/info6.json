@@ -1,0 +1,11 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["s", "l"],
+  "input_types": [
+    { "type": "string" },
+    { "type": "long" }
+  ],
+  "expected_type_wrapper": {
+    "type": "string"
+  }
+}

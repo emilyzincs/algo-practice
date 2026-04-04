@@ -1,0 +1,14 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["head"],
+  "input_types": [
+    { 
+      "type": "ListNode",
+      "val": { "type": "int" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "ListNode",
+    "val": { "type": "int" } 
+  }
+}

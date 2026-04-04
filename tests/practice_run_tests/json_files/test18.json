@@ -1,28 +1,14 @@
-{
-  "unique_answer": true,
-  "parameter_names": ["head"],
-  "input_types": [
-    { 
-      "type": "list",
-      "items": { "type": "long" }
-    }
-  ],
-  "expected_type_wrapper": {
-    "type": "ListNode",
-    "val": { "type": "long" } 
+[
+  {
+    "inputs": [
+      [1, 2, 3, 4]
+    ],
+    "expected": [2, 3, 4]
   },
-  "tests": [
-    {
-      "inputs": [
-        [1, 2, 3, 4]
-      ],
-      "expected": [2, 3, 4]
-    },
-    {
-      "inputs": [
-        []
-      ],
-      "expected": []
-    }
-  ]
-}
+  {
+    "inputs": [
+      []
+    ],
+    "expected": []
+  }
+]
