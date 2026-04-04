@@ -1,0 +1,12 @@
+from __future__ import annotations
+from typing import Optional
+
+class Solution:
+  def solve(self, input: set[tuple[str]]) -> Optional[TreeNode]:
+    
+
+class TreeNode:
+  def __init__(self, val: str, left: Optional[TreeNode], right: Optional[TreeNode]) -> None:
+    self.val = val
+    self.left = left
+    self.right = right

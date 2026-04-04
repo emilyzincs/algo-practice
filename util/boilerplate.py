@@ -29,13 +29,14 @@ def get_boilerplate_text(
   list_node_text = ""
   tree_node_text = ""
   if "ListNode" in included_types:
-    val_type_string = get_nested_type_string("ListNode", "val", input_types, expected_type)
+    val_type_string = get_nested_type_string("ListNode", "val", input_types, expected_type, language)
     list_node_text = get_list_node_text(val_type_string, one_indent, 1, language) 
   if "TreeNode" in included_types:
-    val_type_string = get_nested_type_string("TreeNode", "val", input_types, expected_type)
+    val_type_string = get_nested_type_string("TreeNode", "val", input_types, expected_type, language)
     tree_node_text = get_tree_node_text(val_type_string, one_indent, 1, language)
   end = get_ending(one_indent, language)
-  return "".join([
+
+  ret = "".join([
     beginning, 
     imports, 
     class_line, 
@@ -44,13 +45,15 @@ def get_boilerplate_text(
     tree_node_text, 
     end
   ])
+  # print("RETURNING:\n", ret)
+  return ret
 
 def parse_type_string(typ, language: str) -> str:
   func_name = f"{language}_parse_type_string"
   func = globals().get(func_name)
   if func is None:
     raise ValueError(f"Unrecognized language: {language}.")
-  func(typ)
+  return func(typ)
 
 def get_beginning(language: str) -> str:
   match language:
@@ -76,7 +79,7 @@ def get_required_method_line(
   func = globals().get(func_name)
   if func is None:
     raise ValueError(f"Unrecognized language: {language}.")
-  func(parameter_names, parameter_types, return_type, one_indent, required_method_name)
+  return func(parameter_names, parameter_types, return_type, one_indent, required_method_name)
 
 def get_list_node_text(val_type_string: str, one_indent: str, 
                        num_indents: int, language: str) -> str:
@@ -84,15 +87,15 @@ def get_list_node_text(val_type_string: str, one_indent: str,
   func = globals().get(func_name)
   if func is None:
     raise ValueError(f"Unrecognized language: {language}.")
-  func(val_type_string, one_indent, one_indent * num_indents)
+  return func(val_type_string, one_indent, one_indent * num_indents)
 
 def get_tree_node_text(val_type_string: str, one_indent: str,
                       num_indents: int, language: str) -> str:
-  func_name = f"{language}_list_node"
+  func_name = f"{language}_tree_node"
   func = globals().get(func_name)
   if func is None:
     raise ValueError(f"Unrecognized language: {language}.")
-  func(val_type_string, one_indent, one_indent * num_indents)
+  return func(val_type_string, one_indent, one_indent * num_indents)
 
 def get_nested_included_types(typ, s: set[str]):
   s.add(typ["type"])
@@ -102,10 +105,10 @@ def get_nested_included_types(typ, s: set[str]):
     case "array" | "list" | "immutable_list" | "set":
       get_nested_included_types(typ["items"], s)
     case "map":
-      get_nested_included_types(typ["keys"])
-      get_nested_included_types(typ["values"])
+      get_nested_included_types(typ["keys"], s)
+      get_nested_included_types(typ["values"], s)
     case "ListNode" | "TreeNode":
-      get_nested_included_types(typ["val"])
+      get_nested_included_types(typ["val"], s)
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
 
@@ -175,9 +178,9 @@ def python_parse_type_string(typ) -> str:
       return (f"dict[{python_parse_type_string(typ["keys"])}," + 
              f" {python_parse_type_string(typ["values"])}]")
     case "ListNode":
-      return "ListNode"
+      return "Optional[ListNode]"
     case "TreeNode":
-      return "TreeNode"
+      return "Optional[TreeNode]"
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
 
@@ -215,14 +218,11 @@ def python_get_method_line(parameter_names: list[str], parameter_types: list[str
                           return_type: str, one_indent: str, require_method_name: str) -> str:
   in_parentheses = None
   n = len(parameter_names)
-  if n == 0:
-    in_parentheses = ""
-  else:
-    in_parentheses = f"{parameter_names[0]}: {parameter_types[0]}"
-    for i in range(1, n):
-      in_parentheses += f", {parameter_names[i]}: {parameter_types[i]}"
+  in_parentheses = "self"
+  for i in range(n):
+    in_parentheses += f", {parameter_names[i]}: {parameter_types[i]}"
   return (f"{one_indent}def {require_method_name}({in_parentheses})" + 
-          f" -> {return_type}:\n{one_indent}")
+          f" -> {return_type}:\n{one_indent * 2}")
 
 def java_get_method_line(parameter_names: list[str], parameter_types: list[str], 
                           return_type: str, one_indent: str, require_method_name: str) -> str:
@@ -235,25 +235,26 @@ def java_get_method_line(parameter_names: list[str], parameter_types: list[str],
     for i in range(1, n):
       in_parentheses += f", {parameter_types[i]} {parameter_names[i]}"
   return (f"{one_indent}public static {return_type} {require_method_name}({in_parentheses})" +
-          " {\n" + one_indent + "\n}\n")
+          " {\n" + (one_indent * 2) + "\n}\n")
 
 def find_type(typ, to_find):
   if typ["type"] == to_find:
     return typ
   match typ["type"]:
-    case "int" | "long" | "float" | "bool" | "str":
+    case "int" | "long" | "float" | "bool" | "string":
       return None
     case "array" | "list" | "immutable_list" | "set":
       return find_type(typ["items"], to_find)
     case "map":
-      key_typ = find_type(typ["keys"])
-      return key_typ if key_typ is not None else find_type(typ["values"])
+      key_typ = find_type(typ["keys"], to_find)
+      return key_typ if key_typ is not None else find_type(typ["values"], to_find)
     case "ListNode" | "TreeNode":
-      return find_type(typ["val"])
+      return find_type(typ["val"], to_find)
     case _:
       raise Exception(f"Unknown type: {typ["type"]}")
 
-def get_nested_type_string(to_find, field, input_types, expected_type):
+def get_nested_type_string(to_find: str, field: str, 
+                           input_types, expected_type, language: str):
   typ = None
   for input_type in input_types:
     curr = find_type(input_type, to_find)
@@ -264,13 +265,14 @@ def get_nested_type_string(to_find, field, input_types, expected_type):
     typ = find_type(expected_type, to_find)
   if typ is None:
     raise RuntimeError(f"Type not found: {to_find}")
-  return parse_type_string(typ[field])
+  return parse_type_string(typ[field], language)
 
 def python_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
   base_indent = ""
   return (
+    "\n\n" +
     f"{base_indent}class ListNode:\n" +
-    f"{base_indent}{one_indent}def  __init__(self, val: {val_type_string}," + 
+    f"{base_indent}{one_indent}def __init__(self, val: {val_type_string}," + 
                               " next: Optional[ListNode]) -> None:\n" +
     f"{base_indent}{one_indent * 2}self.val = val\n" +
     f"{base_indent}{one_indent * 2}self.next = next\n"
@@ -278,6 +280,7 @@ def python_list_node(val_type_string: str, one_indent: str, base_indent: int) ->
 
 def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
   return (
+    "\n\n" +
     f"{base_indent}public static class ListNode" + " {\n" +
     f"{base_indent}{one_indent}public {val_type_string} val;\n" +
     f"{base_indent}{one_indent}public ListNode next;\n\n" +
@@ -293,9 +296,9 @@ def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> s
 def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
   base_indent = ""
   return (
-    "\n" +
+    "\n\n" +
     f"{base_indent}class TreeNode:\n" +
-    f"{base_indent}{one_indent}def  __init__(self, val: {val_type_string}," + 
+    f"{base_indent}{one_indent}def __init__(self, val: {val_type_string}," + 
                               " left: Optional[TreeNode]," + 
                               " right: Optional[TreeNode]) -> None:\n" +
     f"{base_indent}{one_indent * 2}self.val = val\n" +
@@ -305,7 +308,7 @@ def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) ->
 
 def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
   return (
-    "\n" + 
+    "\n\n" + 
     f"{base_indent}public static class TreeNode" + " {\n" +
     f"{base_indent}{one_indent}public {val_type_string} val;\n" +
     f"{base_indent}{one_indent}public TreeNode left;\n" +

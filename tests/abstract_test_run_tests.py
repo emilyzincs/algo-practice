@@ -141,7 +141,7 @@ class AbstractTestRunTests(unittest.TestCase):
       extension = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[language][0]
       practice_file_name_prefix = to_language_file_case("sol", language)
       required_class_name_prefix = None
-      practice_file_dir = os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", language, "solution_files")
+      practice_file_dir = os.path.join(PROJECT_ROOT, "tests", language, "solution_files")
       if language == "java":
         required_class_name_prefix = "Sol"
       self.abstract_test_run_tests(
@@ -154,7 +154,7 @@ class AbstractTestRunTests(unittest.TestCase):
       self.abstract_test_solutions(language, extension)
 
   def get_test_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "json_files", "test")
+    return os.path.join(PROJECT_ROOT, "tests", "json_files", "test")
   
   def get_info_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", "json_files", "info")
+    return os.path.join(PROJECT_ROOT, "tests", "json_files", "info")

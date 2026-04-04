@@ -1,6 +1,6 @@
 {
   "unique_answer": true,
-  "parameter_names": ["head"],
+  "parameter_names": ["arr"],
   "input_types": [
     { 
       "type": "list",
