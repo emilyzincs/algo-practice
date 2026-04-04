@@ -90,7 +90,7 @@ class AbstractTestRunTests(unittest.TestCase):
                   return_value=solution_file_dir), 
             patch(self.gfp_base + "get_practice_file_path", 
                   return_value=solution_file)):
-        result = run_tests(alg, language, extension, self.debug)
+        result = run_tests(alg, language, extension, self.debug, str(self.debug))
         error_msg = f"Solution for {alg} in {language} failed."
         self.assertEqual(True, result, error_msg)
         print("Solution correct.")

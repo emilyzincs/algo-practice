@@ -84,8 +84,9 @@ class AbstractTestRunTests(unittest.TestCase):
           patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
         ):
           result = (
-            run_tests("", language, extension, self.debug) if not required_class_name_prefix
-            else run_tests("", language, extension, self.debug, required_class_name_prefix + str(i))
+            run_tests("", language, extension, self.debug, str(self.debug)) if not required_class_name_prefix
+            else run_tests("", language, extension, self.debug, 
+                           str(self.debug), required_class_name_prefix + str(i))
           )
         expected = expected_values[i-1]
         error_msg = (f"Expected test {i} to succeed but it failed." 

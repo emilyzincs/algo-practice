@@ -2,8 +2,8 @@ import json
 import sys
 from collections import deque
 
-if len(sys.argv) != 7:
-  print("Must have exactly six command line arguments, was "
+if len(sys.argv) != 8:
+  print("Must have exactly seven command line arguments, was "
         + str(len(sys.argv) - 1), file=sys.stderr)
   sys.exit(1)
 
@@ -163,6 +163,7 @@ def main():
   test_file_path = sys.argv[3]
   required_class_name = sys.argv[5]
   required_method_name = sys.argv[6]
+  debug = (sys.argv[7] == "True")
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
@@ -170,8 +171,10 @@ def main():
   try:
     # Solution = practice_module.Solution
     Solution = getattr(practice_module, required_class_name)
-  except AttributeError:
+  except AttributeError as e:
     print(incorrect_setup_msg, file=sys.stderr)
+    if debug:
+      raise
     return False
 
   # Load the user's ListNode and TreeNode classes (if defined)
@@ -207,6 +210,8 @@ def main():
         solution_method = getattr(sol, required_method_name)
       except AttributeError:
         print(incorrect_setup_msg, file=sys.stderr)
+        if debug:
+          raise
         return False
       
       actual = solution_method(*args)
@@ -232,7 +237,8 @@ def main():
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
-      # raise e
+      if debug:
+        raise e
       return False
 
   return True

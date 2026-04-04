@@ -12,26 +12,31 @@ public class Runner {
   private static final ObjectMapper mapper = new ObjectMapper();
   private static String fullPackageClassName;
 
-  public static void main(String[] args) {
-    if (args.length != 6) {
+  public static void main(String[] args) throws Exception {
+    if (args.length != 7 || (!"True".equals(args[4]) && !"False".equals(args[4]))) {
       System.err.println(
         "Usage: java Runner <alg>" + 
         " <practiceFilePackage>" +
         " <infoFilePath>.json" +
         " <testFilePath>.json" + 
+        " <debug>, where <debug> is True or False." +
         " <SolutionClassName>" + 
-        " <SolutionMethodName>");
+        " <SolutionMethodName>"
+      );
+      System.out.println("Given args: " + Arrays.toString(args));
       System.exit(1);
     }
 
+    boolean debug = "True".equals(args[4]);
+
     try {
       Map<String, Object> root = mapper.readValue(
-        Files.readAllBytes(Paths.get(args[1])),
+        Files.readAllBytes(Paths.get(args[2])),
         new TypeReference<Map<String, Object>>() {}
       );
-      String practiceFilePackage = args[2];
-      String requiredClassName = args[3];
-      String requiredMethodName = args[4];
+      String practiceFilePackage = args[1];
+      String requiredClassName = args[5];
+      String requiredMethodName = args[6];
       Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
       List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
@@ -57,7 +62,7 @@ public class Runner {
       Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
       
       List<Map<String, Object>> tests = mapper.readValue(
-          Files.readAllBytes(Paths.get(args[2])),
+          Files.readAllBytes(Paths.get(args[3])),
           new TypeReference<List<Map<String, Object>>>() {}
       );
       
@@ -99,7 +104,12 @@ public class Runner {
         }
       }
     } catch (Exception e) {
-      printErr(e.toString());
+      if (!debug) {
+        printErr(e.toString());
+      } else {
+        e.printStackTrace();
+        System.exit(1);
+      }
     }
       
     System.out.println("All tests passed");

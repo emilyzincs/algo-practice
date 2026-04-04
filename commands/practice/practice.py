@@ -53,8 +53,9 @@ def run_tests(
     language: str, 
     extension: str,
     show_subprocess_text: bool = True,
+    debug: str = "False",
     required_class_name: str = "Solution",
-    required_method_name: str = "solve"
+    required_method_name: str = "solve",
   ) -> bool:
   practice_file_dir = gfp.get_practice_file_dir()
   practice_file = gfp.get_practice_file_path(language, extension)
@@ -64,7 +65,7 @@ def run_tests(
   test_file = gfp.get_test_file_path(alg)
   match language:
     case "python":
-      cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT]
+      cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT, debug]
     case "java":
       cmd = java_get_test_cmd(
         alg,
@@ -73,7 +74,8 @@ def run_tests(
         test_runner_dir,
         test_runner_file,
         info_file,
-        test_file
+        test_file,
+        debug
       )
     case _:
       raise NameError("Could not find language:", language)
