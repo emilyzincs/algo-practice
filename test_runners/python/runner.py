@@ -2,9 +2,15 @@ import json
 import sys
 from collections import deque
 
-if len(sys.argv) != 8:
-  print("Must have exactly seven command line arguments, was "
-        + str(len(sys.argv) - 1), file=sys.stderr)
+if len(sys.argv) != 8 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
+  print("Usage: python runner.py" + 
+        " <practiceFilePackage>" +
+        " <infoFilePath>.json" +
+        " <testFilePath>.json" + 
+        " <PROJECT_ROOT>" +
+        " <debug>, where <debug> is True or False." +
+        " <SolutionClassName>" + 
+        " <SolutionMethodName>", file=sys.stderr)
   sys.exit(1)
 
 PROJECT_ROOT = sys.argv[4]
@@ -161,9 +167,9 @@ def main():
   practice_file_path = sys.argv[1]
   info_file_path = sys.argv[2]
   test_file_path = sys.argv[3]
-  required_class_name = sys.argv[5]
-  required_method_name = sys.argv[6]
-  debug = (sys.argv[7] == "True")
+  debug = (sys.argv[5] == "True")
+  required_class_name = sys.argv[6]
+  required_method_name = sys.argv[7]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
