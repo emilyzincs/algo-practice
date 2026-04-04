@@ -1,3 +1,3 @@
 class Solution:
-  def solve(self, a: str, b: int) -> str:
+  def solve(self, s: str, l: int) -> str:
     return "foo"

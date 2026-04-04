@@ -1,13 +1,8 @@
 from __future__ import annotations 
 from typing import Optional
 
-class ListNode:
-  def __init__(self, val, next: Optional[ListNode] = None):
-    self.val = val
-    self.next = next
-
 class Solution:
-  def solve(self, head):
+  def solve(self, head: Optional[ListNode]):
     if not head:
       return None
     entries = head[1:]
@@ -17,3 +12,8 @@ class Solution:
       curr.next = ListNode(val)
       curr = curr.next
     return ret
+  
+class ListNode:
+  def __init__(self, val, next: Optional[ListNode] = None):
+    self.val = val
+    self.next = next

@@ -1,3 +1,3 @@
 class Solution:
-  def solve(self, num: float, arr: tuple[float]) -> int:
-    return int(num + sum(arr))
+  def solve(self, f: float, a: list[float]) -> int:
+    return int(f + sum(a))

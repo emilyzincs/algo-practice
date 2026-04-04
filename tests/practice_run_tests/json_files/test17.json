@@ -1,5 +1,6 @@
 {
   "unique_answer": true,
+  "parameter_names": ["head"],
   "input_types": [
     { 
       "type": "ListNode",

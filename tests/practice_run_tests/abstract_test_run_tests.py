@@ -32,7 +32,7 @@ class AbstractTestRunTests(unittest.TestCase):
     expected_values = [
       True,
       False,
-      False,
+      True,
       True,
       True, # 5
       True,

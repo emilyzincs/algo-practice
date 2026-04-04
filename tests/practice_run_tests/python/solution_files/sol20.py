@@ -1,15 +1,8 @@
 from __future__ import annotations 
 from typing import Optional
 
-class TreeNode:
-  def __init__(self, val, left: Optional[TreeNode] = None, 
-               right: Optional[TreeNode] = None):
-    self.val = val
-    self.left = left
-    self.right = right
-
 class Solution:
-  def solve(self, input: set[tuple]) -> Optional[TreeNode]:
+  def solve(self, input: set[tuple[str]]) -> Optional[TreeNode]:
     all_vals = []
     for tup in input:
       all_vals.extend(tup)
@@ -23,3 +16,9 @@ class Solution:
                 TreeNode(all_vals[3])), 
               TreeNode(all_vals[-1]))
   
+class TreeNode:
+  def __init__(self, val, left: Optional[TreeNode] = None, 
+               right: Optional[TreeNode] = None):
+    self.val = val
+    self.left = left
+    self.right = right

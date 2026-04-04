@@ -164,15 +164,16 @@ def python_parse_type_string(typ) -> str:
     case "string":
       return "str"
     case "array":
-      return f"list[{parse_type_string(typ["items"])}]"
+      return f"list[{python_parse_type_string(typ["items"])}]"
     case "list":
-      return f"list[{parse_type_string(typ["items"])}]"
+      return f"list[{python_parse_type_string(typ["items"])}]"
     case "immutable_list":
-      return f"tuple[{parse_type_string(typ["items"])}]"
+      return f"tuple[{python_parse_type_string(typ["items"])}]"
     case "set":
-      return f"set[{parse_type_string(typ["items"])}]"
+      return f"set[{python_parse_type_string(typ["items"])}]"
     case "map":
-      return f"dict[{parse_type_string(typ["keys"])}, {parse_type_string(typ["values"])}]"
+      return (f"dict[{python_parse_type_string(typ["keys"])}," + 
+             f" {python_parse_type_string(typ["values"])}]")
     case "ListNode":
       return "ListNode"
     case "TreeNode":
@@ -193,15 +194,16 @@ def java_parse_type_string(typ, should_box_if_primitive: False) -> str:
     case "string":
       return "String"
     case "array":
-      return f"{parse_type_string(typ["items"], False)}[]"
+      return f"{java_parse_type_string(typ["items"], False)}[]"
     case "list":
-      return f"List<{parse_type_string(typ["items"], True)}>"
+      return f"List<{java_parse_type_string(typ["items"], True)}>"
     case "immutable_list":
-      return f"{parse_type_string(typ["items"], False)}[]"
+      return f"{java_parse_type_string(typ["items"], False)}[]"
     case "set":
-      return f"Set<{parse_type_string(typ["items"], True)}>"
+      return f"Set<{java_parse_type_string(typ["items"], True)}>"
     case "map":
-      return f"Map<[{parse_type_string(typ["keys"], True)}, {parse_type_string(typ["values"], True)}>"
+      return (f"Map<[{java_parse_type_string(typ["keys"], True)}," + 
+             f" {java_parse_type_string(typ["values"], True)}>")
     case "ListNode":
       return "Optional[ListNode]"
     case "TreeNode":
@@ -292,7 +294,8 @@ def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) ->
     "\n" +
     f"{base_indent}class TreeNode:\n" +
     f"{base_indent}{one_indent}def  __init__(self, val: {val_type_string}," + 
-                              " left: Optional[TreeNode], right: Optional[TreeNode]) -> None:\n" +
+                              " left: Optional[TreeNode]," + 
+                              " right: Optional[TreeNode]) -> None:\n" +
     f"{base_indent}{one_indent * 2}self.val = val\n" +
     f"{base_indent}{one_indent * 2}self.left = left\n" + 
     f"{base_indent}{one_indent * 2}self.right = right\n"

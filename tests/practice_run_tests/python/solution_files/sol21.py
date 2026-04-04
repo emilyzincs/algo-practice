@@ -1,18 +1,6 @@
 from __future__ import annotations 
 from typing import Optional
 
-class TreeNode:
-  def __init__(self, val, left: Optional[TreeNode] = None, 
-               right: Optional[TreeNode] = None):
-    self.val = val
-    self.left = left
-    self.right = right
-
-class ListNode:
-  def __init__(self, val, next: Optional[ListNode] = None):
-    self.val = val
-    self.next = next 
-
 class Solution:
   def solve(self, input: list[dict[tuple[tuple[float]], 
                               list[Optional[TreeNode]]]]) -> list[dict[tuple[float], list[ListNode]]]:
@@ -39,3 +27,15 @@ class Solution:
     self.back.next = ListNode(root.val)
     self.back = self.back.next
     self.preorder_add_to_back(root.right)
+
+class ListNode:
+  def __init__(self, val, next: Optional[ListNode] = None):
+    self.val = val
+    self.next = next 
+
+class TreeNode:
+  def __init__(self, val, left: Optional[TreeNode] = None, 
+               right: Optional[TreeNode] = None):
+    self.val = val
+    self.left = left
+    self.right = right

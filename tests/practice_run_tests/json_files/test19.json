@@ -1,5 +1,6 @@
 {
   "unique_answer": true,
+  "parameter_names": ["root"],
   "input_types": [
     { 
       "type": "TreeNode",
