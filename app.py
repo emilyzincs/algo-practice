@@ -9,7 +9,7 @@ from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
 from commands.practice.java import path_to_package
-import util.parse_type_string as pts
+import util.boilerplate as bp
 
 default_settings_path = gfp.get_default_settings_path()
 settings_path = gfp.get_settings_path()
@@ -139,40 +139,22 @@ def get_starting_practice_text(test_file_path: str) -> List[str]:
   if settings["prepopulate_boilerplate"] == False:
     parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
     return (COMMENT_SYMBOL + 
-          f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n\n" 
+          f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
           + parameter_info_line)
   else:
     input_types = data["input_types"]
     expected_type = data["expected_type_wrapper"]
-    parameter_type_strings = [pts.parse_type_string(input_type, LANGUAGE) for input_type in input_types]
-    return_type_string = pts.parse_type_string(expected_type, LANGUAGE)
     user_tab_size = settings["tab_size"]
-    indent_str = " " * user_tab_size
-    starting_text = None
-
-    # idea seen_types = {"int": bool, "string": bool, "array": bool, ...}
-    # useful for knowing what types need to be imported in java and whether future needs to be
-    # imported in python
-    # build each part of the starting_text string as a variable, then call join
-    included_types = pts.recursively_get_included_types(input_types, expected_type)
-    match LANGUAGE:
-      case "python":
-        starting_text = (
-          f"def {SOLUTION_CLASS_NAME}:\n" +
-          pts.get_required_method_line(parameter_names, parameter_type_strings, 
-                                       return_type_string, indent_str, 
-                                       SOLUTION_FUNCTION_NAME,LANGUAGE)
-        )
-      case "java":
-        starting_text = (
-          f"public class {SOLUTION_CLASS_NAME}" + " {\n" +
-          pts.get_required_method_line(parameter_names, parameter_type_strings, 
-                                       return_type_string, indent_str, 
-                                       SOLUTION_FUNCTION_NAME,LANGUAGE) +
-          "}\n"
-        )
-    return starting_text
-
+    one_indent = " " * user_tab_size
+    return bp.get_boilerplate_text(
+      input_types, 
+      expected_type, 
+      one_indent,
+      parameter_names,
+      SOLUTION_CLASS_NAME,
+      SOLUTION_FUNCTION_NAME,
+      LANGUAGE
+    )
 
 def load_solution_into_practice(alg: str) -> None:
   practice_file_dir = gfp.get_practice_file_dir()
