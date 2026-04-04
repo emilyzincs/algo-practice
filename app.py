@@ -50,16 +50,17 @@ LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL = {
 }
 
 LANGUAGE = DEFAULT_LANGUAGE
-if len(sys.argv) > 2:
+if __name__ == "__main__":
+  if len(sys.argv) > 2:
     raise ValueError(f"Usage: python {sys.argv[0]} language (default is python)")
-elif len(sys.argv) == 2:
-  lang = sys.argv[1].strip().lower()
-  if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
-    if __name__ == "__main__":
-      print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
-            " Type 'languages' for supported languages or <language> to switch to that language.")
-  else:
-    LANGUAGE = lang
+  elif len(sys.argv) == 2:
+    lang = sys.argv[1].strip().lower()
+    if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
+      if __name__ == "__main__":
+        print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
+              " Type 'languages' for supported languages or <language> to switch to that language.")
+    else:
+      LANGUAGE = lang
 
 EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
 PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"

@@ -8,7 +8,7 @@ import sys
 import os
 import argparse
 import unittest
-from util.get_file_paths import get_test_dir, PROJECT_ROOT
+from util.get_file_paths import get_abstract_test_dir, PROJECT_ROOT
 from commands.practice.java import path_to_package
 
 TEST_PREFIX = "abstract_test_"
@@ -22,9 +22,9 @@ def run_all_abstract_tests() -> None:
     sys.exit(1)
 
 def run_specific_test(test_name: str) -> None:
-  test_dir = get_test_dir()
+  test_dir = get_abstract_test_dir()
   test_path = os.path.join(test_dir, TEST_PREFIX + test_name)
-  if not os.path.exists(test_path):
+  if not os.path.exists(test_path + ".py"):
     raise ValueError(f"Not a valid test: {test_name}. Path {test_path} does not exist.")
   full_test_name = path_to_package(test_path, PROJECT_ROOT)
   loader = unittest.TestLoader()
@@ -37,10 +37,11 @@ def run_specific_test(test_name: str) -> None:
 
 def main() -> None:
   parser = argparse.ArgumentParser()
-  parser.add_argument("--lang", help="Language (e.g., python, java)")
+  parser.add_argument("--lang", help="Language (e.g., python, java).")
   parser.add_argument("--test", help="Specific test name")
-  parser.add_argument("--num", type=int, help="Test number, if applicable")
+  parser.add_argument("--num", type=int, help="Test number, if applicable.")
   parser.add_argument("--alg", help="Algorithm, if applicable")
+  parser.add_argument("--debug", type=bool, help="Whether to output test logs and stacktraces.")
 
   args = parser.parse_args()
   if args.lang:
@@ -49,22 +50,12 @@ def main() -> None:
     os.environ["TEST_NUM"] = args.num
   if args.alg:
     os.environ["TEST_ALG"] = args.alg
+  if args.debug:
+    os.environ["TEST_DEBUG"] = args.debug
   if not args.test:
     run_all_abstract_tests()
   else:
     run_specific_test(args.test)
-
-  # elif not args.lang and args.test:
-  #   # all langs for specific test
-  #   pass
-  # elif args.lang and not args.test:
-  #   # specific lang for all tests
-  #   pass
-  # elif args.lang and args.test:
-  #   pass
-  #   # keep args.num and args.alg in mind
-
-
 
 if __name__ == "__main__":
   main()
