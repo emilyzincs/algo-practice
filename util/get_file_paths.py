@@ -42,6 +42,10 @@ def get_solution_file_path(alg: str, lang: str, extension: str) -> str:
   return os.path.join(get_solution_file_dir(alg),
                       to_language_file_case("solution", lang) + extension)
 
+def get_info_file_path(specific_alg: str) -> str:
+  gen_alg = specific_to_general_alg(specific_alg)
+  return os.path.join(get_solution_file_dir(gen_alg), "info.json")
+
 def get_test_file_path(specific_alg: str) -> str:
   gen_alg = specific_to_general_alg(specific_alg)
   return os.path.join(get_solution_file_dir(gen_alg), "test.json")
@@ -51,9 +55,6 @@ def get_test_runner_dir_path(lang: str) -> str:
 
 def get_test_runner_file_path(lang: str, extension: str) -> str:
   return os.path.join(get_test_runner_dir_path(lang), to_language_file_case("runner", lang) + extension)
-
-def get_info_file_path(alg: str) -> str:
-  return os.path.join(get_solution_file_dir(alg), "info.json")
 
 def get_settings_path() -> str:
   return os.path.join(PROJECT_ROOT, "program_settings", "current.json")
