@@ -147,10 +147,10 @@ def get_starting_practice_text(test_file_path: str) -> List[str]:
     user_tab_size = settings["tab_size"]
     one_indent = " " * user_tab_size
     return bp.get_boilerplate_text(
+      parameter_names,
       input_types, 
       expected_type, 
       one_indent,
-      parameter_names,
       SOLUTION_CLASS_NAME,
       SOLUTION_FUNCTION_NAME,
       LANGUAGE

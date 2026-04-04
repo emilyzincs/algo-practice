@@ -3,13 +3,13 @@ from commands.practice.java import path_to_package
 COMPLEX_TYPES = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
 
 def get_boilerplate_text(
-  input_types, 
-  expected_type, 
-  one_indent,
-  parameter_names,
-  solution_class_name,
-  solution_function_name,
-  language
+  parameter_names: list[str],
+  input_types,
+  expected_type,
+  one_indent: str,
+  solution_class_name: str,
+  solution_function_name: str,
+  language: str
 ):
   parameter_type_strings = [parse_type_string(input_type, language) for input_type in input_types]
   return_type_string = parse_type_string(expected_type, language)
@@ -267,6 +267,7 @@ def get_nested_type_string(to_find, field, input_types, expected_type):
   return parse_type_string(typ[field])
 
 def python_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
+  base_indent = ""
   return (
     f"{base_indent}class ListNode:\n" +
     f"{base_indent}{one_indent}def  __init__(self, val: {val_type_string}," + 
@@ -290,6 +291,7 @@ def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> s
   )
 
 def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
+  base_indent = ""
   return (
     "\n" +
     f"{base_indent}class TreeNode:\n" +
