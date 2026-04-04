@@ -1,7 +1,6 @@
-from get_file_paths import get_practice_file_dir, PROJECT_ROOT
+from util.get_file_paths import get_practice_file_dir, PROJECT_ROOT
 from commands.practice.java import path_to_package
 COMPLEX_TYPES = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
-
 
 def get_boilerplate_text(
   input_types, 

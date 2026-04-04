@@ -1,5 +1,5 @@
 import os
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SPECIFIC_TO_GEN_ALG = {
   "breadth_first_search": "reachable",

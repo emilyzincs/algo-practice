@@ -6,7 +6,6 @@ from shutil import copyfile as shutil_copy_file
 from typing import List
 from tempfile import NamedTemporaryFile as TempFile
 
-
 def read_json(path: str):
   try:
     if not path.endswith(".json"):
