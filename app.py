@@ -19,6 +19,7 @@ if not os.path.exists(settings_path):
 match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
+DEBUG = False
 ALG_NAME_TO_IDX = {
   "binary search": 0,
   "bfs": 1,
@@ -89,7 +90,10 @@ def main():
   )
   except (Exception, KeyboardInterrupt) as e:
     if not (isinstance(e, KeyboardInterrupt) or isinstance(e, EOFError)):
-      print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
+      if not DEBUG:
+        print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
+      else:
+        raise e
     else:
       print()
     exit_program(1)
@@ -126,15 +130,15 @@ def handle_practice(alg: str) -> float:
 
 def reset_practice_file(alg: str) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
-  test_file = gfp.get_test_file_path(alg)
+  info_file = gfp.get_info_file_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
-    f.write(get_starting_practice_text(test_file))
+    f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
-def get_starting_practice_text(test_file_path: str) -> List[str]:
-  if not os.path.exists(test_file_path):
-    raise RuntimeError(f"Info file path does not exist: {test_file_path}.")
-  data = read_json(test_file_path)
+def get_starting_practice_text(info_file_path: str) -> List[str]:
+  if not os.path.exists(info_file_path):
+    raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
+  data = read_json(info_file_path)
   parameter_names = data['parameter_names']
   if settings["prepopulate_boilerplate"] == False:
     parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
