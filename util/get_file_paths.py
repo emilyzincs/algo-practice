@@ -61,3 +61,6 @@ def get_settings_path() -> str:
 
 def get_default_settings_path() -> str:
   return os.path.join(PROJECT_ROOT, "program_settings", "default.json")
+
+def get_test_dir() -> str:
+  return os.path.join(PROJECT_ROOT, "tests")

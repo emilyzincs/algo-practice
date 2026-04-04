@@ -14,7 +14,6 @@ class AbstractTestRunTests(unittest.TestCase):
     super().__init__(*args, **kwargs)
     self.gfp_base = "commands.practice.practice.gfp."
     self.debug = False
-    self.test_specifier = os.getenv("TEST_SPECIFIER").strip().lower()
 
   def abstract_test_run_tests(
       self,
@@ -24,10 +23,10 @@ class AbstractTestRunTests(unittest.TestCase):
       practice_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
   ):
-    if self.test_specifier and not (self.test_specifier == "run_tests"
-                                  or is_type(self.test_specifier, int)):
-      print("\n\nSKIPPING " + language.upper() + " run_test TESTS.")
-      return
+    # if self.test_specifier and not (self.test_specifier == "run_tests"
+    #                               or is_type(self.test_specifier, int)):
+    #   print("\n\nSKIPPING " + language.upper() + " run_test TESTS.")
+    #   return
     print("\n\nRUNNING " + language.upper() + " run_test TESTS.")
     expected_values = [
       True,
@@ -57,11 +56,12 @@ class AbstractTestRunTests(unittest.TestCase):
       True, # 25
       False,
     ]
-    test_number = int(self.test_specifier) if self.test_specifier and is_type(self.test_specifier, int) else None
+    # test_number = int(self.test_specifier) if self.test_specifier and is_type(self.test_specifier, int) else None
     test_path_prefix = self.get_test_path_prefix()
     info_path_prefix = self.get_info_path_prefix()
     practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
-    i = test_number if test_number is not None else 1
+    # i = test_number if test_number is not None else 1
+    i = 1
     with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
       while True:
         test_path = test_path_prefix + f"{i}.json"
@@ -74,10 +74,11 @@ class AbstractTestRunTests(unittest.TestCase):
                             f"test_path: {test_path},\n" +
                             f"info_path: {info_path},\n" +
                             f"practice_file_path: {practice_file_path}")
-        if not os.path.exists(test_path) or test_number and i != test_number:
+        if not os.path.exists(test_path): 
+        # or test_number and i != test_number:
           print(f"Done.")
           break
-        print(f"\nRunning {language} test {i}:")
+        print(f"\nRunning {language} run_test test {i}:")
         with (
           patch(self.gfp_base + "get_test_file_path", return_value=test_path),
           patch(self.gfp_base + "get_info_file_path", return_value=info_path),
@@ -101,13 +102,13 @@ class AbstractTestRunTests(unittest.TestCase):
       language: str,
       extension: str   
   ) -> None:
-    if self.test_specifier and not (self.test_specifier == "solution" 
-                                  or self.test_specifier in ALG_LIST):
-      print("\nSKIPPING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
-      return
+    # if self.test_specifier and not (self.test_specifier == "solution" 
+    #                               or self.test_specifier in ALG_LIST):
+    #   print("\nSKIPPING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
+    #   return
     print("\n\nRUNNING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
-    specific_alg = self.test_specifier if (self.test_specifier and
-                                          self.test_specifier != "solution") else None
+    # specific_alg = self.test_specifier if (self.test_specifier and
+    #                                       self.test_specifier != "solution") else None
 
     def abstract_test_alg_solution(alg: str, language: str, extension: str) -> None:
       print(f"\nTesting {language} solution for {alg}.")
@@ -126,7 +127,8 @@ class AbstractTestRunTests(unittest.TestCase):
         self.assertEqual(True, result, error_msg)
         print("Solution correct.")
 
-    if specific_alg is not None:
+    # if specific_alg is not None:
+    if False:
       abstract_test_alg_solution(specific_alg, language, extension)
     else:
       for alg in ALG_LIST:
@@ -134,9 +136,9 @@ class AbstractTestRunTests(unittest.TestCase):
     print("Done.")
 
   def test_all(self) -> None:
-    if self.test_specifier != "all":
-      return
-    self.test_specifier = ""
+    # if self.test_specifier != "all":
+    #   return
+    # self.test_specifier = ""
     for language in LANGUAGE_LIST:
       extension = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[language][0]
       practice_file_name_prefix = to_language_file_case("sol", language)

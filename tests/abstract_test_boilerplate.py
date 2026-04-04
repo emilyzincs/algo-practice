@@ -3,9 +3,9 @@ from unittest.mock import patch
 import os
 from util.utils import read_json
 from util.boilerplate import get_boilerplate_text
-from util.get_file_paths import PROJECT_ROOT
+from util.get_file_paths import PROJECT_ROOT, to_language_file_case
 from typing import Optional
-from app import settings
+from app import settings, LANGUAGE_LIST
 
 
 UNIT_TESTS = {"run_tests", "solution"}
@@ -15,33 +15,25 @@ class AbstractTestBoilerplate(unittest.TestCase):
     super().__init__(*args, **kwargs)
     self.gfp_base = "util.boilerplate."
     self.debug = True
-    # self.test_specifier = ""
 
   def abstract_test_boilerplate(
       self,
       language: str,
-      extension: str, 
       boilerplate_file_dir: str,
       boilerplate_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
   ):
-    # if self.test_specifier and not (self.test_specifier == "run_tests"
-    #                               or is_type(self.test_specifier, int)):
-    #   print("\n\nSKIPPING " + language.upper() + " run_test TESTS.")
-    #   return
-    print("\n\nRUNNING " + language.upper() + " run_test TESTS.")
+    print("\n\nRUNNING " + language.upper() + " boilerplate TESTS.")
     
-    # test_number = int(self.test_specifier) if self.test_specifier and is_type(self.test_specifier, int) else None
     test_path_prefix = self.get_test_path_prefix()
     info_path_prefix = self.get_info_path_prefix()
     boilerplate_file_prefix = os.path.join(boilerplate_file_dir, boilerplate_file_name_prefix)
-    # i = test_number if test_number is not None else 1
     i = 1
     with patch(self.gfp_base + "get_practice_file_dir", return_value=boilerplate_file_dir):
       while True:
         test_path = test_path_prefix + f"{i}.json"
         info_path = info_path_prefix + f"{i}.json"
-        boilerplate_file_path = boilerplate_file_prefix + f"{i}{extension}"
+        boilerplate_file_path = boilerplate_file_prefix + f"{i}.txt"
         if not (os.path.exists(test_path) == 
                 os.path.exists(info_path) == os.path.exists(boilerplate_file_path)):
           raise RuntimeError("Test file must exist iff info file exists iff boilerplate file exists." +
@@ -53,7 +45,7 @@ class AbstractTestBoilerplate(unittest.TestCase):
         # or test_number and i != test_number:
           print(f"Done.")
           break
-        print(f"\nRunning {language} test {i}:")
+        print(f"\nRunning {language} boilerplate test {i}:")
         
         info = read_json(info_path)
         boilerplate = get_boilerplate_text(
@@ -75,25 +67,22 @@ class AbstractTestBoilerplate(unittest.TestCase):
         i += 1
   
 
-  # def test_all(self) -> None:
-  #   if self.test_specifier != "all":
-  #     return
-  #   self.test_specifier = ""
-  #   for language in LANGUAGE_LIST:
-  #     extension = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[language][0]
-  #     practice_file_name_prefix = to_language_file_case("sol", language)
-  #     required_class_name_prefix = None
-  #     practice_file_dir = os.path.join(PROJECT_ROOT, "tests", "practice_run_tests", language, "solution_files")
-  #     if language == "java":
-  #       required_class_name_prefix = "Sol"
-  #     self.abstract_test_run_tests(
-  #       language,
-  #       extension,
-  #       practice_file_dir,
-  #       practice_file_name_prefix,
-  #       required_class_name_prefix
-  #     )
-  #     self.abstract_test_solutions(language, extension)
+  def test_all(self) -> None:
+    # if self.test_specifier != "all":
+    #   return
+    # self.test_specifier = ""
+    for language in LANGUAGE_LIST:
+      boilerplate_file_name_prefix = to_language_file_case("bp", language)
+      required_class_name_prefix = None
+      boilerplate_file_dir = os.path.join(PROJECT_ROOT, "tests", language, "boilerplate_files")
+      if language == "java":
+        required_class_name_prefix = "Bp"
+      self.abstract_test_boilerplate(
+        language,
+        boilerplate_file_dir,
+        boilerplate_file_name_prefix,
+        required_class_name_prefix
+      )
 
   def get_test_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "tests", "json_files", "test")
