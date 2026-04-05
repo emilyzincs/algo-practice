@@ -4,7 +4,7 @@ import time
 import util.get_file_paths as gfp
 import sys
 import shutil
-from util.utils import read_json, copy_file, match_json_keys, no_op
+from util.utils import read_json, copy_file, match_json_keys, no_op, load_module_from_path
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
@@ -114,6 +114,7 @@ def set_language(lang: str) -> None:
   print(f"Successfully set language to {lang}.")
 
 def handle_practice(alg: str) -> float:
+  generate_test_file_if_necessary(alg)
   reset_practice_file(alg)
   start_time = time.perf_counter()
   completed = practice_handle_commands(
@@ -128,6 +129,22 @@ def handle_practice(alg: str) -> float:
   end_time = time.perf_counter() if completed else start_time - 1
   total_time = end_time - start_time
   return total_time
+
+def generate_test_file_if_necessary(alg: str) -> None:
+  test_file_path = gfp.get_test_file_path(alg)
+  if os.path.exists(test_file_path):
+    return
+  print(f"Generating {alg} tests...")
+  test_generator = gfp.get_test_generator_path(alg)
+  if not os.path.exists(test_generator):
+    raise RuntimeError(f"Tests for {alg} do not exist (path: {test_file_path})" +
+                       f" and test_generator for {alg} does not exist" +
+                       f" (path: {test_generator})")
+  try:
+    load_module_from_path("generate", test_generator)
+  except ModuleNotFoundError:
+    raise ModuleNotFoundError(f"Test generator for {alg} has no 'generate' method." + 
+                              f" Path: {test_generator}.")
 
 def reset_practice_file(alg: str) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)

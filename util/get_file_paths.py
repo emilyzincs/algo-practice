@@ -23,7 +23,6 @@ def to_language_file_case(str: str, lang: str) -> str:
 def specific_to_general_alg(specific_alg: str) -> str:
   return SPECIFIC_TO_GEN_ALG.get(specific_alg, specific_alg)
 
-
 def get_practice_file_dir() -> str:
   return os.path.join(PROJECT_ROOT, "practice")
 
@@ -64,3 +63,7 @@ def get_default_settings_path() -> str:
 
 def get_abstract_test_dir() -> str:
   return os.path.join(PROJECT_ROOT, "tests")
+
+def get_test_generator_path(specific_alg: str) -> str:
+  gen_alg = specific_to_general_alg(specific_alg)
+  return os.path.join(PROJECT_ROOT, "test_generation", "problems", gen_alg + ".py")

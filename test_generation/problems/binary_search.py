@@ -1,12 +1,11 @@
-import sys
-if len(sys.argv) < 2:
-  raise ValueError("Must include project root as first CLI")
-PROJECT_ROOT = sys.argv[1].strip()
-print("ROOT", PROJECT_ROOT)
-sys.path.insert(0, PROJECT_ROOT)
+# import sys
+# if len(sys.argv) < 2:
+#   raise ValueError("Must include project root as first CLI")
+# PROJECT_ROOT = sys.argv[1].strip()
+# print("ROOT", PROJECT_ROOT)
+# sys.path.insert(0, PROJECT_ROOT)
 
 import test_generation.generation_util as util
-import util.get_file_paths as gfp
 from test_generation.base_generator import BaseGenerator as parent
 
 def oracle(arr, target):
@@ -108,5 +107,8 @@ class BinarySearchGenerator(parent):
 
     return test_cases
 
-if __name__ == "__main__":
+def generate():
   BinarySearchGenerator().generate_tests("binary_search", oracle)
+
+if __name__ == "__main__":
+  generate()
