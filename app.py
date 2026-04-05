@@ -1,4 +1,3 @@
-from typing import List
 import os.path
 import time
 import util.get_file_paths as gfp

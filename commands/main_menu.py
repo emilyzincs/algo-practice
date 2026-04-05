@@ -1,15 +1,14 @@
 import sys
-from typing import List, Tuple
 from util.utils import print_desc, is_type, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
     local_commands: set[str],
     get_language_func,
-    language_list: List[str],
-    lang_to_ext_and_comment_symbol: dict[str, Tuple[str, str]],
+    language_list: list[str],
+    lang_to_ext_and_comment_symbol: dict[str, tuple[str, str]],
     set_language_func,
-    alg_list: List[str],
+    alg_list: list[str],
     alg_name_to_idx: dict[str, int],
     num_algs: int,
     tab: str,
@@ -75,7 +74,7 @@ def handle_commands(
               print(f"Invalid algorithm name or id: {user_input}.", file=sys.stderr)
             input_message = responses[0]
 
-def get_alg(user_input: str, alg_list: List[str], alg_name_to_idx: dict[str, int], num_algs) -> str|None:
+def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int], num_algs) -> str|None:
   if is_type(user_input, int):
     idx = int(user_input)
     if idx < 0 or idx >= num_algs:
@@ -100,7 +99,7 @@ def handle_help():
   print("This menu supports the following inputs:")
   print_desc(command_descriptions)
 
-def handle_languages(language_list: List[str]) -> None: 
+def handle_languages(language_list: list[str]) -> None: 
   print("This program supports the following languages:")
   print_desc(language_list)
 
@@ -108,12 +107,12 @@ def handle_algorithms(alg_name_to_idx: dict[str, int], num_algs: int, tab: str) 
   grouped_alg_names = get_grouped_alg_names(alg_name_to_idx, num_algs)
   print_help_message(grouped_alg_names, tab)
 
-def print_help_message(grouped_alg_names: List[str], tab: str) -> None:
+def print_help_message(grouped_alg_names: list[str], tab: str) -> None:
   print("This program supports practicing the following algorithms:")
   for i, grouped_alg_name in enumerate(grouped_alg_names):
     print(f"{tab} ID: {i} {tab} Name: {grouped_alg_name}")
  
-def get_grouped_alg_names(alg_name_to_idx: dict[str, int], num_algs: int) -> List[str]:
+def get_grouped_alg_names(alg_name_to_idx: dict[str, int], num_algs: int) -> list[str]:
   ret = ["" for _ in range(num_algs)] 
   for alg_name, idx in alg_name_to_idx.items():
     if ret[idx] == "":

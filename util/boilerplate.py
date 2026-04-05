@@ -171,7 +171,7 @@ def python_parse_type_string(typ) -> str:
     case "list":
       return f"list[{python_parse_type_string(typ["items"])}]"
     case "immutable_list":
-      return f"tuple[{python_parse_type_string(typ["items"])}]"
+      return f"tuple[{python_parse_type_string(typ["items"])}, ...]"
     case "set":
       return f"set[{python_parse_type_string(typ["items"])}]"
     case "map":

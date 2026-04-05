@@ -14,7 +14,7 @@ def get_edge_cases():
     (tuple([-1,5]),),
   ]
 
-def get_random_case(n: int, lo: int, hi: int) -> tuple[tuple[int]]:
+def get_random_case(n: int, lo: int, hi: int) -> tuple[tuple[int, ...], ...]:
   arr = util.rand_array(n, lo, hi)
   return (tuple(arr),)
 
@@ -22,7 +22,7 @@ def add_random_cases(test_cases, n: int, lo: int, hi: int, num_cases: int) -> No
   for _ in range(num_cases):
     test_cases.append(get_random_case(n, lo, hi))
 
-def get_big_arr() -> tuple[int]:
+def get_big_arr() -> tuple[int, ...]:
   ret = []
   for i in range(-(10**4), 10**4):
     if util.rand_bool():

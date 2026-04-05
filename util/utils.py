@@ -3,7 +3,6 @@ import os
 import json
 from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
-from typing import List
 from tempfile import NamedTemporaryFile as TempFile
 
 def read_json(path: str):
@@ -56,7 +55,7 @@ def match_json_keys(to_match_path: str, to_edit_path: str):
 def in_either(str: str, first: set, second: set) -> bool:
   return str in first or str in second
 
-def print_desc(descs: List[str]) -> None:
+def print_desc(descs: list[str]) -> None:
   for i, desc in enumerate(descs):
     print(f"{i+1}. {desc}.")
 

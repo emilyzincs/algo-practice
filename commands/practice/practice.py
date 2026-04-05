@@ -74,6 +74,7 @@ def run_tests(
   test_runner_file = gfp.get_test_runner_file_path(language, extension)
   info_file = gfp.get_info_file_path(alg)
   test_file = gfp.get_test_file_path(alg)
+  cmd: list[str]|None
   match language:
     case "python":
       cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT, debug]
@@ -90,7 +91,7 @@ def run_tests(
       )
     case _:
       raise UnhandledCaseException(language, "language")
-  if isinstance(cmd, int):
+  if cmd is None:
     return False
   cmd.extend([required_class_name, required_method_name])
   result = subprocess.run(cmd, cwd=test_runner_dir, capture_output=not show_subprocess_text)

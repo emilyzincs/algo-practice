@@ -1,6 +1,5 @@
 import os, sys, subprocess
 from util.get_file_paths import PROJECT_ROOT
-from typing import List
 from pathlib import Path
 
 def get_test_cmd(
@@ -12,12 +11,12 @@ def get_test_cmd(
     info_file: str,
     test_file: str,
     debug: str
-) -> List[str]|int:
+) -> list[str]|None:
   try:
     compile_if_necessary(practice_file, practice_file_dir)
   except RuntimeError as e:
     print(f"User code compilation failed:\n{e}", file=sys.stderr)
-    return -1
+    return None
   additional_dependencies = [practice_file_dir]
   try:
     compile_if_necessary(test_runner_file, test_runner_dir, additional_dependencies) 
@@ -42,7 +41,7 @@ def file_to_class_path(file: str) -> str:
   return file[:-len(".java")] + ".class"
 
 def compile_if_necessary(java_file: str, cwd: str, 
-                         additional_dependencies: List[str] = []) -> None:
+                         additional_dependencies: list[str] = []) -> None:
   if not os.path.exists(java_file):
     raise ValueError(f"Could not find {java_file}")
 
@@ -63,7 +62,7 @@ def compile_if_necessary(java_file: str, cwd: str,
     if result.returncode != 0:
       raise RuntimeError(f"Compilation failed:\n{result.stderr}")
   
-def add_jars(cp_entries: List[str], dir: str) -> None:
+def add_jars(cp_entries: list[str], dir: str) -> None:
   lib_dir = os.path.join(dir, "jarlib")
   if os.path.exists(lib_dir):
     for f in Path(lib_dir).iterdir(): 
