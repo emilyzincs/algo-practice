@@ -116,8 +116,7 @@ def set_language(lang: str) -> None:
 def handle_practice(alg: str) -> float:
   generate_test_file_if_necessary(alg)
   reset_practice_file(alg)
-  start_time = time.perf_counter()
-  completed = practice_handle_commands(
+  seconds_spent = practice_handle_commands(
     LOCAL_COMMANDS['practice'],
     alg,
     LANGUAGE,
@@ -126,9 +125,7 @@ def handle_practice(alg: str) -> float:
     load_solution_into_practice,
     exit_program
   )
-  end_time = time.perf_counter() if completed else start_time - 1
-  total_time = end_time - start_time
-  return total_time
+  return seconds_spent
 
 def generate_test_file_if_necessary(alg: str) -> None:
   test_file_path = gfp.get_test_file_path(alg)
