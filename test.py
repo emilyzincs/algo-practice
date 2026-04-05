@@ -39,9 +39,9 @@ def main() -> None:
   parser = argparse.ArgumentParser()
   parser.add_argument("--lang", help="Language (e.g., python, java).")
   parser.add_argument("--test", help="Specific test name")
-  parser.add_argument("--num", type=int, help="Test number, if applicable.")
+  parser.add_argument("--num", help="Test number, if applicable.")
   parser.add_argument("--alg", help="Algorithm, if applicable")
-  parser.add_argument("--debug", type=bool, help="Whether to output test logs and stacktraces.")
+  parser.add_argument("--debug", help="Whether to output test logs and stacktraces.")
 
   args = parser.parse_args()
   if args.lang:

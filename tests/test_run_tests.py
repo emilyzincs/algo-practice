@@ -1,42 +1,21 @@
-import unittest
 from unittest.mock import patch
 import os
-from util.utils import is_type, string_to_bool
 from commands.practice.practice import run_tests
 from util.get_file_paths import (PROJECT_ROOT, get_solution_file_dir, 
                                  get_solution_file_path, to_language_file_case,
                                  get_abstract_test_dir)
 from typing import Optional
 from app import ALG_LIST, LANGUAGE_LIST, LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL
+from tests.base_test import BaseTest as parent
 
-UNIT_TESTS = {"run_tests", "solution"}
-
-class AbstractTestRunTests(unittest.TestCase):
+class TestRunTests(parent):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
-  def setUp(self):
+  def setUp(self) -> None:
+    super().setUp()
     self.gfp_base = "commands.practice.practice.gfp."
-    self.language = os.environ["TEST_LANGUAGE"] if "TEST_LANGUAGE" in os.environ else None
-    self.num = os.environ["TEST_NUM"] if "TEST_NUM" in os.environ else None
-    self.alg = os.environ["TEST_ALG"] if "TEST_ALG" in os.environ else None
-    self.do_debug = os.environ["TEST_DEBUG"] if "TEST_DEBUG" in os.environ else "False"
 
-    if self.language is not None and self.language not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
-      raise ValueError(f"Unrecognized language: {self.language}.")
-    
-    if self.num is not None and not is_type(self.num, int):
-      raise ValueError(f"Num must be of type int. Was {type(self.num)}." +
-                       f" Value: {self.num}.")
-    if self.num is not None:
-      self.num = int(self.num)
-
-    if self.alg is not None and self.alg not in ALG_LIST:
-      raise ValueError(f"Unrecognized alg: {self.alg}.")
-    
-    self.do_debug = string_to_bool(self.do_debug)
-
-  
   def test_main(self) -> None:
     if self.language is not None:
       self.run_language_tests(self.language)
@@ -67,12 +46,21 @@ class AbstractTestRunTests(unittest.TestCase):
       language: str,
       expected: bool,
       extension: str, 
-      info_path: str,
-      test_path: str,
-      practice_file_path: str,
+      info_path_prefix: str,
+      test_path_prefix: str,
+      practice_file_path_prefix: str,
+      total_tests,
       required_class_name_prefix: Optional[str] = None,
   ) -> None:
       print(f"\nRunning {language} run_test test {test_number}:")
+      info_path, test_path, practice_file_path = self.get_paths(
+        info_path_prefix, 
+        test_path_prefix, 
+        practice_file_path_prefix,
+        self.num,
+        extension,
+        total_tests
+      )
       with (
         patch(self.gfp_base + "get_test_file_path", return_value=test_path),
         patch(self.gfp_base + "get_info_file_path", return_value=info_path),
@@ -105,51 +93,37 @@ class AbstractTestRunTests(unittest.TestCase):
       True, True, True, False, True, # 25
       False,
     ]
+    total_tests = len(expected_values) - 1
     info_path_prefix = self.get_info_path_prefix()
     test_path_prefix = self.get_test_path_prefix()
-    practice_file_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
+    practice_file_path_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
     with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
       if self.num is not None:
-        if self.num < 0 or len(expected_values) <= self.num:
-          raise ValueError(f"Invalid test number: {self.num}.")
-        info_path, test_path, practice_file_path = self.get_paths(
-          info_path_prefix, 
-          test_path_prefix, 
-          practice_file_prefix,
-          self.num,
-          extension,
-          expected_values
-        )
         self.specific_test_run_test(
           self.num,
           language,
           expected_values[self.num],
           extension,
-          info_path,
-          test_path,
-          practice_file_path,
+          info_path_prefix,
+          test_path_prefix,
+          practice_file_path_prefix,
+          total_tests,
           required_class_name_prefix
         )
+      elif self.alg is not None:
+        return
       else: 
         print("\n\nRUNNING " + language.upper() + " run_test TESTS.")
         for i in range(1, len(expected_values)):
-          info_path, test_path, practice_file_path = self.get_paths(
-            info_path_prefix, 
-            test_path_prefix, 
-            practice_file_prefix,
-            i,
-            extension,
-            expected_values
-          )
-
           self.specific_test_run_test(
             i,
             language,
             expected_values[i],
             extension,
-            info_path,
-            test_path,
-            practice_file_path,
+            info_path_prefix,
+            test_path_prefix,
+            practice_file_path_prefix,
+            total_tests,
             required_class_name_prefix
           )
         print("Done.")
@@ -161,9 +135,9 @@ class AbstractTestRunTests(unittest.TestCase):
     practice_file_prefix: str, 
     i: int, 
     extension: str,
-    expected_values: list[bool]
-  ):
-    if i < 1 or len(expected_values) <= i:
+    total_tests: int
+  ) -> tuple[str, str, str]:
+    if i < 1 or total_tests + 1 <= i:
       raise RuntimeError(f"Invalid test number: {i}.")
     info_path = info_path_prefix + f"{i}.json"
     test_path = test_path_prefix + f"{i}.json"
@@ -203,6 +177,8 @@ class AbstractTestRunTests(unittest.TestCase):
   ) -> None:
     if self.alg is not None:
       self.specific_test_solution(self.alg, language, extension)
+    elif self.num is not None:
+      return
     else:
       print("\n\nRUNNING " + language.upper() + " ALGORITHM SOLUTION TESTS.")
       for alg in ALG_LIST:
