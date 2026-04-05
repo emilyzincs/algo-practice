@@ -3,13 +3,11 @@ from util.get_file_paths import get_test_file_path
 from util.utils import dump_json
 
 class BaseGenerator:
-  @staticmethod
-  def generate_tests(alg: str, oracle_func):
-    test_cases = BaseGenerator.get_all_test_cases()
+  def generate_tests(self, alg: str, oracle_func):
+    test_cases = self.get_all_test_cases()
     tests = util.make_tests(test_cases, oracle_func)
     test_file_path = get_test_file_path(alg)
     dump_json(test_file_path, tests)
   
-  @staticmethod
-  def get_all_test_cases():
+  def get_all_test_cases(self):
     raise NotImplementedError("Children must implement this method.")

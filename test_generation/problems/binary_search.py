@@ -62,8 +62,6 @@ def get_big_arr():
 
 
 class BinarySearchGenerator(parent):
-
-  @staticmethod
   def get_all_test_cases(self):
     test_cases = get_edge_cases()
     add_random_cases(test_cases, 3, -100, 100, 4)
@@ -111,4 +109,4 @@ class BinarySearchGenerator(parent):
     return test_cases
 
 if __name__ == "__main__":
-  BinarySearchGenerator.generate_tests("binary_search", oracle)
+  BinarySearchGenerator().generate_tests("binary_search", oracle)
