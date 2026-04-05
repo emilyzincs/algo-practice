@@ -1,15 +1,6 @@
-import sys
-if len(sys.argv) < 2:
-  raise ValueError("Must include project root as first CLI")
-PROJECT_ROOT = sys.argv[1].strip()
-print("ROOT", PROJECT_ROOT)
-sys.path.insert(0, PROJECT_ROOT)
-
 from problems.reachable.breadth_first_search.solution import Solution
-
 import test_generation.generation_util as util
-import util.get_file_paths as gfp
-from util.utils import read_json, dump_json
+from test_generation.base_generator import BaseGenerator as parent
 
 sol = Solution()
 
@@ -55,7 +46,6 @@ def add_random_variety(test_cases, n: int, num_cases: int):
         test_cases.append((graph, root))
 
 def remove_redundant_test_cases(test_cases):
-    print("length before:", len(test_cases))
     hashable_cases = []
     for graph, root in test_cases:
         graph_tuple = tuple(tuple(adj_list) for adj_list in graph)
@@ -63,37 +53,25 @@ def remove_redundant_test_cases(test_cases):
     
     unique_cases = list(set(hashable_cases))
     unique_cases.sort(key=lambda x: len(x[0]))
-    
-    print("length after:", len(unique_cases))
     return unique_cases
 
-def get_all_test_cases():
-  test_cases = get_edge_cases()
-  for i in range(3, 8):
-    add_random_variety(test_cases, i, 2)
-  print(1)
-  for i in range(15, 18):
-    add_random_variety(test_cases, i, 2)
-  print(2)
-  for i in range(49, 52):
-    add_random_variety(test_cases, i, 3)
-  print(3)
-  for i in range(99, 102):
-    add_random_variety(test_cases, i, 3)
-  print(4)
-  add_random_variety(test_cases, 250, 3)
-  print(5)
-  test_cases = remove_redundant_test_cases(test_cases)
-  print(6)
-  return test_cases
+class ReachableGenerator(parent):
+  def get_all_test_cases(self):
+    test_cases = get_edge_cases()
+    for i in range(3, 8):
+      add_random_variety(test_cases, i, 2)
+    for i in range(15, 18):
+      add_random_variety(test_cases, i, 2)
+    for i in range(49, 52):
+      add_random_variety(test_cases, i, 3)
+    for i in range(99, 102):
+      add_random_variety(test_cases, i, 3)
+    add_random_variety(test_cases, 250, 3)
+    test_cases = remove_redundant_test_cases(test_cases)
+    return test_cases
 
-def main():
-  test_cases = get_all_test_cases()
-  tests = util.make_tests(test_cases, oracle)
-  test_file_path = gfp.get_test_file_path("breadth_first_search")
-  json = read_json(test_file_path)
-  json["tests"] = tests
-  dump_json(test_file_path, json)
+def generate():
+  ReachableGenerator().generate_tests("reachable", oracle)
 
 if __name__ == "__main__":
-  main()
+  generate()

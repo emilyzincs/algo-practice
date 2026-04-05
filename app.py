@@ -135,16 +135,17 @@ def generate_test_file_if_necessary(alg: str) -> None:
   if os.path.exists(test_file_path):
     return
   print(f"Generating {alg} tests...")
-  test_generator = gfp.get_test_generator_path(alg)
-  if not os.path.exists(test_generator):
+  test_generator_path = gfp.get_test_generator_path(alg)
+  if not os.path.exists(test_generator_path):
     raise RuntimeError(f"Tests for {alg} do not exist (path: {test_file_path})" +
                        f" and test_generator for {alg} does not exist" +
-                       f" (path: {test_generator})")
+                       f" (path: {test_generator_path})")
   try:
-    load_module_from_path("generate", test_generator)
+    test_generator = load_module_from_path("generate", test_generator_path)
   except ModuleNotFoundError:
     raise ModuleNotFoundError(f"Test generator for {alg} has no 'generate' method." + 
                               f" Path: {test_generator}.")
+  test_generator.generate()
 
 def reset_practice_file(alg: str) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
