@@ -17,7 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install package
-        run: |
-          pip install -e . -v
-      - run: echo "Running tests"
-      - run: python test.py
+        run: pip install -e . -v
+      - name: Run tests
+        run: python test.py
+      - name: Cleanup generated test files
+        if: always()
+        run: find . -type f -path "*/problems/*/test.json" -delete

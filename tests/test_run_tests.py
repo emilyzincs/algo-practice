@@ -5,7 +5,7 @@ from util.get_file_paths import (PROJECT_ROOT, get_solution_file_dir,
                                  get_solution_file_path, to_language_file_case,
                                  get_abstract_test_dir)
 from typing import Optional
-from app import ALG_LIST, LANGUAGE_LIST, LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL
+from app import ALG_LIST, LANGUAGE_LIST, LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL, generate_test_file_if_necessary
 from tests.base_test import BaseTest as parent
 
 class TestRunTests(parent):
@@ -161,6 +161,7 @@ class TestRunTests(parent):
     if not os.path.exists(solution_file):
       print(f"Path {solution_file} does not exist.\nContinuing.")
       return
+    generate_test_file_if_necessary(alg)
     with (patch(self.gfp_base + "get_practice_file_dir", 
                 return_value=solution_file_dir), 
           patch(self.gfp_base + "get_practice_file_path", 
