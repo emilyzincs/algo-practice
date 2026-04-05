@@ -1,6 +1,7 @@
 import sys
 import util.get_file_paths as gfp
 import subprocess
+import time
 from commands.practice.java import get_test_cmd as java_get_test_cmd
 from util.utils import print_desc, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
@@ -13,7 +14,9 @@ def handle_commands(
     delete_attempts_func,
     load_solution_func,
     exit_func
-) -> bool:
+) -> float|None:
+  start_time = time.perf_counter()
+  potential_end_time = None
   correct = False
   while not correct:
     user_input = input("Type 'done' when you are finished or 'help' for options:\n")
@@ -23,11 +26,11 @@ def handle_commands(
     
     if user_input in GLOBAL_COMMANDS:
       if not handle_global_command(user_input, handle_help, exit_func):
-        delete_attempts_func()
-        return False
+        break
     else:
       match user_input:
         case "d" | "done":
+          potential_end_time = time.perf_counter()
           correct = run_tests(alg, language, extension)
         case "s" | "sol" | "solution":
           try:
@@ -37,7 +40,7 @@ def handle_commands(
         case _:
           raise ValueError(f"Unhandled case {user_input}.")
   delete_attempts_func()    
-  return True
+  return potential_end_time - start_time if correct else None
 
 def handle_help():
   command_descriptions = get_global_command_descriptions()
