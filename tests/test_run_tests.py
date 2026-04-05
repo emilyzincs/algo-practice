@@ -85,7 +85,7 @@ class TestRunTests(parent):
       practice_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
   ) -> None:
-    expected_values = [None, # 0
+    expected_values = [
       True, False, True, True, True, # 5
       True, True, False, True, False, # 10
       False, True, True, True,  True, # 15
@@ -93,7 +93,7 @@ class TestRunTests(parent):
       True, True, True, False, True, # 25
       False,
     ]
-    total_tests = len(expected_values) - 1
+    total_tests = len(expected_values)
     info_path_prefix = self.get_info_path_prefix()
     test_path_prefix = self.get_test_path_prefix()
     practice_file_path_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
@@ -102,7 +102,7 @@ class TestRunTests(parent):
         self.specific_test_run_test(
           self.num,
           language,
-          expected_values[self.num],
+          expected_values[self.num-1],
           extension,
           info_path_prefix,
           test_path_prefix,
@@ -118,7 +118,7 @@ class TestRunTests(parent):
           self.specific_test_run_test(
             i,
             language,
-            expected_values[i],
+            expected_values[i-1],
             extension,
             info_path_prefix,
             test_path_prefix,

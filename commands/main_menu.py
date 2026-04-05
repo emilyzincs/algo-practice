@@ -5,7 +5,7 @@ from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(
     local_commands: set[str],
-    get_language_func: str,
+    get_language_func,
     language_list: List[str],
     lang_to_ext_and_comment_symbol: dict[str, Tuple[str, str]],
     set_language_func,
@@ -114,9 +114,9 @@ def print_help_message(grouped_alg_names: List[str], tab: str) -> None:
     print(f"{tab} ID: {i} {tab} Name: {grouped_alg_name}")
  
 def get_grouped_alg_names(alg_name_to_idx: dict[str, int], num_algs: int) -> List[str]:
-  ret = [None for _ in range(num_algs)] 
+  ret = ["" for _ in range(num_algs)] 
   for alg_name, idx in alg_name_to_idx.items():
-    if not ret[idx]:
+    if ret[idx] == "":
       ret[idx] = alg_name
     else:
       ret[idx] += '/' + alg_name

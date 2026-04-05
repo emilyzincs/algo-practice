@@ -42,7 +42,7 @@ def file_to_class_path(file: str) -> str:
   return file[:-len(".java")] + ".class"
 
 def compile_if_necessary(java_file: str, cwd: str, 
-                         additional_dependencies: List[str] = None) -> None:
+                         additional_dependencies: List[str] = []) -> None:
   if not os.path.exists(java_file):
     raise ValueError(f"Could not find {java_file}")
 
@@ -52,9 +52,8 @@ def compile_if_necessary(java_file: str, cwd: str,
   if not os.path.exists(class_path): 
     cp_entries = [cwd]
     add_jars(cp_entries, cwd)
-    if additional_dependencies:
-      for d in additional_dependencies:
-        cp_entries.append(d)
+    for d in additional_dependencies:
+      cp_entries.append(d)
     cp = os.pathsep.join(cp_entries)
     compile_cmd = ["javac", "-cp", cp, java_file]
     result = subprocess.run(compile_cmd, cwd=cwd, capture_output=True, text=True) 

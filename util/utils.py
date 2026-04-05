@@ -9,7 +9,7 @@ from tempfile import NamedTemporaryFile as TempFile
 def read_json(path: str):
   try:
     if not path.endswith(".json"):
-      raise json.JSONDecodeError
+      raise Exception(f"File name must end json: {path}.")
     with open(path, "r", encoding="utf-8") as f:
       return json.load(f)
   except FileNotFoundError as e:

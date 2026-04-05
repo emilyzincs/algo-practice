@@ -152,7 +152,7 @@ def reset_practice_file(alg: str) -> None:
     f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
-def get_starting_practice_text(info_file_path: str) -> List[str]:
+def get_starting_practice_text(info_file_path: str) -> str:
   if not os.path.exists(info_file_path):
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
   data = read_json(info_file_path)

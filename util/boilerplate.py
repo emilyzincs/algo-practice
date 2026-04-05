@@ -113,7 +113,7 @@ def get_nested_included_types(typ, s: set[str]):
       raise UnhandledCaseException(typ["type"], "type")
 
 def recursively_get_included_types(input_types, expected_type) -> set[str]:
-  ret = set()
+  ret: set[str] = set()
   for input_type in input_types:
     get_nested_included_types(input_type, ret)
   get_nested_included_types(expected_type, ret)
@@ -267,7 +267,7 @@ def get_nested_type_string(to_find: str, field: str,
     raise RuntimeError(f"Type not found: {to_find}")
   return parse_type_string(typ[field], language)
 
-def python_list_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
+def python_list_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
   base_indent = ""
   return (
     "\n\n" +
@@ -293,7 +293,7 @@ def java_list_node(val_type_string: str, one_indent: str, base_indent: int) -> s
     f"{base_indent}" + "}\n"
   )
 
-def python_tree_node(val_type_string: str, one_indent: str, base_indent: int) -> str:
+def python_tree_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
   base_indent = ""
   return (
     "\n\n" +

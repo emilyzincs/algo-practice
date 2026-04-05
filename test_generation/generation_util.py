@@ -41,7 +41,7 @@ def trim_tree(arr):
   return arr
 
 def rand_graph(n: int, directed: bool, edge_prob: float = 0.2) -> list[list[int]]:
-  graph = [[] for _ in range(n)]
+  graph: list[list[int]] = [[] for _ in range(n)]
   for i in range(n):
     for j in range(i+1, n):
       if rand_bool(edge_prob):

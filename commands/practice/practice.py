@@ -3,7 +3,8 @@ import util.get_file_paths as gfp
 import subprocess
 import time
 from commands.practice.java import get_test_cmd as java_get_test_cmd
-from util.utils import print_desc, in_either, UnhandledCaseException
+from util.utils import print_desc, in_either
+from util.exceptions import UnhandledCaseException
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 
 def handle_commands(
@@ -43,7 +44,11 @@ def handle_commands(
           raise UnhandledCaseException(user_input, "input")
 
   delete_attempts_func()    
-  return potential_end_time - start_time if correct else None
+  if correct:
+    if type(potential_end_time) != float:
+      raise RuntimeError("Correct is true but potential_end_time is not a float.")
+    return potential_end_time - start_time
+  return None
 
 def handle_help():
   command_descriptions = get_global_command_descriptions()

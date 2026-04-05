@@ -1,5 +1,6 @@
 import sys
-from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool, UnhandledCaseException
+from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
+from util.exceptions import UnhandledCaseException
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from util.get_file_paths import get_settings_path, get_default_settings_path
 
@@ -73,30 +74,30 @@ def handle_commands(
             if new_val not in languages:
               print(f"Invalid language", file=sys.stderr)
               continue
+            settings[setting] = new_val
           case "delete_attempts":
             if not is_type(new_val, string_to_bool):
               print(f"New value must be a bool for this setting.", file=sys.stderr)
               continue
-            new_val = string_to_bool(new_val)
+            settings[setting] = string_to_bool(new_val)
           case "prepopulate_boilerplate":
             if not is_type(new_val, string_to_bool):
               print(f"New value must be a bool for this setting.", file=sys.stderr)
               continue
-            new_val = string_to_bool(new_val)
+            settings[setting] = string_to_bool(new_val)
           case "tab_size":
             if not is_type(new_val, int):
               print(f"New value must be an integer for this setting.", file=sys.stderr)
               continue
-            new_val = int(new_val)
+            settings[setting] = int(new_val)
           case _:
             raise UnhandledCaseException(user_input[0], "setting")          
-        settings[setting] = new_val
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
     elif is_info:
       print(f"{user_input[1]}: {settings_to_info[user_input[1]]}")
     else:
-      raise UnhandledCaseException(user_input, "input")
+      raise UnhandledCaseException(" ".join(user_input), "input")
 
 def handle_help():
   command_descriptions = get_global_command_descriptions()

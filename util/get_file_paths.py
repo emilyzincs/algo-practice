@@ -9,7 +9,6 @@ SPECIFIC_TO_GEN_ALG = {
 }
 
 def to_language_file_case(string: str, lang: str) -> str:
-  num = lang + 1
   words = string.strip().split()
   match lang:
     case "python":
@@ -17,7 +16,7 @@ def to_language_file_case(string: str, lang: str) -> str:
     case "java":
       for i, word in enumerate(words):
         words[i] = word.capitalize()
-        return "".join(words)
+      return "".join(words)
     case _:
       raise UnhandledCaseException(lang, "language")
     

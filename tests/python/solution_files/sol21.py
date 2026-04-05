@@ -3,7 +3,7 @@ from typing import Optional
 
 class Solution:
   def solve(self, input: list[dict[tuple[tuple[float]], 
-                              list[Optional[TreeNode]]]]) -> list[dict[tuple[float], list[ListNode]]]:
+                              list[Optional[TreeNode]]]]) -> list[dict[tuple[float], list[Optional[ListNode]]]]:
     ret = []
     for dictionary in input:
       curr = {}
