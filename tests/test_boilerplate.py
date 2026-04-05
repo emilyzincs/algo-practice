@@ -13,7 +13,10 @@ class TestBoilerplate(parent):
 
   def setUp(self) -> None:
     super().setUp()
+    if self.alg is not None:
+      raise ValueError("Alg arguments are not applicable to boilerplate tests.")
     self.gfp_base = "util.boilerplate."
+
 
   def test_main(self) -> None:
     if self.language is not None:
@@ -48,28 +51,23 @@ class TestBoilerplate(parent):
       info_path_prefix,
       test_path_prefix,
       boilerplate_file_path_prefix,
-      self.num,
+      test_number,
       extension=".txt",
     )
     if res is None:
       return False
     info_path, test_path, boilerplate_file_path = res
     print(f"\nRunning {language} boilerplate test {test_number}:")
-    with (
-      patch(self.gfp_base + "get_test_file_path", return_value=test_path),
-      patch(self.gfp_base + "get_info_file_path", return_value=info_path),
-      patch(self.gfp_base + "get_practice_file_path", return_value=boilerplate_file_path)
-    ):
-      info = read_json(info_path)
-      boilerplate = get_boilerplate_text(
-        info["parameter_names"],
-        info["input_types"],
-        info["expected_type_wrapper"],
-        " " * settings["tab_size"],
-        "Solution" if not required_class_name_prefix else f"{required_class_name_prefix}{test_number}",
-        "solve",
-        language
-      )
+    info = read_json(info_path)
+    boilerplate = get_boilerplate_text(
+      info["parameter_names"],
+      info["input_types"],
+      info["expected_type_wrapper"],
+      " " * settings["tab_size"],
+      "Solution" if not required_class_name_prefix else f"{required_class_name_prefix}{test_number}",
+      "solve",
+      language
+    )
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
       expected = f.read()
     error_msg = (f"Test {test_number} failed.")

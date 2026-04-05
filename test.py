@@ -1,9 +1,3 @@
-# Commands:
-#   all                        Run all tests
-#   lang <language>            Run language-specific boilerplate & run tests
-#   test <class> <testname>    Run a specific test class or method
-#   test <class> <testname> [num|alg]  Run with a numeric or algorithm argument
-
 import sys
 import os
 import argparse
@@ -11,11 +5,11 @@ import unittest
 from util.get_file_paths import get_abstract_test_dir, PROJECT_ROOT
 from commands.practice.java import path_to_package
 
-TEST_PREFIX = "abstract_test_"
+TEST_PREFIX = "test_"
 
-def run_all_abstract_tests() -> None:
+def run_all_tests() -> None:
   loader = unittest.TestLoader()
-  suite = loader.discover(start_dir="tests", pattern="abstract_test_*.py")
+  suite = loader.discover(start_dir="tests", pattern="test_*.py")
   runner = unittest.TextTestRunner(verbosity=2)
   result = runner.run(suite)
   if not result.wasSuccessful():
@@ -53,7 +47,7 @@ def main() -> None:
   if args.debug:
     os.environ["TEST_DEBUG"] = args.debug
   if not args.test:
-    run_all_abstract_tests()
+    run_all_tests()
   else:
     run_specific_test(args.test)
 

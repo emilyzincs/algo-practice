@@ -57,7 +57,7 @@ class TestRunTests(parent):
         info_path_prefix, 
         test_path_prefix, 
         practice_file_path_prefix,
-        self.num,
+        test_number,
         extension,
         total_tests
       )

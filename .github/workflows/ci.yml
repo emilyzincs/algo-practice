@@ -19,6 +19,5 @@ jobs:
       - name: Install package
         run: |
           pip install -e . -v
-          pip list | grep algo-practice
       - run: echo "Running tests"
-      - run: ./test.sh all
+      - run: python test.py
