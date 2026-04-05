@@ -69,7 +69,7 @@ LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "s", "settings"},
   "practice": {"d", "done", "s", "sol", "solution"},
-  "settings": ({"list", "reset"}, {"default_language", "delete_attempts"})
+  "settings": {"list", "reset"}
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
 
