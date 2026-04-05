@@ -1,0 +1,14 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["f", "a"],
+  "input_types": [
+    { "type": "float" },
+    { 
+      "type": "array",
+      "items": { "type": "float" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "long"
+  }
+}

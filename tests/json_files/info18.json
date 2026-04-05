@@ -1,0 +1,14 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["arr"],
+  "input_types": [
+    { 
+      "type": "list",
+      "items": { "type": "long" }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "ListNode",
+    "val": { "type": "long" } 
+  }
+}

@@ -2,15 +2,21 @@ import json
 import sys
 from collections import deque
 
-if len(sys.argv) != 6:
-  print("Must have exactly five command line arguments, was "
-        + str(len(sys.argv) - 1), file=sys.stderr)
+if len(sys.argv) != 8 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
+  print("Usage: python runner.py" + 
+        " <practiceFilePackage>" +
+        " <infoFilePath>.json" +
+        " <testFilePath>.json" + 
+        " <PROJECT_ROOT>" +
+        " <debug>, where <debug> is True or False." +
+        " <SolutionClassName>" + 
+        " <SolutionMethodName>", file=sys.stderr)
   sys.exit(1)
 
-PROJECT_ROOT = sys.argv[3]
+PROJECT_ROOT = sys.argv[4]
 sys.path.insert(0, PROJECT_ROOT)
 
-from utils import load_module_from_path
+from util.utils import load_module_from_path
 
 # Global variables that will hold the user's classes (if they exist)
 USER_LISTNODE = None
@@ -159,9 +165,11 @@ def parse_value(val, typ):
 
 def main():
   practice_file_path = sys.argv[1]
-  test_file_path = sys.argv[2]
-  required_class_name = sys.argv[4]
-  required_method_name = sys.argv[5]
+  info_file_path = sys.argv[2]
+  test_file_path = sys.argv[3]
+  debug = (sys.argv[5] == "True")
+  required_class_name = sys.argv[6]
+  required_method_name = sys.argv[7]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
@@ -169,8 +177,10 @@ def main():
   try:
     # Solution = practice_module.Solution
     Solution = getattr(practice_module, required_class_name)
-  except AttributeError:
+  except AttributeError as e:
     print(incorrect_setup_msg, file=sys.stderr)
+    if debug:
+      raise
     return False
 
   # Load the user's ListNode and TreeNode classes (if defined)
@@ -182,14 +192,15 @@ def main():
   add_cycle_aware_eq(USER_LISTNODE)
   add_cycle_aware_eq(USER_TREENODE)
 
-  with open(test_file_path, "r", encoding="utf-8") as f:
+  with open(info_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
-
+  
   unique_answer = data["unique_answer"]
-  tests = data["tests"]
+  input_types = data.get("input_types")
+  expected_type = data.get("expected_type_wrapper")
 
-  input_types = data.get("input_types", [])
-  expected_type = data.get("expected_type_wrapper", None)
+  with open(test_file_path, "r", encoding="utf-8") as f:
+    tests = json.load(f)
 
   sol = Solution()
 
@@ -205,6 +216,8 @@ def main():
         solution_method = getattr(sol, required_method_name)
       except AttributeError:
         print(incorrect_setup_msg, file=sys.stderr)
+        if debug:
+          raise
         return False
       
       actual = solution_method(*args)
@@ -230,7 +243,8 @@ def main():
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
-      # raise e
+      if debug:
+        raise e
       return False
 
   return True

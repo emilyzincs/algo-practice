@@ -1,5 +1,5 @@
 import os, sys, subprocess
-from get_file_paths import PROJECT_ROOT
+from util.get_file_paths import PROJECT_ROOT
 from typing import List
 from pathlib import Path
 
@@ -9,7 +9,9 @@ def get_test_cmd(
     practice_file: str,
     test_runner_dir: str,
     test_runner_file: str,
-    test_file: str
+    info_file: str,
+    test_file: str,
+    debug: str
 ) -> List[str]|int:
   try:
     compile_if_necessary(practice_file, practice_file_dir)
@@ -24,11 +26,11 @@ def get_test_cmd(
     raise e
   runtime_cp_entries =[
     PROJECT_ROOT,
-    test_runner_dir,
     practice_file_dir,
+    test_runner_dir,
   ]
   add_jars(runtime_cp_entries, test_runner_dir)
-  additional_args = [alg, test_file, path_to_package(practice_file_dir, PROJECT_ROOT)]
+  additional_args = [alg, path_to_package(practice_file_dir, PROJECT_ROOT), info_file, test_file, debug]
   class_path = os.path.join(test_runner_dir, "Runner")
   class_path_for_cmd = path_to_package(class_path, PROJECT_ROOT)
   return ["java", "-cp", os.pathsep.join(runtime_cp_entries), 

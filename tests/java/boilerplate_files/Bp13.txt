@@ -1,0 +1,7 @@
+package tests.java.boilerplate_files;
+
+public class Bp13 {
+  public static double solve(long num) {
+    
+  }
+}

@@ -1,3 +1,18 @@
 {
-  "parameters": ["nums", "target"]
+  "unique_answer": false,
+  "parameter_names": ["nums", "target"],
+  "input_types": [
+    {
+      "type": "array",
+      "items": {
+        "type": "int"
+      }
+    },
+    {
+      "type": "int"
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "int"
+  }
 }

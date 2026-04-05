@@ -1,16 +1,16 @@
 import sys
-from utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
+from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
-from get_file_paths import get_settings_path, get_default_settings_path
+from util.get_file_paths import get_settings_path, get_default_settings_path
 
 def handle_commands(
-    local_commands_and_actual_settings: tuple[set[str], set[str]],
+    local_commands: set[str],
     languages,
     tab: str,
     refresh_settings_func,
     exit_func
 ) -> None:
-  local_commands, actual_settings = local_commands_and_actual_settings 
+  local_commands
   default_settings_path = get_default_settings_path()
   settings_path = get_settings_path()
   default_settings = read_json(default_settings_path)
@@ -24,7 +24,7 @@ def handle_commands(
                       " or 'help' for options:\n").strip().lower().split()
     is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
     is_local_cmd = len(user_input) == 1 and user_input[0] in local_commands 
-    is_setting = len(user_input) == 2 and user_input[0] in actual_settings
+    is_setting = len(user_input) == 2 and user_input[0] in settings
     if not (is_global_cmd or is_local_cmd or is_setting):
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
@@ -64,6 +64,16 @@ def handle_commands(
               print(f"New value must be a bool for this setting.", file=sys.stderr)
               continue
             new_val = string_to_bool(new_val)
+          case "prepopulate_boilerplate":
+            if not is_type(new_val, string_to_bool):
+              print(f"New value must be a bool for this setting.", file=sys.stderr)
+              continue
+            new_val = string_to_bool(new_val)
+          case "tab_size":
+            if not is_type(new_val, int):
+              print(f"New value must be an integer for this setting.", file=sys.stderr)
+              continue
+            new_val = int(new_val)
           case _:
             raise ValueError(f"Unhandled setting: {user_input[0]}.")
           

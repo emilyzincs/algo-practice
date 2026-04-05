@@ -1,0 +1,10 @@
+{
+  "unique_answer": false,
+  "parameter_names": ["num"],
+  "input_types": [
+    { "type": "long" }
+  ],
+  "expected_type_wrapper": {
+    "type": "float"
+  }
+}

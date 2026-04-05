@@ -1,8 +1,8 @@
 import sys
-import get_file_paths as gfp
+import util.get_file_paths as gfp
 import subprocess
 from commands.practice.java import get_test_cmd as java_get_test_cmd
-from utils import print_desc, in_either
+from util.utils import print_desc, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 
 def handle_commands(
@@ -53,17 +53,19 @@ def run_tests(
     language: str, 
     extension: str,
     show_subprocess_text: bool = True,
+    debug: str = "False",
     required_class_name: str = "Solution",
-    required_method_name: str = "solve"
+    required_method_name: str = "solve",
   ) -> bool:
   practice_file_dir = gfp.get_practice_file_dir()
   practice_file = gfp.get_practice_file_path(language, extension)
   test_runner_dir = gfp.get_test_runner_dir_path(language)
   test_runner_file = gfp.get_test_runner_file_path(language, extension)
+  info_file = gfp.get_info_file_path(alg)
   test_file = gfp.get_test_file_path(alg)
   match language:
     case "python":
-      cmd = ["python", test_runner_file, practice_file, test_file, gfp.PROJECT_ROOT]
+      cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT, debug]
     case "java":
       cmd = java_get_test_cmd(
         alg,
@@ -71,7 +73,9 @@ def run_tests(
         practice_file,
         test_runner_dir,
         test_runner_file,
-        test_file
+        info_file,
+        test_file,
+        debug
       )
     case _:
       raise NameError("Could not find language:", language)

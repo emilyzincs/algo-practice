@@ -8,8 +8,8 @@ sys.path.insert(0, PROJECT_ROOT)
 from problems.reachable.breadth_first_search.solution import Solution
 
 import test_generation.generation_util as util
-import get_file_paths as gfp
-from utils import read_json, dump_json
+import util.get_file_paths as gfp
+from util.utils import read_json, dump_json
 
 sol = Solution()
 

@@ -1,0 +1,8 @@
+[
+  {
+    "inputs": [
+      true, 20, false
+    ],
+    "expected": -17
+  }
+]

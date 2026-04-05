@@ -1,0 +1,9 @@
+[
+  {
+    "inputs": [
+      "bar",
+      0
+    ],
+    "expected": "foo"
+  }
+]

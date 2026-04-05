@@ -1,0 +1,60 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["input"],
+  "input_types": [
+    {
+      "type": "ListNode",
+      "val": {
+        "type": "list",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "TreeNode",
+                "val": {
+                  "type": "array",
+                  "items": {
+                    "type": "set",
+                    "items": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "expected_type_wrapper": {
+    "type": "ListNode",
+    "val": {
+      "type": "list",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "TreeNode",
+              "val": {
+                "type": "array",
+                "items": {
+                  "type": "set",
+                  "items": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

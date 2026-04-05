@@ -6,8 +6,8 @@ print("ROOT", PROJECT_ROOT)
 sys.path.insert(0, PROJECT_ROOT)
 
 import test_generation.generation_util as util
-import get_file_paths as gfp
-from utils import read_json, dump_json
+import util.get_file_paths as gfp
+from util.utils import read_json, dump_json
 
 def oracle(arr, target):
   inds = [i for i, num in enumerate(arr) if num == target]

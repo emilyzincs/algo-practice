@@ -1,14 +1,15 @@
 from typing import List
 import os.path
 import time
-import get_file_paths as gfp
+import util.get_file_paths as gfp
 import sys
 import shutil
-from utils import read_json, copy_file, match_json_keys, no_op
+from util.utils import read_json, copy_file, match_json_keys, no_op
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
 from commands.practice.java import path_to_package
+import util.boilerplate as bp
 
 default_settings_path = gfp.get_default_settings_path()
 settings_path = gfp.get_settings_path()
@@ -18,6 +19,7 @@ if not os.path.exists(settings_path):
 match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
+DEBUG = False
 ALG_NAME_TO_IDX = {
   "binary search": 0,
   "bfs": 1,
@@ -34,6 +36,7 @@ ALG_LIST = [
 ]
 NUM_ALGS = len(ALG_LIST)
 TAB = "  "
+SOLUTION_CLASS_NAME = "Solution"
 SOLUTION_FUNCTION_NAME = "solve"
 LANGUAGE_LIST = [
   "python",
@@ -47,16 +50,17 @@ LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL = {
 }
 
 LANGUAGE = DEFAULT_LANGUAGE
-if len(sys.argv) > 2:
+if __name__ == "__main__":
+  if len(sys.argv) > 2:
     raise ValueError(f"Usage: python {sys.argv[0]} language (default is python)")
-elif len(sys.argv) == 2:
-  lang = sys.argv[1].strip().lower()
-  if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
-    if __name__ == "__main__":
-      print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
-            " Type 'languages' for supported languages or <language> to switch to that language.")
-  else:
-    LANGUAGE = lang
+  elif len(sys.argv) == 2:
+    lang = sys.argv[1].strip().lower()
+    if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
+      if __name__ == "__main__":
+        print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
+              " Type 'languages' for supported languages or <language> to switch to that language.")
+    else:
+      LANGUAGE = lang
 
 EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
 PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
@@ -65,7 +69,7 @@ LOCAL_COMMANDS = {
   "main_menu": {"lang", "language", "langs", "languages", "algs", 
                 "algorithms", "s", "settings"},
   "practice": {"d", "done", "s", "sol", "solution"},
-  "settings": ({"list", "reset"}, {"default_language", "delete_attempts"})
+  "settings": {"list", "reset"}
 }
 LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
 
@@ -87,7 +91,10 @@ def main():
   )
   except (Exception, KeyboardInterrupt) as e:
     if not (isinstance(e, KeyboardInterrupt) or isinstance(e, EOFError)):
-      print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
+      if not DEBUG:
+        print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
+      else:
+        raise e
     else:
       print()
     exit_program(1)
@@ -132,12 +139,27 @@ def reset_practice_file(alg: str) -> None:
 def get_starting_practice_text(info_file_path: str) -> List[str]:
   if not os.path.exists(info_file_path):
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
-  info = read_json(info_file_path)
-  parameter_names = info['parameters']
-  parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
-  return (COMMENT_SYMBOL + 
-        " Write 'solve' method in 'Solution' class.\n\n\n" 
-        + parameter_info_line)
+  data = read_json(info_file_path)
+  parameter_names = data['parameter_names']
+  if settings["prepopulate_boilerplate"] == False:
+    parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
+    return (COMMENT_SYMBOL + 
+          f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
+          + parameter_info_line)
+  else:
+    input_types = data["input_types"]
+    expected_type = data["expected_type_wrapper"]
+    user_tab_size = settings["tab_size"]
+    one_indent = " " * user_tab_size
+    return bp.get_boilerplate_text(
+      parameter_names,
+      input_types, 
+      expected_type, 
+      one_indent,
+      SOLUTION_CLASS_NAME,
+      SOLUTION_FUNCTION_NAME,
+      LANGUAGE
+    )
 
 def load_solution_into_practice(alg: str) -> None:
   practice_file_dir = gfp.get_practice_file_dir()

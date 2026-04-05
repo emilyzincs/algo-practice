@@ -1,6 +1,6 @@
 import sys
 from typing import List, Tuple
-from utils import print_desc, is_type, in_either
+from util.utils import print_desc, is_type, in_either
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command
 
 def handle_commands(

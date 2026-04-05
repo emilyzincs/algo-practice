@@ -1,0 +1,20 @@
+package tests.java.boilerplate_files;
+
+import java.util.List;
+
+public class Bp18 {
+  public static ListNode solve(List<Long> arr) {
+    
+  }
+
+
+  public static class ListNode {
+    public long val;
+    public ListNode next;
+
+    public ListNode(long val, ListNode next) {
+      this.val = val;
+      this.next = next;
+    }
+  }
+}
