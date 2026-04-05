@@ -17,9 +17,9 @@ def handle_commands(
                        " of an algorithm, when exiting practice of an algorithm, and" +
                        " when exiting the program.",
     "prepopulate_boilerplate": "When set to true, includes the necessary class and method" +
-                        " declaration when initializing a practice file, as well as the " +
+                        " declaration when initializing a practice file, as well as the" +
                         " necessary imports and classes corresponding to the declarations.",
-    "tab_size": "The number of spaces to use as the tab size when prepopulating a practice" +
+    "tab_size": "The number of spaces to use as a tab when prepopulating a practice" +
                 " file with any text."
   }
   
@@ -95,7 +95,7 @@ def handle_commands(
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
     elif is_info:
-      print(f"Info for {user_input[0]}: {settings_to_info[user_input[1]]}")
+      print(f"{user_input[1]}: {settings_to_info[user_input[1]]}")
     else:
       raise ValueError(f"Unhandled case: {user_input}")
 
