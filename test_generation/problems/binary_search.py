@@ -7,7 +7,7 @@ sys.path.insert(0, PROJECT_ROOT)
 
 import test_generation.generation_util as util
 import util.get_file_paths as gfp
-from util.utils import read_json, dump_json
+from test_generation.base_generator import BaseGenerator as parent
 
 def oracle(arr, target):
   inds = [i for i, num in enumerate(arr) if num == target]
@@ -60,59 +60,55 @@ def get_big_arr():
         ret.append(i)
   return ret
 
-def get_all_test_cases():
-  test_cases = get_edge_cases()
-  add_random_cases(test_cases, 3, -100, 100, 4)
-  add_random_cases(test_cases, 4, -100, 100, 4)
-  add_random_cases(test_cases, 5, -100, 100, 4)
-  add_random_cases(test_cases, 7, -100, 100, 3)
-  add_random_cases(test_cases, 8, -100, 100, 3)
-  add_random_cases(test_cases, 9, -100, 100, 3)
-  add_random_cases(test_cases, 15, -100, 100, 2)
-  add_random_cases(test_cases, 16, -100, 100, 2)
-  add_random_cases(test_cases, 17, -100, 100, 2)
-  add_random_cases(test_cases, 30, -100, 100, 2)
-  add_random_cases(test_cases, 31, -100, 100, 2)
-  add_random_cases(test_cases, 31, -100, -100, 1) 
-  add_random_cases(test_cases, 32, -100, 100, 2)
-  add_random_cases(test_cases, 32, -100, -100, 1)
-  add_random_cases(test_cases, 33, -100, 100, 2)
-  add_random_cases(test_cases, 33, -100, -100, 1)
-  add_random_cases(test_cases, 34, -100, 100, 2)
-  add_random_cases(test_cases, 250, -10, 10, 2)
-  add_random_cases(test_cases, 255, -100, 100, 2)
-  add_random_cases(test_cases, 256, -100, 100, 2)
-  add_random_cases(test_cases, 257, -100, 100, 2)
-  add_random_cases(test_cases, 255, -1000, 1000, 2)
-  add_random_cases(test_cases, 256, -1000, 1000, 2)
-  add_random_cases(test_cases, 257, -1000, 1000, 2)
 
-  arr = sorted(util.rand_array(255, -1000, 1000))
-  add_boundary_cases(test_cases, arr)
+class BinarySearchGenerator(parent):
 
-  arr = sorted(util.rand_array(256, -1000, 1000))
-  add_boundary_cases(test_cases, arr)
+  @staticmethod
+  def get_all_test_cases(self):
+    test_cases = get_edge_cases()
+    add_random_cases(test_cases, 3, -100, 100, 4)
+    add_random_cases(test_cases, 4, -100, 100, 4)
+    add_random_cases(test_cases, 5, -100, 100, 4)
+    add_random_cases(test_cases, 7, -100, 100, 3)
+    add_random_cases(test_cases, 8, -100, 100, 3)
+    add_random_cases(test_cases, 9, -100, 100, 3)
+    add_random_cases(test_cases, 15, -100, 100, 2)
+    add_random_cases(test_cases, 16, -100, 100, 2)
+    add_random_cases(test_cases, 17, -100, 100, 2)
+    add_random_cases(test_cases, 30, -100, 100, 2)
+    add_random_cases(test_cases, 31, -100, 100, 2)
+    add_random_cases(test_cases, 31, -100, -100, 1) 
+    add_random_cases(test_cases, 32, -100, 100, 2)
+    add_random_cases(test_cases, 32, -100, -100, 1)
+    add_random_cases(test_cases, 33, -100, 100, 2)
+    add_random_cases(test_cases, 33, -100, -100, 1)
+    add_random_cases(test_cases, 34, -100, 100, 2)
+    add_random_cases(test_cases, 250, -10, 10, 2)
+    add_random_cases(test_cases, 255, -100, 100, 2)
+    add_random_cases(test_cases, 256, -100, 100, 2)
+    add_random_cases(test_cases, 257, -100, 100, 2)
+    add_random_cases(test_cases, 255, -1000, 1000, 2)
+    add_random_cases(test_cases, 256, -1000, 1000, 2)
+    add_random_cases(test_cases, 257, -1000, 1000, 2)
 
-  arr = sorted(util.rand_array(257, -1000, 1000))
-  add_boundary_cases(test_cases, arr)
+    arr = sorted(util.rand_array(255, -1000, 1000))
+    add_boundary_cases(test_cases, arr)
 
-  for _ in range(4):
-    big_arr = get_big_arr()
-    target = util.pick_target(big_arr)
-    test_cases.append((big_arr, target))
+    arr = sorted(util.rand_array(256, -1000, 1000))
+    add_boundary_cases(test_cases, arr)
 
-  arr = get_big_arr()
-  add_boundary_cases(test_cases, arr)
+    arr = sorted(util.rand_array(257, -1000, 1000))
+    add_boundary_cases(test_cases, arr)
 
-  return test_cases
+    for _ in range(4):
+      big_arr = get_big_arr()
+      target = util.pick_target(big_arr)
+      test_cases.append((big_arr, target))
 
-def main():
-  test_cases = get_all_test_cases()
-  tests = util.make_tests(test_cases, oracle)
-  test_file_path = gfp.get_test_file_path("binary_search")
-  json = read_json(test_file_path)
-  json["tests"] = tests
-  dump_json(test_file_path, json)
+    arr = get_big_arr()
+    add_boundary_cases(test_cases, arr)
+
+    return test_cases
 
 if __name__ == "__main__":
-  main()
+  BinarySearchGenerator.generate_tests("binary_search", oracle)
