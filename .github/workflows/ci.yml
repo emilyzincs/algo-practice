@@ -16,8 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install package
-        run: pip install -e . -v
       - name: Run tests
         run: python test.py
       - name: Cleanup generated test files
