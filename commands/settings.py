@@ -10,6 +10,19 @@ def handle_commands(
     refresh_settings_func,
     exit_func
 ) -> None:
+  settings_to_info = {
+    "default_language": "The language the program is initially set to when it" +
+                        " is started without an explicit language argument.",
+    "delete_attempts": "When set to true, clears the practice directory upon completion" +
+                       " of an algorithm, when exiting practice of an algorithm, and" +
+                       " when exiting the program.",
+    "prepopulate_boilerplate": "When set to true, includes the necessary class and method" +
+                        " declaration when initializing a practice file, as well as the " +
+                        " necessary imports and classes corresponding to the declarations.",
+    "tab_size": "The number of spaces to use as the tab size when prepopulating a practice" +
+                " file with any text."
+  }
+  
   local_commands
   default_settings_path = get_default_settings_path()
   settings_path = get_settings_path()
@@ -25,7 +38,8 @@ def handle_commands(
     is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
     is_local_cmd = len(user_input) == 1 and user_input[0] in local_commands 
     is_setting = len(user_input) == 2 and user_input[0] in settings
-    if not (is_global_cmd or is_local_cmd or is_setting):
+    is_info = len(user_input) == 2 and user_input[0] == "info" and user_input[1] in settings
+    if not (is_global_cmd or is_local_cmd or is_setting or is_info):
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
     if is_global_cmd:
@@ -80,6 +94,8 @@ def handle_commands(
         settings[setting] = new_val
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
+    elif is_info:
+      print(f"Info for {user_input[0]}: {settings_to_info[user_input[1]]}")
     else:
       raise ValueError(f"Unhandled case: {user_input}")
 
@@ -88,10 +104,10 @@ def handle_help():
   command_descriptions.extend([
     "list: Shows the current settings",
     "reset: Resets all settings to default (asks for confirmation)",
+    "info <setting>: Prints information regarding the given setting",
     "<setting> default: Changes the given setting to have the default value",
     "<setting> <new value>: Changes the given setting to have the" + 
                           " given new value, if possible"
-
   ])
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 
