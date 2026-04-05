@@ -62,7 +62,8 @@ def handle_commands(
               print(f"Starting {alg} practice.")
               seconds_spent = handle_practice_func(alg)
               if seconds_spent is not None:
-                minutes, seconds = seconds_spent // 60, seconds_spent % 60
+                minutes = round(seconds_spent // 60)
+                seconds = seconds_spent % 60
                 if minutes == 0:
                   print(f"Successfully completed {alg} in {seconds_spent:.2f} seconds!")
                 else:
