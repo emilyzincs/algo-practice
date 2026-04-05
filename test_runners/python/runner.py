@@ -175,7 +175,6 @@ def main():
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
                         " class with appropriate 'solve' method.")
   try:
-    # Solution = practice_module.Solution
     Solution = getattr(practice_module, required_class_name)
   except AttributeError as e:
     print(incorrect_setup_msg, file=sys.stderr)

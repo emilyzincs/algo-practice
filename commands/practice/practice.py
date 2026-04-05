@@ -3,7 +3,7 @@ import util.get_file_paths as gfp
 import subprocess
 import time
 from commands.practice.java import get_test_cmd as java_get_test_cmd
-from util.utils import print_desc, in_either
+from util.utils import print_desc, in_either, UnhandledCaseException
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 
 def handle_commands(
@@ -31,14 +31,17 @@ def handle_commands(
       match user_input:
         case "d" | "done":
           potential_end_time = time.perf_counter()
+          print("Running tests...")
           correct = run_tests(alg, language, extension)
         case "s" | "sol" | "solution":
           try:
             load_solution_func(alg)
+            print("Successfully loaded solution.")
           except FileNotFoundError:
             print(f"Cannot load solution because it does not exist.", file=sys.stderr)
         case _:
-          raise ValueError(f"Unhandled case {user_input}.")
+          raise UnhandledCaseException(user_input, "input")
+
   delete_attempts_func()    
   return potential_end_time - start_time if correct else None
 
@@ -81,7 +84,7 @@ def run_tests(
         debug
       )
     case _:
-      raise NameError("Could not find language:", language)
+      raise UnhandledCaseException(language, "language")
   if isinstance(cmd, int):
     return False
   cmd.extend([required_class_name, required_method_name])

@@ -1,4 +1,5 @@
 from typing import List
+from util.exceptions import UnhandledCaseException
 
 GLOBAL_COMMANDS = {"help", "q", "quit", "exit", "b", "back"}
 
@@ -18,8 +19,7 @@ def handle_global_command(
     case "b" | "back":
       return False
     case _:
-      raise ValueError("Reached default case when previous cases should " + 
-                       "have handled all global commands")
+      raise UnhandledCaseException(cmd, "global command")
   return True
 
 def get_global_command_descriptions() -> List[str]:

@@ -1,5 +1,5 @@
 import sys
-from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
+from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool, UnhandledCaseException
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
 from util.get_file_paths import get_settings_path, get_default_settings_path
 
@@ -61,7 +61,7 @@ def handle_commands(
             settings = default_settings.copy()
             print("Successfully reset settings to default.")
         case _:
-          raise ValueError(f"Unhandled local command: {user_input[0]}.")
+          raise UnhandledCaseException(user_input[0], "local command")
     elif is_setting:
       setting, new_val = user_input
       if new_val == "default":
@@ -89,15 +89,14 @@ def handle_commands(
               continue
             new_val = int(new_val)
           case _:
-            raise ValueError(f"Unhandled setting: {user_input[0]}.")
-          
+            raise UnhandledCaseException(user_input[0], "setting")          
         settings[setting] = new_val
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
     elif is_info:
       print(f"{user_input[1]}: {settings_to_info[user_input[1]]}")
     else:
-      raise ValueError(f"Unhandled case: {user_input}")
+      raise UnhandledCaseException(user_input, "input")
 
 def handle_help():
   command_descriptions = get_global_command_descriptions()

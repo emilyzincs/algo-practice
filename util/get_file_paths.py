@@ -1,5 +1,6 @@
 import os
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+from util.exceptions import UnhandledCaseException
 
 SPECIFIC_TO_GEN_ALG = {
   "breadth_first_search": "reachable",
@@ -7,8 +8,9 @@ SPECIFIC_TO_GEN_ALG = {
   "merge_sort": "sort"
 }
 
-def to_language_file_case(str: str, lang: str) -> str:
-  words = str.strip().split()
+def to_language_file_case(string: str, lang: str) -> str:
+  num = lang + 1
+  words = string.strip().split()
   match lang:
     case "python":
       return "_".join(words).lower()
@@ -17,7 +19,7 @@ def to_language_file_case(str: str, lang: str) -> str:
         words[i] = word.capitalize()
         return "".join(words)
     case _:
-      raise NameError("Could not find language", lang) 
+      raise UnhandledCaseException(lang, "language")
     
 
 def specific_to_general_alg(specific_alg: str) -> str:

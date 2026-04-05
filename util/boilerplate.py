@@ -1,4 +1,5 @@
 from util.get_file_paths import get_practice_file_dir, PROJECT_ROOT
+from util.exceptions import UnhandledCaseException
 from commands.practice.java import path_to_package
 COMPLEX_TYPES = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
 
@@ -45,14 +46,13 @@ def get_boilerplate_text(
     tree_node_text, 
     end
   ])
-  # print("RETURNING:\n", ret)
   return ret
 
 def parse_type_string(typ, language: str) -> str:
   func_name = f"{language}_parse_type_string"
   func = globals().get(func_name)
   if func is None:
-    raise ValueError(f"Unrecognized language: {language}.")
+    raise UnhandledCaseException(language, "language")
   return func(typ)
 
 def get_beginning(language: str) -> str:
@@ -62,7 +62,7 @@ def get_beginning(language: str) -> str:
     case "java":
       return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
     case _:
-      raise ValueError(f"Unrecognized language: {language}.") 
+      raise UnhandledCaseException(language, "language") 
 
 def get_required_method_line(
     parameter_names: list[str],
@@ -78,7 +78,7 @@ def get_required_method_line(
   func_name = f"{language}_get_method_line"
   func = globals().get(func_name)
   if func is None:
-    raise ValueError(f"Unrecognized language: {language}.")
+    raise UnhandledCaseException(language, "language")
   return func(parameter_names, parameter_types, return_type, one_indent, required_method_name)
 
 def get_list_node_text(val_type_string: str, one_indent: str, 
@@ -86,7 +86,7 @@ def get_list_node_text(val_type_string: str, one_indent: str,
   func_name = f"{language}_list_node"
   func = globals().get(func_name)
   if func is None:
-    raise ValueError(f"Unrecognized language: {language}.")
+    raise UnhandledCaseException(language, "language")
   return func(val_type_string, one_indent, one_indent * num_indents)
 
 def get_tree_node_text(val_type_string: str, one_indent: str,
@@ -94,7 +94,7 @@ def get_tree_node_text(val_type_string: str, one_indent: str,
   func_name = f"{language}_tree_node"
   func = globals().get(func_name)
   if func is None:
-    raise ValueError(f"Unrecognized language: {language}.")
+    raise UnhandledCaseException(language, "language")
   return func(val_type_string, one_indent, one_indent * num_indents)
 
 def get_nested_included_types(typ, s: set[str]):
@@ -110,7 +110,7 @@ def get_nested_included_types(typ, s: set[str]):
     case "ListNode" | "TreeNode":
       get_nested_included_types(typ["val"], s)
     case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
+      raise UnhandledCaseException(typ["type"], "type")
 
 def recursively_get_included_types(input_types, expected_type) -> set[str]:
   ret = set()
@@ -134,7 +134,7 @@ def get_required_imports(included_types: set[str], language: str) -> str:
         imports += "\n"
       return imports 
     case _:
-      raise ValueError(f"Unrecognized language: {language}.")
+      raise UnhandledCaseException(language, "language")
 
 def get_required_class_line(solution_class_name: str, one_indent, language: str) -> str:
   match language:
@@ -143,7 +143,7 @@ def get_required_class_line(solution_class_name: str, one_indent, language: str)
     case "java":
       return f"public class {solution_class_name}" + " {\n"
     case _:
-      raise ValueError(f"Unrecognized language: {language}.")
+      raise UnhandledCaseException(language, "language")
     
 def get_ending(one_indent, language: str) -> str:
   match language:
@@ -152,7 +152,7 @@ def get_ending(one_indent, language: str) -> str:
     case "java":
       return "}\n"
     case _:
-      raise ValueError(f"Unrecognized language: {language}.")
+      raise UnhandledCaseException(language, "language")
 
 def python_parse_type_string(typ) -> str:  
   match typ["type"]:
@@ -182,7 +182,7 @@ def python_parse_type_string(typ) -> str:
     case "TreeNode":
       return "Optional[TreeNode]"
     case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
+      raise UnhandledCaseException(typ["type"], "type")
 
 def java_parse_type_string(typ, should_box_if_primitive: bool = False) -> str:
   match typ["type"]:
@@ -212,7 +212,7 @@ def java_parse_type_string(typ, should_box_if_primitive: bool = False) -> str:
     case "TreeNode":
       return "TreeNode"
     case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
+      raise UnhandledCaseException(typ["type"], "type")
     
 def python_get_method_line(parameter_names: list[str], parameter_types: list[str], 
                           return_type: str, one_indent: str, require_method_name: str) -> str:
@@ -251,7 +251,7 @@ def find_type(typ, to_find):
     case "ListNode" | "TreeNode":
       return find_type(typ["val"], to_find)
     case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
+      raise UnhandledCaseException(typ["type"], "type")
 
 def get_nested_type_string(to_find: str, field: str, 
                            input_types, expected_type, language: str):

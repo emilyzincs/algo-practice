@@ -22,6 +22,7 @@ def handle_commands(
                   " would like to practice, or 'help' for options:\n",
     "Input: "
   ]
+  # todo: think about how an unhandledinputexception might work here
   input_message = responses[0]
   while True:
     input_message = responses[0]

@@ -5,6 +5,7 @@ import util.get_file_paths as gfp
 import sys
 import shutil
 from util.utils import read_json, copy_file, match_json_keys, no_op, load_module_from_path
+from util.exceptions import UnhandledCaseException
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
@@ -113,7 +114,7 @@ def set_language(lang: str) -> None:
   PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
   print(f"Successfully set language to {lang}.")
 
-def handle_practice(alg: str) -> float:
+def handle_practice(alg: str) -> float|None:
   generate_test_file_if_necessary(alg)
   reset_practice_file(alg)
   seconds_spent = practice_handle_commands(
@@ -185,6 +186,8 @@ def load_solution_into_practice(alg: str) -> None:
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
+    case "python":
+      pass
     case "java":
       lines = None
       with open(solution_file, "r", encoding="utf-8") as sol:
@@ -203,7 +206,8 @@ def load_solution_into_practice(alg: str) -> None:
         prac.writelines(lines)
       return
     case _:
-      copy_file(solution_file, practice_file)
+      raise UnhandledCaseException(LANGUAGE, "language")
+  copy_file(solution_file, practice_file)
 
 
 def handle_settings() -> None:
