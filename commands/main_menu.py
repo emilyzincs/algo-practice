@@ -10,9 +10,9 @@ from util.enums import (
   is_member, 
   GlobalCommand, 
   Language,
-  guaranteed_member_from_string,
   member_name_list,
-  TAB
+  TAB,
+  member_from_string
 )
 
 def handle_commands(
@@ -51,12 +51,12 @@ def handle_commands(
       continue
 
     if input_is_global_cmd:
-      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input)
+      global_cmd: GlobalCommand = member_from_string(GlobalCommand, user_input)
       if not handle_global_command(global_cmd, handle_help, exit_func):
         print("Cannot go back from root menu.", file=sys.stderr)
       input_message = responses[0]
     elif input_is_local_cmd:
-      local_cmd: MainMenuCommand = guaranteed_member_from_string(MainMenuCommand, user_input)
+      local_cmd: MainMenuCommand = member_from_string(MainMenuCommand, user_input)
       match local_cmd:
         case MainMenuCommand.LANG | MainMenuCommand.LANGUAGE:
           print(f"The current language is {get_language_func()}.")
@@ -73,7 +73,7 @@ def handle_commands(
         case _:
           assert_never(local_cmd)
     elif input_is_language:
-      language: Language = guaranteed_member_from_string(Language, user_input)
+      language: Language = member_from_string(Language, user_input)
       set_language_func(language)
       input_message = responses[0]
     elif input_is_input_alg or input_is_alg_id:

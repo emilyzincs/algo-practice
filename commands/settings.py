@@ -8,7 +8,7 @@ from util.enums import (
   GlobalCommand,
   is_member,
   SettingsCommand,
-  guaranteed_member_from_string,
+  member_from_string,
   TAB,
   Language
 )
@@ -49,12 +49,12 @@ def handle_commands(
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
     if is_global_cmd:
-      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input[0])
+      global_cmd: GlobalCommand = member_from_string(GlobalCommand, user_input[0])
       if not handle_global_command(global_cmd, handle_help, exit_func):
         refresh_settings_func()
         return
     elif is_local_cmd:
-      local_cmd: SettingsCommand = guaranteed_member_from_string(SettingsCommand, user_input[0])
+      local_cmd: SettingsCommand = member_from_string(SettingsCommand, user_input[0])
       match local_cmd:
         case SettingsCommand.LIST:
           print("Current settings:")
