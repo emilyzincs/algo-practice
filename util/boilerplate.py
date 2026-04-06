@@ -1,7 +1,9 @@
 from util.get_file_paths import get_practice_file_dir, PROJECT_ROOT
 from util.exceptions import UnhandledCaseException
 from commands.practice.java import path_to_package
-COMPLEX_TYPES = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
+from util.enums import (
+  Language
+)
 
 def get_boilerplate_text(
   parameter_names: list[str],
@@ -10,7 +12,7 @@ def get_boilerplate_text(
   one_indent: str,
   solution_class_name: str,
   solution_function_name: str,
-  language: str
+  language: Language
 ):
   parameter_type_strings = [parse_type_string(input_type, language) for input_type in input_types]
   return_type_string = parse_type_string(expected_type, language)

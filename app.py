@@ -15,7 +15,9 @@ from util.enums import (
   is_member, 
   member_to_string,
   SpecificAlgorithm,
-  member_from_string
+  member_from_string,
+  SOLUTION_CLASS_NAME,
+  SOLUTION_FUNCTION_NAME
 )
 
 
@@ -41,8 +43,6 @@ if __name__ == "__main__":
         print(f"Unsupported language: {lang_str}. defaulting to {member_to_string(DEFAULT_LANGUAGE)}." + 
               " Type 'languages' for supported languages or <language> to switch to that language.")
 
-EXTENSION, COMMENT_SYMBOL = LANGUAGE.extension, LANGUAGE.comment_symbol
-
 def main():  
   try:  
     main_menu_handle_commands(
@@ -66,9 +66,8 @@ def get_language() -> Language:
   return LANGUAGE
 
 def set_language(lang: Language) -> None:
-  global LANGUAGE, EXTENSION, COMMENT_SYMBOL
+  global LANGUAGE
   LANGUAGE = lang
-  EXTENSION, COMMENT_SYMBOL = LANGUAGE.extension, LANGUAGE.comment_symbol
   print(f"Successfully set language to {lang}.")
 
 def handle_practice(alg: SpecificAlgorithm) -> float|None:
@@ -77,7 +76,6 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
   seconds_spent = practice_handle_commands(
     alg,
     LANGUAGE,
-    EXTENSION,
     delete_all_attempts if settings['delete_attempts'] else no_op,
     load_solution_into_practice,
     exit_program
@@ -102,7 +100,7 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_generator.generate()
 
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
-  practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
+  practice_file = gfp.get_practice_file_path(LANGUAGE)
   info_file = gfp.get_info_file_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(info_file))
@@ -114,8 +112,8 @@ def get_starting_practice_text(info_file_path: str) -> str:
   data = read_json(info_file_path)
   parameter_names = data['parameter_names']
   if settings["prepopulate_boilerplate"] == False:
-    parameter_info_line = COMMENT_SYMBOL + " Parameters: " + ", ".join(parameter_names) + "."
-    return (COMMENT_SYMBOL + 
+    parameter_info_line = LANGUAGE.comment_symbol + " Parameters: " + ", ".join(parameter_names) + "."
+    return (LANGUAGE.comment_symbol + 
           f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
           + parameter_info_line)
   else:
@@ -133,12 +131,12 @@ def get_starting_practice_text(info_file_path: str) -> str:
       LANGUAGE
     )
 
-def load_solution_into_practice(alg: str) -> None:
+def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
   practice_file_dir = gfp.get_practice_file_dir()
-  practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
+  practice_file = gfp.get_practice_file_path(LANGUAGE)
   if not os.path.exists(practice_file):
     raise RuntimeError(f"Practice file does not exist: {practice_file}.")
-  solution_file = gfp.get_solution_file_path(alg, LANGUAGE, EXTENSION)
+  solution_file = gfp.get_solution_file_path(alg, LANGUAGE)
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
