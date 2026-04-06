@@ -98,3 +98,17 @@ class SettingsCommand(Enum):
   LIST = auto()
   RESET = auto()
 
+class ParseType(Enum):
+  INT = auto()
+  LONG = auto()
+  BOOLEAN = auto()
+  FLOAT = auto()
+  STRING = auto()
+  ARRAY = auto()
+  LIST = auto()
+  IMMUTABLE_LIST = auto()
+  SET = auto()
+  MAP = auto()
+  LISTNODE = auto()
+  TREENODE = auto()
+
