@@ -68,7 +68,7 @@ def get_language() -> Language:
 def set_language(lang: Language) -> None:
   global LANGUAGE
   LANGUAGE = lang
-  print(f"Successfully set language to {lang}.")
+  print(f"Successfully set language to {member_to_string(lang)}.")
 
 def handle_practice(alg: SpecificAlgorithm) -> float|None:
   generate_test_file_if_necessary(alg)
@@ -86,16 +86,16 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_file_path = gfp.get_test_file_path(alg)
   if os.path.exists(test_file_path):
     return
-  print(f"Generating {alg} tests...")
+  print(f"Generating {member_to_string(alg)} tests...")
   test_generator_path = gfp.get_test_generator_path(alg)
   if not os.path.exists(test_generator_path):
-    raise RuntimeError(f"Tests for {alg} do not exist (path: {test_file_path})" +
-                       f" and test_generator for {alg} does not exist" +
+    raise RuntimeError(f"Tests for {member_to_string(alg)} do not exist (path: {test_file_path})" +
+                       f" and test_generator for {member_to_string(alg)} does not exist" +
                        f" (path: {test_generator_path})")
   try:
     test_generator = load_module_from_path("generate", test_generator_path)
   except ModuleNotFoundError:
-    raise ModuleNotFoundError(f"Test generator for {alg} has no 'generate' method." + 
+    raise ModuleNotFoundError(f"Test generator for {member_to_string(alg)} has no 'generate' method." + 
                               f" Path: {test_generator}.")
   test_generator.generate()
 
