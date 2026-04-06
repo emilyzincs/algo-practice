@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional
 
 class Solution:
-  def solve(self, head: Optional[ListNode]):
+  def solve(self, head: list[int]):
     if not head:
       return None
     entries = head[1:]

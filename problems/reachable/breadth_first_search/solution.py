@@ -6,7 +6,7 @@ class Solution:
       raise ValueError(f"Root is not a vertex: {root}")
     reachable = set()
     seen = [False for vertex in range(len(graph))]
-    q = deque()
+    q: deque[int] = deque()
     q.append(root)
     seen[root] = True
     while q:

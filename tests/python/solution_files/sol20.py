@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Optional
 
 class Solution:
-  def solve(self, input: set[tuple[str]]) -> Optional[TreeNode]:
-    all_vals = []
+  def solve(self, input: set[tuple[str, ...]]) -> Optional[TreeNode]:
+    all_vals: list[str] = []
     for tup in input:
       all_vals.extend(tup)
     all_vals.sort()

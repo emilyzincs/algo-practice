@@ -1,28 +1,24 @@
-from typing import List
-
-GLOBAL_COMMANDS = {"help", "q", "quit", "exit", "b", "back"}
+from util.enums import GlobalCommand
+from typing import assert_never
 
 def handle_global_command(
-  cmd: str,
+  cmd: GlobalCommand,
   help_func,
   exit_func,
 ) -> bool:
-  if cmd not in GLOBAL_COMMANDS:
-    raise ValueError(f"Not a global command: {cmd}.")
-
+  
   match cmd:
-    case "help":
+    case GlobalCommand.HELP:
       help_func()
-    case "q" | "quit" | "exit":
+    case GlobalCommand.Q | GlobalCommand.QUIT | GlobalCommand.EXIT:
       exit_func(0)
-    case "b" | "back":
+    case GlobalCommand.B | GlobalCommand.BACK :
       return False
     case _:
-      raise ValueError("Reached default case when previous cases should " + 
-                       "have handled all global commands")
+      assert_never(cmd)
   return True
 
-def get_global_command_descriptions() -> List[str]:
+def get_global_command_descriptions() -> list[str]:
   return [
     "help: Lists commands",
     "q/quit/exit: Exits the program",

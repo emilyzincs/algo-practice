@@ -1,6 +1,7 @@
 from problems.reachable.breadth_first_search.solution import Solution
 import test_generation.generation_util as util
 from test_generation.base_generator import BaseGenerator as parent
+from util.enums import SpecificAlgorithm
 
 sol = Solution()
 
@@ -71,7 +72,7 @@ class ReachableGenerator(parent):
     return test_cases
 
 def generate():
-  ReachableGenerator().generate_tests("reachable", oracle)
+  ReachableGenerator().generate_tests(SpecificAlgorithm.DEPTH_FIRST_SEARCH, oracle)
 
 if __name__ == "__main__":
   generate()

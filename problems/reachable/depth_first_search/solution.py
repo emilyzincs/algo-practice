@@ -1,6 +1,6 @@
 class Solution:
   def solve(self, graph: list[list[int]], root: int) -> set[int]:
-    reachable = set()
+    reachable: set[int] = set()
     seen = [False for vertex in range(len(graph))]
     self.dfs(graph, root, reachable, seen)
     return reachable

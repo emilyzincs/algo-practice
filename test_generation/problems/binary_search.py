@@ -1,12 +1,6 @@
-# import sys
-# if len(sys.argv) < 2:
-#   raise ValueError("Must include project root as first CLI")
-# PROJECT_ROOT = sys.argv[1].strip()
-# print("ROOT", PROJECT_ROOT)
-# sys.path.insert(0, PROJECT_ROOT)
-
 import test_generation.generation_util as util
 from test_generation.base_generator import BaseGenerator as parent
+from util.enums import SpecificAlgorithm
 
 def oracle(arr, target):
   inds = [i for i, num in enumerate(arr) if num == target]
@@ -108,7 +102,7 @@ class BinarySearchGenerator(parent):
     return test_cases
 
 def generate():
-  BinarySearchGenerator().generate_tests("binary_search", oracle)
+  BinarySearchGenerator().generate_tests(SpecificAlgorithm.BINARY_SEARCH, oracle)
 
 if __name__ == "__main__":
   generate()

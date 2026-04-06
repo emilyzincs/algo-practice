@@ -81,9 +81,7 @@ def add_cycle_aware_eq(cls):
 
 def parse_value(val, typ):
    # If the expected type is complex and val is a string, try to parse it as JSON
-  # print("val:", val)
-  # print("typ:", typ)
-  # print()
+
   complex_types = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
   if typ["type"] in complex_types and isinstance(val, str):
     try:
@@ -175,7 +173,6 @@ def main():
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
                         " class with appropriate 'solve' method.")
   try:
-    # Solution = practice_module.Solution
     Solution = getattr(practice_module, required_class_name)
   except AttributeError as e:
     print(incorrect_setup_msg, file=sys.stderr)

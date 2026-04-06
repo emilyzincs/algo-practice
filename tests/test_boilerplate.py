@@ -4,8 +4,15 @@ from util.utils import read_json
 from util.boilerplate import get_boilerplate_text
 from util.get_file_paths import PROJECT_ROOT, to_language_file_case
 from typing import Optional
-from app import settings, LANGUAGE_LIST
+from app import settings
 from tests.base_test import BaseTest as parent
+from typing import assert_never
+from util.enums import (
+  Language,
+  member_to_string,
+  SOLUTION_CLASS_NAME,
+  SOLUTION_FUNCTION_NAME
+)
 
 class TestBoilerplate(parent):
   def __init__(self, *args, **kwargs):
@@ -17,20 +24,25 @@ class TestBoilerplate(parent):
       raise ValueError("Alg arguments are not applicable to boilerplate tests.")
     self.gfp_base = "util.boilerplate."
 
-
   def test_main(self) -> None:
     if self.language is not None:
       self.run_language_tests(self.language)
     else:
-      for language in LANGUAGE_LIST:
+      for language in Language:
         self.run_language_tests(language)
 
-  def run_language_tests(self, language: str):
+  def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
-    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "tests", language, "boilerplate_files")
-    if language == "java":
-      required_class_name_prefix = "Bp"
+    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "tests", 
+                                        member_to_string(language), "boilerplate_files")
+    match language:
+      case Language.PYTHON:
+        pass
+      case Language.JAVA:
+        required_class_name_prefix = "Bp"
+      case _:
+        assert_never()
     self.abstract_test_boilerplate(
       language,
       boilerplate_file_dir,
@@ -40,12 +52,12 @@ class TestBoilerplate(parent):
 
   def specific_test_boilerplate(
       self,
-      test_number,
-      language,
-      info_path_prefix,
-      test_path_prefix,
-      boilerplate_file_path_prefix,
-      required_class_name_prefix
+      test_number: int,
+      language: Language,
+      info_path_prefix: str,
+      test_path_prefix: str,
+      boilerplate_file_path_prefix: str,
+      required_class_name_prefix: Optional[str]
   ) -> bool:
     res = self.get_paths(
       info_path_prefix,
@@ -57,15 +69,18 @@ class TestBoilerplate(parent):
     if res is None:
       return False
     info_path, test_path, boilerplate_file_path = res
-    print(f"\nRunning {language} boilerplate test {test_number}:")
+    print(f"\nRunning {member_to_string(language)} boilerplate test {test_number}:")
     info = read_json(info_path)
     boilerplate = get_boilerplate_text(
       info["parameter_names"],
       info["input_types"],
       info["expected_type_wrapper"],
       " " * settings["tab_size"],
-      "Solution" if not required_class_name_prefix else f"{required_class_name_prefix}{test_number}",
-      "solve",
+      (
+        SOLUTION_CLASS_NAME if not required_class_name_prefix 
+        else f"{required_class_name_prefix}{test_number}"
+      ),
+      SOLUTION_FUNCTION_NAME,
       language
     )
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
@@ -77,7 +92,7 @@ class TestBoilerplate(parent):
 
   def abstract_test_boilerplate(
       self,
-      language: str,
+      language: Language,
       boilerplate_file_dir: str,
       boilerplate_file_name_prefix: str,
       required_class_name_prefix: Optional[str] = None,
@@ -98,7 +113,7 @@ class TestBoilerplate(parent):
         if not res:
           raise RuntimeError(f"Invalid test number: {self.num}.")
       else:
-        print("\n\nRUNNING " + language.upper() + " boilerplate TESTS.")
+        print("\n\nRUNNING " + member_to_string(language).upper() + " boilerplate TESTS.")
         i = 1
         while True:
           res = self.specific_test_boilerplate(

@@ -13,9 +13,9 @@ public class Runner {
   private static String fullPackageClassName;
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 7 || (!"True".equals(args[4]) && !"False".equals(args[4]))) {
+    if (args.length != 6 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
       System.err.println(
-        "Usage: java Runner <alg>" + 
+        "Usage: java Runner" + 
         " <practiceFilePackage>" +
         " <infoFilePath>.json" +
         " <testFilePath>.json" + 
@@ -27,16 +27,16 @@ public class Runner {
       System.exit(1);
     }
 
-    boolean debug = "True".equals(args[4]);
+    boolean debug = "True".equals(args[3]);
 
     try {
       Map<String, Object> root = mapper.readValue(
-        Files.readAllBytes(Paths.get(args[2])),
+        Files.readAllBytes(Paths.get(args[1])),
         new TypeReference<Map<String, Object>>() {}
       );
-      String practiceFilePackage = args[1];
-      String requiredClassName = args[5];
-      String requiredMethodName = args[6];
+      String practiceFilePackage = args[0];
+      String requiredClassName = args[4];
+      String requiredMethodName = args[5];
       Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
       List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
@@ -62,7 +62,7 @@ public class Runner {
       Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
       
       List<Map<String, Object>> tests = mapper.readValue(
-          Files.readAllBytes(Paths.get(args[3])),
+          Files.readAllBytes(Paths.get(args[2])),
           new TypeReference<List<Map<String, Object>>>() {}
       );
       

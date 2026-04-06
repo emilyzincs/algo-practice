@@ -3,13 +3,12 @@ import os
 import json
 from importlib import util as lib_util
 from shutil import copyfile as shutil_copy_file
-from typing import List
 from tempfile import NamedTemporaryFile as TempFile
 
 def read_json(path: str):
   try:
     if not path.endswith(".json"):
-      raise json.JSONDecodeError
+      raise Exception(f"File name must end json: {path}.")
     with open(path, "r", encoding="utf-8") as f:
       return json.load(f)
   except FileNotFoundError as e:
@@ -53,10 +52,7 @@ def match_json_keys(to_match_path: str, to_edit_path: str):
     to_edit = {key: val for key, val in to_edit.items() if key in to_match}
   dump_json(to_edit_path, to_edit)
 
-def in_either(str: str, first: set, second: set) -> bool:
-  return str in first or str in second
-
-def print_desc(descs: List[str]) -> None:
+def print_desc(descs: list[str]) -> None:
   for i, desc in enumerate(descs):
     print(f"{i+1}. {desc}.")
 

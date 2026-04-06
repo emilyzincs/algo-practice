@@ -16,7 +16,7 @@ class Solution:
 
     return total
   
-  def inorder_traverse(self, root: Optional[ListNode]) -> int:
+  def inorder_traverse(self, root: Optional[TreeNode]) -> int:
     if not root:
       return 0
     ret = 0
