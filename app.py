@@ -29,7 +29,7 @@ if not os.path.exists(settings_path):
 match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
-DEBUG = False
+DEBUG = True
 DEFAULT_LANGUAGE: Language = member_from_string(Language, settings['default_language'])
 LANGUAGE: Language = DEFAULT_LANGUAGE
 if __name__ == "__main__":

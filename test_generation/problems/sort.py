@@ -1,5 +1,6 @@
 import test_generation.generation_util as util
 from test_generation.base_generator import BaseGenerator as parent
+from util.enums import SpecificAlgorithm
 
 def oracle(arr):
   return sorted(arr)
@@ -72,7 +73,7 @@ class SortGenerator(parent):
     return test_cases
 
 def generate():
-  SortGenerator().generate_tests("sort", oracle)
+  SortGenerator().generate_tests(SpecificAlgorithm.MERGE_SORT, oracle)
 
 if __name__ == "__main__":
   generate()
