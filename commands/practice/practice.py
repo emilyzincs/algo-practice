@@ -88,11 +88,10 @@ def run_tests(
   test_file = gfp.get_test_file_path(alg)
   cmd: list[str]|None
   match language:
-    case "python":
+    case Language.PYTHON:
       cmd = ["python", test_runner_file, practice_file, info_file, test_file, gfp.PROJECT_ROOT, debug]
-    case "java":
+    case Language.JAVA:
       cmd = java_get_test_cmd(
-        alg,
         practice_file_dir,
         practice_file,
         test_runner_dir,
@@ -102,7 +101,7 @@ def run_tests(
         debug
       )
     case _:
-      raise UnhandledCaseException(language, "language")
+      assert_never()
   if cmd is None:
     return False
   cmd.extend([required_class_name, required_method_name])

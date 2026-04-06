@@ -1,9 +1,11 @@
 import os, sys, subprocess
 from util.get_file_paths import PROJECT_ROOT
 from pathlib import Path
+from util.enums import (
+  SpecificAlgorithm
+)
 
 def get_test_cmd(
-    alg: str,
     practice_file_dir: str,
     practice_file: str,
     test_runner_dir: str,
@@ -29,7 +31,7 @@ def get_test_cmd(
     test_runner_dir,
   ]
   add_jars(runtime_cp_entries, test_runner_dir)
-  additional_args = [alg, path_to_package(practice_file_dir, PROJECT_ROOT), info_file, test_file, debug]
+  additional_args = [path_to_package(practice_file_dir, PROJECT_ROOT), info_file, test_file, debug]
   class_path = os.path.join(test_runner_dir, "Runner")
   class_path_for_cmd = path_to_package(class_path, PROJECT_ROOT)
   return ["java", "-cp", os.pathsep.join(runtime_cp_entries), 
