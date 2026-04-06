@@ -3,8 +3,13 @@ from typing import Type, TypeVar
 
 E = TypeVar('E', bound=Enum)
 
+TAB = "  "
+
 def member_to_string(member: E) -> str:
   return member.name.lower()
+
+def member_name_list(enum: Type[E]) -> list[str]:
+  return [member_to_string(member) for member in list(enum)]
 
 def is_member(enum: Type[E], string: str) -> bool:
   return nullable_member_from_string(enum, string) is not None
