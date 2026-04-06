@@ -81,9 +81,7 @@ def add_cycle_aware_eq(cls):
 
 def parse_value(val, typ):
    # If the expected type is complex and val is a string, try to parse it as JSON
-  # print("val:", val)
-  # print("typ:", typ)
-  # print()
+
   complex_types = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
   if typ["type"] in complex_types and isinstance(val, str):
     try:

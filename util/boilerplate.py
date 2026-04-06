@@ -355,4 +355,3 @@ def java_tree_node(val_type_string: str, one_indent: str, base_indent: str) -> s
     f"{base_indent}{one_indent}" + "}\n" +
     f"{base_indent}" + "}\n"
   )
-

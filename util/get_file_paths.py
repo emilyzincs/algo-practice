@@ -31,7 +31,7 @@ def get_practice_file_path(lang: Language) -> str:
 
 def get_solution_file_dir(specific_alg: SpecificAlgorithm) -> str:
   gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[specific_alg]
-  if gen_alg == specific_alg:
+  if gen_alg.name == specific_alg.name:
     return os.path.join(PROJECT_ROOT, "problems", member_to_string(specific_alg))
   else:
     return os.path.join(PROJECT_ROOT, "problems", member_to_string(gen_alg), 

@@ -17,6 +17,7 @@ def handle_commands(
     refresh_settings_func,
     exit_func
 ) -> None:
+  # todo: handle more dynamically
   setting_to_info = {
     "default_language": "The language the program is initially set to when it" +
                         " is started without an explicit language argument.",
