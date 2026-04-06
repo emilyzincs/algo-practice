@@ -1,17 +1,23 @@
 import sys
 from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
 from util.exceptions import UnhandledCaseException
-from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
+from commands.command_util import handle_global_command, get_global_command_descriptions
 from util.get_file_paths import get_settings_path, get_default_settings_path
+from typing import assert_never
+from util.enums import (
+  GlobalCommand,
+  is_member,
+  SettingsCommand,
+  guaranteed_member_from_string,
+  TAB,
+  Language
+)
 
 def handle_commands(
-    local_commands: set[str],
-    languages,
-    tab: str,
     refresh_settings_func,
     exit_func
 ) -> None:
-  settings_to_info = {
+  setting_to_info = {
     "default_language": "The language the program is initially set to when it" +
                         " is started without an explicit language argument.",
     "delete_attempts": "When set to true, clears the practice directory upon completion" +
@@ -24,7 +30,6 @@ def handle_commands(
                 " file with any text."
   }
   
-  local_commands
   default_settings_path = get_default_settings_path()
   settings_path = get_settings_path()
   default_settings = read_json(default_settings_path)
@@ -36,24 +41,26 @@ def handle_commands(
     user_input = input("Enter a setting and new corresponding value" + 
                       " (<setting> <new val>)," + 
                       " or 'help' for options:\n").strip().lower().split()
-    is_global_cmd = len(user_input) == 1 and user_input[0] in GLOBAL_COMMANDS
-    is_local_cmd = len(user_input) == 1 and user_input[0] in local_commands 
+    is_global_cmd = len(user_input) == 1 and is_member(GlobalCommand, user_input[0])
+    is_local_cmd = len(user_input) == 1 and is_member(SettingsCommand, user_input[0])  
     is_setting = len(user_input) == 2 and user_input[0] in settings
     is_info = len(user_input) == 2 and user_input[0] == "info" and user_input[1] in settings
     if not (is_global_cmd or is_local_cmd or is_setting or is_info):
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
     if is_global_cmd:
-      if not handle_global_command(user_input[0], handle_help, exit_func):
+      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input[0])
+      if not handle_global_command(global_cmd, handle_help, exit_func):
         refresh_settings_func()
         return
     elif is_local_cmd:
-      match user_input[0]:
-        case "list":
+      local_cmd: SettingsCommand = guaranteed_member_from_string(SettingsCommand, user_input[0])
+      match local_cmd:
+        case SettingsCommand.LIST:
           print("Current settings:")
           for setting, value in settings.items():
-            print(f"{tab}{setting}: {value}")
-        case "reset":
+            print(f"{TAB}{setting}: {value}")
+        case SettingsCommand.RESET:
           next_input = input("Confirm resetting all settings to default?" +
                             " To confirm type 'y' or 'yes', to cancel" + 
                             " type anything else:\n").strip().lower()
@@ -62,7 +69,7 @@ def handle_commands(
             settings = default_settings.copy()
             print("Successfully reset settings to default.")
         case _:
-          raise UnhandledCaseException(user_input[0], "local command")
+          assert_never(local_cmd)
     elif is_setting:
       setting, new_val = user_input
       if new_val == "default":
@@ -71,7 +78,7 @@ def handle_commands(
       else:
         match setting:
           case "default_language":
-            if new_val not in languages:
+            if not is_member(Language, new_val):
               print(f"Invalid language", file=sys.stderr)
               continue
             settings[setting] = new_val
@@ -95,7 +102,7 @@ def handle_commands(
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
     elif is_info:
-      print(f"{user_input[1]}: {settings_to_info[user_input[1]]}")
+      print(f"{user_input[1]}: {setting_to_info[user_input[1]]}")
     else:
       raise UnhandledCaseException(" ".join(user_input), "input")
 
