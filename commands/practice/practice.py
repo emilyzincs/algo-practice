@@ -3,12 +3,18 @@ import util.get_file_paths as gfp
 import subprocess
 import time
 from commands.practice.java import get_test_cmd as java_get_test_cmd
-from util.utils import print_desc, in_either
+from util.utils import print_desc
 from util.exceptions import UnhandledCaseException
-from commands.command_util import GLOBAL_COMMANDS, handle_global_command, get_global_command_descriptions
+from commands.command_util import handle_global_command, get_global_command_descriptions
+from typing import assert_never
+from util.enums import (
+  GlobalCommand,
+  is_member,
+  PracticeCommand,
+  guaranteed_member_from_string
+)
 
 def handle_commands(
-    local_commands: set[str],
     alg: str,
     language: str,
     extension: str,
@@ -21,27 +27,33 @@ def handle_commands(
   correct = False
   while not correct:
     user_input = input("Type 'done' when you are finished or 'help' for options:\n")
-    if not in_either(user_input, GLOBAL_COMMANDS, local_commands):
+    input_is_global_cmd = is_member(GlobalCommand, user_input)
+    input_is_local_cmd = is_member(PracticeCommand, user_input)
+    if not input_is_global_cmd and not input_is_local_cmd:
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
     
-    if user_input in GLOBAL_COMMANDS:
-      if not handle_global_command(user_input, handle_help, exit_func):
+    if input_is_global_cmd:
+      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input)
+      if not handle_global_command(global_cmd, handle_help, exit_func):
         break
-    else:
-      match user_input:
-        case "d" | "done":
+    elif input_is_local_cmd:
+      local_cmd: PracticeCommand = guaranteed_member_from_string(PracticeCommand, user_input)
+      match local_cmd:
+        case PracticeCommand.D | PracticeCommand.DONE:
           potential_end_time = time.perf_counter()
           print("Running tests...")
           correct = run_tests(alg, language, extension)
-        case "s" | "sol" | "solution":
+        case PracticeCommand.S | PracticeCommand.SOL | PracticeCommand.SOLUTION:
           try:
             load_solution_func(alg)
             print("Successfully loaded solution.")
           except FileNotFoundError:
             print(f"Cannot load solution because it does not exist.", file=sys.stderr)
         case _:
-          raise UnhandledCaseException(user_input, "input")
+          assert_never()
+    else:
+      raise UnhandledCaseException(user_input, "input")
 
   delete_attempts_func()    
   if correct:
