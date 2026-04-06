@@ -52,9 +52,6 @@ def match_json_keys(to_match_path: str, to_edit_path: str):
     to_edit = {key: val for key, val in to_edit.items() if key in to_match}
   dump_json(to_edit_path, to_edit)
 
-def in_either(str: str, first: set, second: set) -> bool:
-  return str in first or str in second
-
 def print_desc(descs: list[str]) -> None:
   for i, desc in enumerate(descs):
     print(f"{i+1}. {desc}.")

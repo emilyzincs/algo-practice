@@ -1,5 +1,4 @@
 import os.path
-import time
 import util.get_file_paths as gfp
 import sys
 import shutil
@@ -10,6 +9,7 @@ from commands.practice.practice import handle_commands as practice_handle_comman
 from commands.settings import handle_commands as settings_handle_commands
 from commands.practice.java import path_to_package
 import util.boilerplate as bp
+from util.enums import Language, nullable_member_from_string, member_to_string
 
 default_settings_path = gfp.get_default_settings_path()
 settings_path = gfp.get_settings_path()
@@ -20,58 +20,22 @@ match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
 DEBUG = False
-ALG_NAME_TO_IDX = {
-  "binary search": 0,
-  "bfs": 1,
-  "breadth first search": 1,
-  "dfs": 2,
-  "depth first search": 2,
-  "merge sort": 3
-}
-ALG_LIST = [
-  "binary_search",
-  "breadth_first_search",
-  "depth_first_search",
-  "merge_sort"
-]
-NUM_ALGS = len(ALG_LIST)
-TAB = "  "
-SOLUTION_CLASS_NAME = "Solution"
-SOLUTION_FUNCTION_NAME = "solve"
-LANGUAGE_LIST = [
-  "python",
-  "java",
-]
-LANGUAGES = set(LANGUAGE_LIST)
-DEFAULT_LANGUAGE = settings['default_language']
-LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL = {
-  "python": (".py", "#"),
-  "java": (".java", "//"),
-}
-
-LANGUAGE = DEFAULT_LANGUAGE
+DEFAULT_LANGUAGE: Language = Language[settings['default_language']]
+LANGUAGE: Language = DEFAULT_LANGUAGE
 if __name__ == "__main__":
   if len(sys.argv) > 2:
-    raise ValueError(f"Usage: python {sys.argv[0]} language (default is python)")
+    raise ValueError(f"Usage: python {sys.argv[0]} language (default is python if not specified)")
   elif len(sys.argv) == 2:
-    lang = sys.argv[1].strip().lower()
-    if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
+    lang_str = sys.argv[1]
+    lang_member: Language | None = nullable_member_from_string(Language, lang_str)
+    if lang_member is None:
       if __name__ == "__main__":
-        print(f"Unsupported language: {lang}. defaulting to {DEFAULT_LANGUAGE}." + 
+        print(f"Unsupported language: {lang_str}. defaulting to {member_to_string(DEFAULT_LANGUAGE)}." + 
               " Type 'languages' for supported languages or <language> to switch to that language.")
     else:
-      LANGUAGE = lang
+      LANGUAGE = lang_member
 
-EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
-PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
-
-LOCAL_COMMANDS = {
-  "main_menu": {"lang", "language", "langs", "languages", "algs", 
-                "algorithms", "s", "settings"},
-  "practice": {"d", "done", "s", "sol", "solution"},
-  "settings": {"list", "reset"}
-}
-LOCAL_COMMANDS['main_menu'].update(LANGUAGE_LIST)
+EXTENSION, COMMENT_SYMBOL = LANGUAGE.extension, LANGUAGE.comment_symbol
 
 def main():  
   try:  
@@ -107,10 +71,9 @@ def set_language(lang: str) -> None:
   if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
     raise ValueError(f"Unsupported language: {lang}." + 
           " Type 'languages' for supported languages or <language> to switch to that language.")
-  global LANGUAGE, EXTENSION, COMMENT_SYMBOL, PARAMETER_LINE_PREFIX
+  global LANGUAGE, EXTENSION, COMMENT_SYMBOL
   LANGUAGE = lang
   EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
-  PARAMETER_LINE_PREFIX = COMMENT_SYMBOL + " parameters:"
   print(f"Successfully set language to {lang}.")
 
 def handle_practice(alg: str) -> float|None:

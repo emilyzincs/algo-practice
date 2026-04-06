@@ -1,17 +1,25 @@
 import sys
-from util.utils import print_desc, is_type, in_either
+from util.utils import print_desc, is_type
 from commands.command_util import GLOBAL_COMMANDS, handle_global_command
+from util.enums import (
+  MainMenuCommand, 
+  INPUT_ALG_TO_SPECIFIC, 
+  SpecificAlgorithm, 
+  is_member, 
+  GlobalCommand, 
+  Language,
+  guaranteed_member_from_string
+)
 
 def handle_commands(
-    local_commands: set[str],
     get_language_func,
-    language_list: list[str],
-    lang_to_ext_and_comment_symbol: dict[str, tuple[str, str]],
+    # language_list: list[str],
+    # lang_to_ext_and_comment_symbol: dict[str, tuple[str, str]],
     set_language_func,
-    alg_list: list[str],
-    alg_name_to_idx: dict[str, int],
-    num_algs: int,
-    tab: str,
+    # alg_list: list[str],
+    # alg_name_to_idx: dict[str, int],
+    # num_algs: int,
+    # tab: str,
     handle_practice_func,
     handle_settings_func,
     exit_func
@@ -22,20 +30,31 @@ def handle_commands(
     "Input: "
   ]
   # todo: think about how an unhandledinputexception might work here
+  num_algs = len(SpecificAlgorithm)
   input_message = responses[0]
   while True:
     input_message = responses[0]
     user_input = input(input_message).strip().lower()
+
+    input_is_global_cmd = is_member(GlobalCommand, user_input)
+    input_is_local_cmd = is_member(MainMenuCommand, user_input)
+    input_is_language = is_member(Language, user_input)
+    input_is_input_alg = user_input in INPUT_ALG_TO_SPECIFIC
     input_is_alg_id = is_type(user_input, int) and 0 <= int(user_input) < num_algs
-    if (not in_either(user_input, GLOBAL_COMMANDS, local_commands) and 
-                    user_input not in lang_to_ext_and_comment_symbol and
-                    user_input not in alg_name_to_idx and
-                    not input_is_alg_id):
+
+    if not (
+      input_is_global_cmd or
+      input_is_local_cmd or
+      input_is_language or
+      input_is_input_alg or
+      input_is_alg_id
+    ):
       print(f"Invalid algorithm name or id: {user_input}.", file=sys.stderr)
       input_message = responses[0]
 
-    if user_input in GLOBAL_COMMANDS:
-      if not handle_global_command(user_input, handle_help, exit_func):
+    if input_is_global_cmd:
+      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input)
+      if not handle_global_command(global_cmd, handle_help, exit_func):
         print("Cannot go back from root menu.", file=sys.stderr)
       input_message = responses[0]
     else:
