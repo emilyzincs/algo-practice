@@ -3,6 +3,8 @@ from typing import Type, TypeVar
 
 E = TypeVar('E', bound=Enum)
 
+SOLUTION_CLASS_NAME = "Solution"
+SOLUTION_FUNCTION_NAME = "solve"
 TAB = "  "
 
 def member_to_string(member: E) -> str:
@@ -12,16 +14,13 @@ def member_name_list(enum: Type[E]) -> list[str]:
   return [member_to_string(member) for member in list(enum)]
 
 def is_member(enum: Type[E], string: str) -> bool:
-  return nullable_member_from_string(enum, string) is not None
-
-def nullable_member_from_string(enum: Type[E], string: str) -> E | None:
-  string = string.strip().upper()
-  if string in enum.__members__:
-    return enum[string]
-  else:
-    return None
+  try:
+    member_from_string(enum, string)
+    return True
+  except Exception:
+    return False
   
-def guaranteed_member_from_string(enum: Type[E], string: str) -> E:
+def member_from_string(enum: Type[E], string: str) -> E:
   string = string.strip().upper()
   if string in enum.__members__:
     return enum[string]

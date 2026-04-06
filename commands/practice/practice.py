@@ -11,13 +11,14 @@ from util.enums import (
   GlobalCommand,
   is_member,
   PracticeCommand,
-  guaranteed_member_from_string
+  member_from_string,
+  SpecificAlgorithm,
+  Language
 )
 
 def handle_commands(
-    alg: str,
-    language: str,
-    extension: str,
+    alg: SpecificAlgorithm,
+    language: Language,
     delete_attempts_func,
     load_solution_func,
     exit_func
@@ -34,16 +35,16 @@ def handle_commands(
       continue
     
     if input_is_global_cmd:
-      global_cmd: GlobalCommand = guaranteed_member_from_string(GlobalCommand, user_input)
+      global_cmd: GlobalCommand = member_from_string(GlobalCommand, user_input)
       if not handle_global_command(global_cmd, handle_help, exit_func):
         break
     elif input_is_local_cmd:
-      local_cmd: PracticeCommand = guaranteed_member_from_string(PracticeCommand, user_input)
+      local_cmd: PracticeCommand = member_from_string(PracticeCommand, user_input)
       match local_cmd:
         case PracticeCommand.D | PracticeCommand.DONE:
           potential_end_time = time.perf_counter()
           print("Running tests...")
-          correct = run_tests(alg, language, extension)
+          correct = run_tests(alg, language)
         case PracticeCommand.S | PracticeCommand.SOL | PracticeCommand.SOLUTION:
           try:
             load_solution_func(alg)
@@ -72,18 +73,17 @@ def handle_help():
   print_desc(command_descriptions) 
 
 def run_tests(
-    alg: str,
-    language: str, 
-    extension: str,
+    alg: SpecificAlgorithm,
+    language: Language, 
     show_subprocess_text: bool = True,
     debug: str = "False",
     required_class_name: str = "Solution",
     required_method_name: str = "solve",
   ) -> bool:
   practice_file_dir = gfp.get_practice_file_dir()
-  practice_file = gfp.get_practice_file_path(language, extension)
+  practice_file = gfp.get_practice_file_path(language)
   test_runner_dir = gfp.get_test_runner_dir_path(language)
-  test_runner_file = gfp.get_test_runner_file_path(language, extension)
+  test_runner_file = gfp.get_test_runner_file_path(language)
   info_file = gfp.get_info_file_path(alg)
   test_file = gfp.get_test_file_path(alg)
   cmd: list[str]|None

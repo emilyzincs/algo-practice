@@ -9,7 +9,15 @@ from commands.practice.practice import handle_commands as practice_handle_comman
 from commands.settings import handle_commands as settings_handle_commands
 from commands.practice.java import path_to_package
 import util.boilerplate as bp
-from util.enums import Language, nullable_member_from_string, member_to_string
+from typing import assert_never
+from util.enums import (
+  Language, 
+  is_member, 
+  member_to_string,
+  SpecificAlgorithm,
+  member_from_string
+)
+
 
 default_settings_path = gfp.get_default_settings_path()
 settings_path = gfp.get_settings_path()
@@ -27,28 +35,19 @@ if __name__ == "__main__":
     raise ValueError(f"Usage: python {sys.argv[0]} language (default is python if not specified)")
   elif len(sys.argv) == 2:
     lang_str = sys.argv[1]
-    lang_member: Language | None = nullable_member_from_string(Language, lang_str)
-    if lang_member is None:
-      if __name__ == "__main__":
+    if is_member(Language, lang_str):
+      LANGUAGE = member_from_string(Language, lang_str)
+    else:
         print(f"Unsupported language: {lang_str}. defaulting to {member_to_string(DEFAULT_LANGUAGE)}." + 
               " Type 'languages' for supported languages or <language> to switch to that language.")
-    else:
-      LANGUAGE = lang_member
 
 EXTENSION, COMMENT_SYMBOL = LANGUAGE.extension, LANGUAGE.comment_symbol
 
 def main():  
   try:  
     main_menu_handle_commands(
-      LOCAL_COMMANDS['main_menu'],
       get_language,
-      LANGUAGE_LIST,
-      LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL,
       set_language,
-      ALG_LIST,
-      ALG_NAME_TO_IDX,
-      NUM_ALGS,
-      TAB,
       handle_practice,
       handle_settings,
       exit_program
@@ -63,24 +62,19 @@ def main():
       print()
     exit_program(1)
 
-def get_language() -> str:
+def get_language() -> Language:
   return LANGUAGE
 
-def set_language(lang: str) -> None:
-  lang = lang.strip().lower()
-  if lang not in LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL:
-    raise ValueError(f"Unsupported language: {lang}." + 
-          " Type 'languages' for supported languages or <language> to switch to that language.")
+def set_language(lang: Language) -> None:
   global LANGUAGE, EXTENSION, COMMENT_SYMBOL
   LANGUAGE = lang
-  EXTENSION, COMMENT_SYMBOL = LANGUAGE_TO_EXTENSION_AND_COMMENT_SYMBOL[LANGUAGE]
+  EXTENSION, COMMENT_SYMBOL = LANGUAGE.extension, LANGUAGE.comment_symbol
   print(f"Successfully set language to {lang}.")
 
-def handle_practice(alg: str) -> float|None:
+def handle_practice(alg: SpecificAlgorithm) -> float|None:
   generate_test_file_if_necessary(alg)
   reset_practice_file(alg)
   seconds_spent = practice_handle_commands(
-    LOCAL_COMMANDS['practice'],
     alg,
     LANGUAGE,
     EXTENSION,
@@ -90,7 +84,7 @@ def handle_practice(alg: str) -> float|None:
   )
   return seconds_spent
 
-def generate_test_file_if_necessary(alg: str) -> None:
+def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_file_path = gfp.get_test_file_path(alg)
   if os.path.exists(test_file_path):
     return
@@ -107,7 +101,7 @@ def generate_test_file_if_necessary(alg: str) -> None:
                               f" Path: {test_generator}.")
   test_generator.generate()
 
-def reset_practice_file(alg: str) -> None:
+def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = gfp.get_practice_file_path(LANGUAGE, EXTENSION)
   info_file = gfp.get_info_file_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
@@ -148,9 +142,9 @@ def load_solution_into_practice(alg: str) -> None:
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
-    case "python":
+    case Language.PYTHON:
       pass
-    case "java":
+    case Language.JAVA:
       lines = None
       with open(solution_file, "r", encoding="utf-8") as sol:
         lines = sol.readlines()
@@ -168,15 +162,12 @@ def load_solution_into_practice(alg: str) -> None:
         prac.writelines(lines)
       return
     case _:
-      raise UnhandledCaseException(LANGUAGE, "language")
+      assert_never(LANGUAGE)
   copy_file(solution_file, practice_file)
 
 
 def handle_settings() -> None:
   settings_handle_commands(
-    LOCAL_COMMANDS['settings'],
-    LANGUAGES,
-    TAB,
     refresh_settings,
     exit_program
   )
