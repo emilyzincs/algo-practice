@@ -31,7 +31,7 @@ match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
 DEBUG = True
-DEFAULT_LANGUAGE: Language = member_from_string(Language, settings['default_language'])
+DEFAULT_LANGUAGE: Language = member_from_string(Language, settings["default_language"]["value"])
 LANGUAGE: Language = DEFAULT_LANGUAGE
 if __name__ == "__main__":
   if len(sys.argv) > 2:
@@ -77,7 +77,7 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
   seconds_spent = practice_handle_commands(
     alg,
     LANGUAGE,
-    delete_all_attempts if settings['delete_attempts'] else no_op,
+    delete_all_attempts if settings["delete_attempts"]["value"] else no_op,
     load_solution_into_practice,
     exit_program
   )
@@ -112,7 +112,7 @@ def get_starting_practice_text(info_file_path: str) -> str:
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
   data = read_json(info_file_path)
   parameter_names = data['parameter_names']
-  if settings["prepopulate_boilerplate"] == False:
+  if settings["prepopulate_boilerplate"]["value"] == False:
     parameter_info_line = LANGUAGE.comment_symbol + " Parameters: " + ", ".join(parameter_names) + "."
     return (LANGUAGE.comment_symbol + 
           f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
@@ -120,7 +120,7 @@ def get_starting_practice_text(info_file_path: str) -> str:
   else:
     input_types = data["input_types"]
     expected_type = data["expected_type_wrapper"]
-    user_tab_size = settings["tab_size"]
+    user_tab_size = settings["tab_size"]["value"]
     one_indent = " " * user_tab_size
     return bp.get_boilerplate_text(
       parameter_names,
@@ -184,7 +184,7 @@ def delete_all_attempts() -> None:
 
 def exit_program(code: int) -> None:
   print("Exiting...")
-  if settings['delete_attempts']:
+  if settings["delete_attempts"]["value"]:
     delete_all_attempts()
   sys.exit(code)
 

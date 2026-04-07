@@ -209,7 +209,6 @@ def main():
       ]
 
       try:
-        # actual = sol.solve(*args)
         solution_method = getattr(sol, required_method_name)
       except AttributeError:
         print(incorrect_setup_msg, file=sys.stderr)

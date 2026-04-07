@@ -121,7 +121,7 @@ class TestRunTests(parent):
         return
       else: 
         print("\n\nRUNNING " + member_to_string(language).upper() + " run_test TESTS.")
-        for i in range(1, len(expected_values)):
+        for i in range(1, len(expected_values) + 1):
           self.specific_test_run_test(
             i,
             language,

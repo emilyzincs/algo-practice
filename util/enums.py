@@ -63,34 +63,33 @@ SPECIFIC_ALG_TO_GENERAL = {
 }
 
 class GlobalCommand(Enum):
-  HELP = auto()
-  Q = auto()
-  QUIT = auto()
-  EXIT = auto()
-  B = auto()
-  BACK = auto()
+  HELP = "Lists commands"
+  Q = "Exits the program"
+  QUIT = "Exits the program"
+  EXIT = "Exits the program"
+  B = "Returns to the previous menu"
+  BACK = "Returns to the previous menu"
 
 class MainMenuCommand(Enum):
-  LANG = auto()
-  LANGUAGE = auto()
-  LANGS = auto()
-  LANGUAGES = auto()
-  ALGS = auto()
-  ALGORITHMS = auto()
-  S = auto()
-  SETTINGS = auto()
-  Language
+  LANG = "Prints the current language"
+  LANGUAGE = "Prints the current language"
+  LANGS = "Lists the languages this program supports"
+  LANGUAGES = "Lists the languages this program supports"
+  ALGS = "Lists the algorithms this program supports and their ids"
+  ALGORITHMS = "Lists the algorithms this program supports and their ids"
+  S = "Goes to the settings menu"
+  SETTINGS = "Goes to the settings menu"
 
 class PracticeCommand(Enum):
-  D = auto()
-  DONE = auto()
-  S = auto()
-  SOL = auto()
-  SOLUTION = auto()
+  D = "Submits the current practice implementation to be tested"
+  DONE = "Submits the current practice implementation to be tested"
+  S = "Loads the algorithm solution into the file"
+  SOL = "Loads the algorithm solution into the file"
+  SOLUTION = "Loads the algorithm solution into the file"
 
 class SettingsCommand(Enum):
-  LIST = auto()
-  RESET = auto()
+  LIST = "Shows the current settings"
+  RESET = "Resets all settings to default (asks for confirmation)"
 
 class ParseType(Enum):
   INT = auto()
@@ -105,4 +104,3 @@ class ParseType(Enum):
   MAP = auto()
   LISTNODE = auto()
   TREENODE = auto()
-

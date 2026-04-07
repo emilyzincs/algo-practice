@@ -39,6 +39,7 @@ public class Runner {
       String requiredMethodName = args[5];
       Runner.fullPackageClassName = practiceFilePackage + "." + requiredClassName;
 
+      @SuppressWarnings("unchecked")
       List<Map<String, Object>> inputDefs = (List<Map<String, Object>>) root.get("input_types");
 
       Class<?>[] paramTypes = new Class<?>[inputDefs.size()];
@@ -59,6 +60,7 @@ public class Runner {
       }
 
       boolean unique = (boolean) root.get("unique_answer");
+      @SuppressWarnings("unchecked")
       Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
       
       List<Map<String, Object>> tests = mapper.readValue(
@@ -139,6 +141,7 @@ public class Runner {
       
       case "immutable_list":
       case "array": {
+        @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         return Array.newInstance(inner, 0).getClass();
       }
@@ -239,6 +242,7 @@ public class Runner {
       case "array": {
         // val must be a List after parsing
         List<?> rawList = (List<?>) val;
+        @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
         Class<?> componentType = parseType(itemDef);
         Object array = Array.newInstance(componentType, rawList.size());
@@ -252,6 +256,7 @@ public class Runner {
       case "list": {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (Object o : raw)
           list.add(parseValue(o, inner));
@@ -261,6 +266,7 @@ public class Runner {
       case "set": {
         List<?> raw = (List<?>) val;
         Set<Object> set = new HashSet<>();
+        @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (Object o : raw)
           set.add(parseValue(o, inner));
@@ -270,8 +276,9 @@ public class Runner {
       case "map": {
         Map<?, ?> raw = (Map<?, ?>) val;
         Map<Object, Object> map = new HashMap<>();
-
+        @SuppressWarnings("unchecked")
         Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
+        @SuppressWarnings("unchecked")
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
 
         for (Object k : raw.keySet()) {
@@ -281,10 +288,14 @@ public class Runner {
       }
 
       case "ListNode":
-        return buildListNode((List<?>) val, (Map<String, Object>) def.get("val"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> def_val = (Map<String, Object>) def.get("val");
+        return buildListNode((List<?>) val, def_val);
 
       case "TreeNode":
-        return buildTreeNode((List<?>) val, (Map<String, Object>) def.get("val"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> def_val2 = (Map<String, Object>) def.get("val");
+        return buildTreeNode((List<?>) val, def_val2);
 
       default:
         throw new RuntimeException("Unknown type: " + type);
@@ -316,6 +327,7 @@ public class Runner {
         if (!obj.getClass().isArray())
           return false;
         int len = Array.getLength(obj);
+        @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (int i = 0; i < len; i++) {
           if (!validateType(Array.get(obj, i), inner))
@@ -326,6 +338,7 @@ public class Runner {
       case "list":
         if (!(obj instanceof List))
           return false;
+        @SuppressWarnings("unchecked")
         Map<String, Object> listInner = (Map<String, Object>) def.get("items");
         for (Object o : (List<?>) obj) {
           if (!validateType(o, listInner))
@@ -336,6 +349,7 @@ public class Runner {
       case "set":
         if (!(obj instanceof Set))
           return false;
+        @SuppressWarnings("unchecked")
         Map<String, Object> setInner = (Map<String, Object>) def.get("items");
         for (Object o : (Set<?>) obj) {
           if (!validateType(o, setInner))
@@ -346,7 +360,9 @@ public class Runner {
       case "map":
         if (!(obj instanceof Map))
           return false;
+        @SuppressWarnings("unchecked")
         Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
+        @SuppressWarnings("unchecked")
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
 
         for (Map.Entry<?, ?> e : ((Map<?, ?>) obj).entrySet()) {

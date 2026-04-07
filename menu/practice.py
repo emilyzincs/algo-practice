@@ -2,7 +2,7 @@ import sys
 import time
 from user_solution_testing.test import run_tests
 from util.exceptions import UnhandledCaseException
-from menu.util import handle_global_command, get_global_command_descriptions, print_desc
+from menu.util import handle_global_command, print_desc, to_description_lines
 from typing import assert_never
 from util.enums import (
   GlobalCommand,
@@ -24,7 +24,7 @@ def handle_commands(
   potential_end_time = None
   correct = False
   while not correct:
-    user_input = input("Type 'done' when you are finished or 'help' for options:\n")
+    user_input = input("\nType 'done' when you are finished or 'help' for options:\n")
     input_is_global_cmd = is_member(GlobalCommand, user_input)
     input_is_local_cmd = is_member(PracticeCommand, user_input)
     if not input_is_global_cmd and not input_is_local_cmd:
@@ -38,7 +38,7 @@ def handle_commands(
     elif input_is_local_cmd:
       local_cmd: PracticeCommand = member_from_string(PracticeCommand, user_input)
       match local_cmd:
-        case PracticeCommand.D | PracticeCommand.DONE:
+        case PracticeCommand.D |PracticeCommand.DONE:
           potential_end_time = time.perf_counter()
           print("Running tests...")
           correct = run_tests(alg, language)
@@ -61,10 +61,7 @@ def handle_commands(
   return None
 
 def handle_help():
-  command_descriptions = get_global_command_descriptions()
-  command_descriptions.extend([
-    "d/done: Submits the current practice implementation to be tested",
-    "s/sol/solution: Loads the algorithm solution into the file"
-  ])
+  command_descriptions = to_description_lines(GlobalCommand)
+  command_descriptions.extend(to_description_lines(PracticeCommand))
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

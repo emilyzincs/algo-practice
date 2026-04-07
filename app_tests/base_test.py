@@ -1,6 +1,6 @@
 import unittest
 import os
-from util.types import is_type, string_to_bool
+from util.type_check import is_type, string_to_bool
 from util.enums import Language, SpecificAlgorithm, is_member, Language, member_from_string
 
 

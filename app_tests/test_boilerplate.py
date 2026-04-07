@@ -71,7 +71,7 @@ class TestBoilerplate(parent):
       info["parameter_names"],
       info["input_types"],
       info["expected_type_wrapper"],
-      " " * settings["tab_size"],
+      " " * settings["tab_size"]["value"],
       (
         SOLUTION_CLASS_NAME if not required_class_name_prefix 
         else f"{required_class_name_prefix}{test_number}"

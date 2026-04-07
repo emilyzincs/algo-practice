@@ -1,7 +1,7 @@
 import sys
 from typing import assert_never
-from menu.util import handle_global_command, print_desc
-from util.types import is_type
+from menu.util import handle_global_command, print_desc, to_description_lines
+from util.type_check import is_type
 from util.constants import TAB
 from util.exceptions import UnhandledCaseException
 from util.enums import (
@@ -60,7 +60,7 @@ def handle_commands(
       local_cmd: MainMenuCommand = member_from_string(MainMenuCommand, user_input)
       match local_cmd:
         case MainMenuCommand.LANG | MainMenuCommand.LANGUAGE:
-          print(f"The current language is {get_language_func()}.")
+          print(f"The current language is {member_to_string(get_language_func())}.")
           input_message = responses[1]
         case MainMenuCommand.LANGS | MainMenuCommand.LANGUAGES:
           handle_languages(member_name_list(Language))
@@ -80,7 +80,7 @@ def handle_commands(
     elif input_is_input_alg or input_is_alg_id:
       alg: SpecificAlgorithm = (
         INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-        else list(SpecificAlgorithm)[int(user_input)] # todo: make better somehow?
+      else list(SpecificAlgorithm)[int(user_input)]
       )
       print(f"Starting {member_to_string(alg)} practice.")
       seconds_spent = handle_practice_func(alg)
@@ -108,18 +108,13 @@ def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int
   return alg_list[idx]
 
 def handle_help():
-  command_descriptions = [
-    "help: Lists commands",
-    "q/quit/exit: Exits the program",
-    "lang/language: Prints the current language",
-    "langs/languages: Lists the languages this program supports",
+  description_lines = to_description_lines(GlobalCommand)
+  description_lines.extend(to_description_lines(MainMenuCommand))
+  description_lines.extend([
     "<language>: Updates the program to use the given language",
-    "algs/algorithms: Lists the algorithms this program supports and their ids",
-    "<alg id>/<alg name>: Begins a practice session for the given algorithm",
-    "s/settings: Goes to the settings menu"
-  ]
+  ])
   print("This menu supports the following inputs:")
-  print_desc(command_descriptions)
+  print_desc(description_lines)
 
 def handle_languages(language_list: list[str]) -> None: 
   print("This program supports the following languages:")
