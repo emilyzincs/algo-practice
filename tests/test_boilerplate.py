@@ -18,7 +18,7 @@ class TestBoilerplate(parent):
     super().setUp()
     if self.alg is not None:
       raise ValueError("Alg arguments are not applicable to boilerplate tests.")
-    self.gfp_base = "util.boilerplate."
+    self.gfp_base = "boilerplate.boilerplate."
 
   def test_main(self) -> None:
     if self.language is not None:
