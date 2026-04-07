@@ -96,14 +96,11 @@ def handle_commands(
       raise UnhandledCaseException(" ".join(user_input), "input")
 
 def handle_help():
-  command_descriptions = get_global_command_descriptions()
-  command_descriptions.extend([
-    "list: Shows the current settings",
-    "reset: Resets all settings to default (asks for confirmation)",
+  command_descriptions = [
     "info <setting>: Prints information regarding the given setting",
     "<setting> default: Changes the given setting to have the default value",
     "<setting> <new value>: Changes the given setting to have the" + 
                           " given new value, if possible"
-  ])
+  ]
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

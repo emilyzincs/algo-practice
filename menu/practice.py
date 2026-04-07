@@ -61,10 +61,6 @@ def handle_commands(
   return None
 
 def handle_help():
-  command_descriptions = get_global_command_descriptions()
-  command_descriptions.extend([
-    "d/done: Submits the current practice implementation to be tested",
-    "s/sol/solution: Loads the algorithm solution into the file"
-  ])
+  command_descriptions = []
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

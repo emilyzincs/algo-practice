@@ -80,7 +80,7 @@ def handle_commands(
     elif input_is_input_alg or input_is_alg_id:
       alg: SpecificAlgorithm = (
         INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-        else list(SpecificAlgorithm)[int(user_input)]
+      else list(SpecificAlgorithm)[int(user_input)]
       )
       print(f"Starting {member_to_string(alg)} practice.")
       seconds_spent = handle_practice_func(alg)
@@ -109,14 +109,7 @@ def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int
 
 def handle_help():
   command_descriptions = [
-    "help: Lists commands",
-    "q/quit/exit: Exits the program",
-    "lang/language: Prints the current language",
-    "langs/languages: Lists the languages this program supports",
     "<language>: Updates the program to use the given language",
-    "algs/algorithms: Lists the algorithms this program supports and their ids",
-    "<alg id>/<alg name>: Begins a practice session for the given algorithm",
-    "s/settings: Goes to the settings menu"
   ]
   print("This menu supports the following inputs:")
   print_desc(command_descriptions)
