@@ -1,4 +1,4 @@
-package tests.java.boilerplate_files;
+package app_tests.java.boilerplate_files;
 
 import java.util.Set;
 

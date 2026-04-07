@@ -30,7 +30,7 @@ class TestBoilerplate(parent):
   def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
-    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "tests", 
+    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", 
                                         member_to_string(language), "boilerplate_files")
     match language:
       case Language.PYTHON:
@@ -148,7 +148,7 @@ class TestBoilerplate(parent):
     return info_path, test_path, boilerplate_file_path
 
   def get_test_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "json_files", "test")
+    return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "test")
   
   def get_info_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "json_files", "info")
+    return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")

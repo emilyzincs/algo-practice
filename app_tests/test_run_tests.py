@@ -192,7 +192,7 @@ class TestRunTests(parent):
       print("Done.")
 
   def get_test_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "json_files", "test")
+    return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "test")
   
   def get_info_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "tests", "json_files", "info")
+    return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")

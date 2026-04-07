@@ -9,7 +9,7 @@ TEST_PREFIX = "test_"
 
 def run_all_tests() -> None:
   loader = unittest.TestLoader()
-  suite = loader.discover(start_dir="tests", pattern="test_*.py")
+  suite = loader.discover(start_dir="app_tests", pattern="test_*.py")
   runner = unittest.TextTestRunner(verbosity=2)
   result = runner.run(suite)
   if not result.wasSuccessful():

@@ -52,22 +52,22 @@ def get_test_file_path(specific_alg: SpecificAlgorithm) -> str:
   return os.path.join(get_gen_alg_dir(gen_alg), "test.json")
 
 def get_test_runner_dir_path(lang: Language) -> str:
-  return os.path.join(PROJECT_ROOT, "test_runners", member_to_string(lang))
+  return os.path.join(PROJECT_ROOT, "user_solution_testing", "test_runners", member_to_string(lang))
 
 def get_test_runner_file_path(lang: Language) -> str:
   return os.path.join(get_test_runner_dir_path(lang), 
                       to_language_file_case("runner", lang) + lang.extension)
 
 def get_settings_path() -> str:
-  return os.path.join(PROJECT_ROOT, "program_settings", "current.json")
+  return os.path.join(PROJECT_ROOT, "user_settings", "current.json")
 
 def get_default_settings_path() -> str:
-  return os.path.join(PROJECT_ROOT, "program_settings", "default.json")
+  return os.path.join(PROJECT_ROOT, "user_settings", "default.json")
 
 def get_abstract_test_dir() -> str:
-  return os.path.join(PROJECT_ROOT, "tests")
+  return os.path.join(PROJECT_ROOT, "app_tests")
 
 def get_test_generator_path(specific_alg: SpecificAlgorithm) -> str:
   gen_alg = SPECIFIC_ALG_TO_GENERAL[specific_alg]
-  return os.path.join(PROJECT_ROOT, "test_generation", "problems", 
+  return os.path.join(PROJECT_ROOT, "user_test_generation", "problems", 
                       member_to_string(gen_alg) + ".py")
