@@ -19,7 +19,7 @@ class TestRunTests(parent):
 
   def setUp(self) -> None:
     super().setUp()
-    self.fp_base = "user_solution_testing.test.fp."
+    self.fp_base = "user_testing.test.fp."
 
   def test_main(self) -> None:
     if self.language is not None:

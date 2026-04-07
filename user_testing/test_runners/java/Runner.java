@@ -1,4 +1,4 @@
-package user_solution_testing.test_runners.java;
+package user_testing.test_runners.java;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;

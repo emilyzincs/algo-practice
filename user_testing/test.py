@@ -2,7 +2,7 @@ import subprocess
 import util.file_paths as fp
 from typing import assert_never
 from util.enums import SpecificAlgorithm, Language
-from user_solution_testing.test_commands.java import get_test_command as java_get_test_command
+from user_testing.test_commands.java import get_test_command as java_get_test_command
 
 def run_tests(
     alg: SpecificAlgorithm,
