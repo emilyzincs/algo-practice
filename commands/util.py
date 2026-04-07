@@ -24,3 +24,7 @@ def get_global_command_descriptions() -> list[str]:
     "q/quit/exit: Exits the program",
     "b/back: Returns to the previous menu",
   ]
+
+def print_desc(descs: list[str]) -> None:
+  for i, desc in enumerate(descs):
+    print(f"{i+1}. {desc}.")

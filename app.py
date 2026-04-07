@@ -1,23 +1,24 @@
 import os.path
-import util.get_file_paths as gfp
+import util.file_paths as gfp
 import sys
 import shutil
-from util.utils import read_json, copy_file, match_json_keys, no_op, load_module_from_path
-from util.exceptions import UnhandledCaseException
+
+import boilerplate.boilerplate as bp
 from commands.main_menu import handle_commands as main_menu_handle_commands
 from commands.practice.practice import handle_commands as practice_handle_commands
 from commands.settings import handle_commands as settings_handle_commands
 from commands.practice.java import path_to_package
-import util.boilerplate as bp
+
 from typing import assert_never
+from util.general import no_op, load_module_from_path
+from util.file_io import read_json, copy_file, match_json_keys
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 from util.enums import (
   Language, 
   is_member, 
   member_to_string,
   SpecificAlgorithm,
   member_from_string,
-  SOLUTION_CLASS_NAME,
-  SOLUTION_FUNCTION_NAME
 )
 
 

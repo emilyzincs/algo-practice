@@ -1,7 +1,7 @@
 from unittest.mock import patch
 import os
 from commands.practice.practice import run_tests
-from util.get_file_paths import (PROJECT_ROOT, get_solution_file_dir, 
+from util.file_paths import (PROJECT_ROOT, get_solution_file_dir, 
                                  get_solution_file_path, to_language_file_case,
                                  get_abstract_test_dir)
 from typing import Optional, assert_never

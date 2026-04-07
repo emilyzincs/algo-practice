@@ -1,15 +1,17 @@
 import sys
-from util.utils import print_desc, read_json, dump_json, copy_file, is_type, string_to_bool
-from util.exceptions import UnhandledCaseException
-from commands.command_util import handle_global_command, get_global_command_descriptions
-from util.get_file_paths import get_settings_path, get_default_settings_path
 from typing import assert_never
+
+from commands.util import handle_global_command, get_global_command_descriptions, print_desc
+from util.file_paths import get_settings_path, get_default_settings_path
+from util.file_io import read_json, dump_json, copy_file
+from util.types import is_type, string_to_bool
+from util.exceptions import UnhandledCaseException
+from util.constants import TAB
 from util.enums import (
   GlobalCommand,
   is_member,
   SettingsCommand,
   member_from_string,
-  TAB,
   Language
 )
 

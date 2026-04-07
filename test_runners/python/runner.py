@@ -16,7 +16,7 @@ if len(sys.argv) != 8 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
 PROJECT_ROOT = sys.argv[4]
 sys.path.insert(0, PROJECT_ROOT)
 
-from util.utils import load_module_from_path
+from util.general import load_module_from_path
 
 # Global variables that will hold the user's classes (if they exist)
 USER_LISTNODE = None

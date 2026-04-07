@@ -3,12 +3,6 @@ from typing import Type, TypeVar
 
 E = TypeVar('E', bound=Enum)
 
-SOLUTION_CLASS_NAME = "Solution"
-SOLUTION_FUNCTION_NAME = "solve"
-TAB = "  "
-COMPLEX_TYPES = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
-
-
 def member_to_string(member: E) -> str:
   return member.name.lower()
 

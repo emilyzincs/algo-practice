@@ -1,18 +1,14 @@
-from unittest.mock import patch
 import os
-from util.utils import read_json
-from util.boilerplate import get_boilerplate_text
-from util.get_file_paths import PROJECT_ROOT, to_language_file_case
-from typing import Optional
-from app import settings
+from typing import Optional, assert_never
 from tests.base_test import BaseTest as parent
-from typing import assert_never
-from util.enums import (
-  Language,
-  member_to_string,
-  SOLUTION_CLASS_NAME,
-  SOLUTION_FUNCTION_NAME
-)
+from unittest.mock import patch
+from app import settings
+
+from boilerplate.boilerplate import get_boilerplate_text
+from util.file_paths import PROJECT_ROOT, to_language_file_case
+from util.file_io import read_json
+from util.enums import Language, member_to_string
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 
 class TestBoilerplate(parent):
   def __init__(self, *args, **kwargs):

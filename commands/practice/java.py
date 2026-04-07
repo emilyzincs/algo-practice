@@ -1,5 +1,5 @@
 import os, sys, subprocess
-from util.get_file_paths import PROJECT_ROOT
+from util.file_paths import PROJECT_ROOT
 from pathlib import Path
 
 def get_test_cmd(

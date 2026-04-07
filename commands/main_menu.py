@@ -1,17 +1,17 @@
 import sys
-from util.utils import print_desc, is_type
 from typing import assert_never
-from commands.command_util import handle_global_command
+from commands.util import handle_global_command, print_desc
+from util.types import is_type
+from util.constants import TAB
 from util.exceptions import UnhandledCaseException
 from util.enums import (
-  MainMenuCommand, 
+MainMenuCommand, 
   INPUT_ALG_TO_SPECIFIC, 
   SpecificAlgorithm, 
   is_member, 
   GlobalCommand, 
   Language,
   member_name_list,
-  TAB,
   member_from_string,
   member_to_string
 )
