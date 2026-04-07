@@ -1,5 +1,5 @@
 from util.file_paths import get_practice_file_dir, PROJECT_ROOT
-from commands.practice.java import path_to_package
+from menu.practice.java import path_to_package
 from typing import assert_never, Any
 from util.enums import Language, ParseType, member_from_string, member_to_string
 from boilerplate.util import validate_type

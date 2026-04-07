@@ -1,6 +1,6 @@
 import sys
 from typing import assert_never
-from commands.util import handle_global_command, print_desc
+from menu.util import handle_global_command, print_desc
 from util.types import is_type
 from util.constants import TAB
 from util.exceptions import UnhandledCaseException

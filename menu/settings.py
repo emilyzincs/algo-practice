@@ -1,7 +1,7 @@
 import sys
 from typing import assert_never
 
-from commands.util import handle_global_command, get_global_command_descriptions, print_desc
+from menu.util import handle_global_command, get_global_command_descriptions, print_desc
 from util.file_paths import get_settings_path, get_default_settings_path
 from util.file_io import read_json, dump_json, copy_file
 from util.types import is_type, string_to_bool

@@ -1,6 +1,6 @@
 from unittest.mock import patch
 import os
-from commands.practice.practice import run_tests
+from menu.practice.practice import run_tests
 from util.file_paths import (PROJECT_ROOT, get_solution_file_dir, 
                                  get_solution_file_path, to_language_file_case,
                                  get_abstract_test_dir)
@@ -19,7 +19,7 @@ class TestRunTests(parent):
 
   def setUp(self) -> None:
     super().setUp()
-    self.gfp_base = "commands.practice.practice.gfp."
+    self.gfp_base = "menu.practice.practice.gfp."
 
   def test_main(self) -> None:
     if self.language is not None:

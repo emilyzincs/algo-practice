@@ -2,9 +2,9 @@ import sys
 import util.file_paths as gfp
 import subprocess
 import time
-from commands.practice.java import get_test_cmd as java_get_test_cmd
+from menu.practice.java import get_test_cmd as java_get_test_cmd
 from util.exceptions import UnhandledCaseException
-from commands.util import handle_global_command, get_global_command_descriptions, print_desc
+from menu.util import handle_global_command, get_global_command_descriptions, print_desc
 from typing import assert_never
 from util.enums import (
   GlobalCommand,

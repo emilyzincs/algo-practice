@@ -1,6 +1,5 @@
 import os
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-from util.exceptions import UnhandledCaseException
 from typing import assert_never
 from util.enums import (
   SpecificAlgorithm,

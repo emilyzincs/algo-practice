@@ -4,10 +4,10 @@ import sys
 import shutil
 
 import boilerplate.boilerplate as bp
-from commands.main_menu import handle_commands as main_menu_handle_commands
-from commands.practice.practice import handle_commands as practice_handle_commands
-from commands.settings import handle_commands as settings_handle_commands
-from commands.practice.java import path_to_package
+from menu.main import handle_commands as main_menu_handle_commands
+from menu.practice.practice import handle_commands as practice_handle_commands
+from menu.settings import handle_commands as settings_handle_commands
+from menu.practice.java import path_to_package
 
 from typing import assert_never
 from util.general import no_op, load_module_from_path
