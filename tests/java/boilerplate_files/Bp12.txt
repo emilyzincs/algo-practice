@@ -1,7 +1,0 @@
-package tests.java.boilerplate_files;
-
-public class Bp12 {
-  public static long solve(double f, double[] a) {
-    
-  }
-}

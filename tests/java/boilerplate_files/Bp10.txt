@@ -1,7 +1,0 @@
-package tests.java.boilerplate_files;
-
-public class Bp10 {
-  public static boolean[] solve() {
-    
-  }
-}

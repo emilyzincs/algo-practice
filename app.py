@@ -1,28 +1,29 @@
 import os.path
-import util.get_file_paths as gfp
+import util.file_paths as fp
 import sys
 import shutil
-from util.utils import read_json, copy_file, match_json_keys, no_op, load_module_from_path
-from util.exceptions import UnhandledCaseException
-from commands.main_menu import handle_commands as main_menu_handle_commands
-from commands.practice.practice import handle_commands as practice_handle_commands
-from commands.settings import handle_commands as settings_handle_commands
-from commands.practice.java import path_to_package
-import util.boilerplate as bp
+
+import boilerplate.boilerplate as bp
+from menu.main import handle_commands as main_menu_handle_commands
+from menu.practice import handle_commands as practice_handle_commands
+from menu.settings import handle_commands as settings_handle_commands
+from user_solution_testing.test_commands.java import path_to_package
+
 from typing import assert_never
+from util.general import no_op, load_module_from_path
+from util.file_io import read_json, copy_file, match_json_keys
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 from util.enums import (
   Language, 
   is_member, 
   member_to_string,
   SpecificAlgorithm,
   member_from_string,
-  SOLUTION_CLASS_NAME,
-  SOLUTION_FUNCTION_NAME
 )
 
 
-default_settings_path = gfp.get_default_settings_path()
-settings_path = gfp.get_settings_path()
+default_settings_path = fp.get_default_settings_path()
+settings_path = fp.get_settings_path()
 if not os.path.exists(settings_path):
   copy_file(default_settings_path, settings_path)
 
@@ -83,11 +84,11 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
   return seconds_spent
 
 def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
-  test_file_path = gfp.get_test_file_path(alg)
+  test_file_path = fp.get_test_file_path(alg)
   if os.path.exists(test_file_path):
     return
   print(f"Generating {member_to_string(alg)} tests...")
-  test_generator_path = gfp.get_test_generator_path(alg)
+  test_generator_path = fp.get_test_generator_path(alg)
   if not os.path.exists(test_generator_path):
     raise RuntimeError(f"Tests for {member_to_string(alg)} do not exist (path: {test_file_path})" +
                        f" and test_generator for {member_to_string(alg)} does not exist" +
@@ -100,8 +101,8 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_generator.generate()
 
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
-  practice_file = gfp.get_practice_file_path(LANGUAGE)
-  info_file = gfp.get_info_file_path(alg)
+  practice_file = fp.get_practice_file_path(LANGUAGE)
+  info_file = fp.get_info_file_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
@@ -132,11 +133,11 @@ def get_starting_practice_text(info_file_path: str) -> str:
     )
 
 def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
-  practice_file_dir = gfp.get_practice_file_dir()
-  practice_file = gfp.get_practice_file_path(LANGUAGE)
+  practice_file_dir = fp.get_practice_file_dir()
+  practice_file = fp.get_practice_file_path(LANGUAGE)
   if not os.path.exists(practice_file):
     raise RuntimeError(f"Practice file does not exist: {practice_file}.")
-  solution_file = gfp.get_solution_file_path(alg, LANGUAGE)
+  solution_file = fp.get_solution_file_path(alg, LANGUAGE)
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
@@ -146,7 +147,7 @@ def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
       lines = None
       with open(solution_file, "r", encoding="utf-8") as sol:
         lines = sol.readlines()
-        new_package_line = "package " + path_to_package(practice_file_dir, gfp.PROJECT_ROOT) + ";\n"
+        new_package_line = "package " + path_to_package(practice_file_dir, fp.PROJECT_ROOT) + ";\n"
         replaced_package = False
         for i, line in enumerate(lines):
           if line.strip().startswith("package"):
@@ -175,7 +176,7 @@ def refresh_settings() -> None:
   settings = read_json(settings_path)
 
 def delete_all_attempts() -> None:
-  practice_file_dir = gfp.get_practice_file_dir()
+  practice_file_dir = fp.get_practice_file_dir()
   if not os.path.exists(practice_file_dir) or not os.path.isdir(practice_file_dir):
     raise RuntimeError(f"Incorrect path: {practice_file_dir}.")
   shutil.rmtree(practice_file_dir)

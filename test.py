@@ -2,14 +2,14 @@ import sys
 import os
 import argparse
 import unittest
-from util.get_file_paths import get_abstract_test_dir, PROJECT_ROOT
-from commands.practice.java import path_to_package
+from util.file_paths import get_abstract_test_dir, PROJECT_ROOT
+from user_solution_testing.test_commands.java import path_to_package
 
 TEST_PREFIX = "test_"
 
 def run_all_tests() -> None:
   loader = unittest.TestLoader()
-  suite = loader.discover(start_dir="tests", pattern="test_*.py")
+  suite = loader.discover(start_dir="app_tests", pattern="test_*.py")
   runner = unittest.TextTestRunner(verbosity=2)
   result = runner.run(suite)
   if not result.wasSuccessful():
