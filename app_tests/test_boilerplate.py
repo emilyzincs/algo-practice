@@ -18,7 +18,7 @@ class TestBoilerplate(parent):
     super().setUp()
     if self.alg is not None:
       raise ValueError("Alg arguments are not applicable to boilerplate tests.")
-    self.gfp_base = "boilerplate.boilerplate."
+    self.fp_base = "boilerplate.boilerplate."
 
   def test_main(self) -> None:
     if self.language is not None:
@@ -96,7 +96,7 @@ class TestBoilerplate(parent):
     info_path_prefix = self.get_info_path_prefix()
     test_path_prefix = self.get_test_path_prefix()
     boilerplate_file_prefix = os.path.join(boilerplate_file_dir, boilerplate_file_name_prefix)
-    with patch(self.gfp_base + "get_practice_file_dir", return_value=boilerplate_file_dir):
+    with patch(self.fp_base + "get_practice_file_dir", return_value=boilerplate_file_dir):
       if self.num is not None:
         res =self.specific_test_boilerplate(
           self.num,

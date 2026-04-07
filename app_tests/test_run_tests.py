@@ -19,7 +19,7 @@ class TestRunTests(parent):
 
   def setUp(self) -> None:
     super().setUp()
-    self.gfp_base = "user_solution_testing.test.fp."
+    self.fp_base = "user_solution_testing.test.fp."
 
   def test_main(self) -> None:
     if self.language is not None:
@@ -70,9 +70,9 @@ class TestRunTests(parent):
         total_tests
       )
       with (
-        patch(self.gfp_base + "get_test_file_path", return_value=test_path),
-        patch(self.gfp_base + "get_info_file_path", return_value=info_path),
-        patch(self.gfp_base + "get_practice_file_path", return_value=practice_file_path)
+        patch(self.fp_base + "get_test_file_path", return_value=test_path),
+        patch(self.fp_base + "get_info_file_path", return_value=info_path),
+        patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
         result = (
@@ -105,7 +105,7 @@ class TestRunTests(parent):
     info_path_prefix = self.get_info_path_prefix()
     test_path_prefix = self.get_test_path_prefix()
     practice_file_path_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
-    with patch(self.gfp_base + "get_practice_file_dir", return_value=practice_file_dir):
+    with patch(self.fp_base + "get_practice_file_dir", return_value=practice_file_dir):
       if self.num is not None:
         self.specific_test_run_test(
           self.num,
@@ -168,9 +168,9 @@ class TestRunTests(parent):
       print(f"Path {solution_file} does not exist.\nContinuing.")
       return
     generate_test_file_if_necessary(alg)
-    with (patch(self.gfp_base + "get_practice_file_dir", 
+    with (patch(self.fp_base + "get_practice_file_dir", 
                 return_value=solution_file_dir), 
-          patch(self.gfp_base + "get_practice_file_path", 
+          patch(self.fp_base + "get_practice_file_path", 
                 return_value=solution_file)):
       result = run_tests(alg, language, self.do_debug)
       error_msg = f"Solution for {member_to_string(alg)} in {member_to_string(language)} failed."
