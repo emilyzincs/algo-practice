@@ -13,7 +13,7 @@ public class Runner {
   private static String fullPackageClassName;
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 6 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
+    if (args.length != 7 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
       System.err.println(
         "Usage: java Runner" + 
         " <practiceFilePackage>" +
@@ -21,9 +21,10 @@ public class Runner {
         " <testFilePath>.json" + 
         " <debug>, where <debug> is True or False." +
         " <SolutionClassName>" + 
-        " <SolutionMethodName>"
+        " <SolutionMethodName>" +
+        " <ParseTypes list string>"
       );
-      System.out.println("Given args: " + Arrays.toString(args));
+      System.err.println("Given args: " + Arrays.toString(args));
       System.exit(1);
     }
 

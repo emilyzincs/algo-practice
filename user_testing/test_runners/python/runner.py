@@ -2,7 +2,7 @@ import json
 import sys
 from collections import deque
 
-if len(sys.argv) != 8 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
+if len(sys.argv) != 9 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
   print("Usage: python runner.py" + 
         " <practiceFilePackage>" +
         " <infoFilePath>.json" +
@@ -10,7 +10,9 @@ if len(sys.argv) != 8 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
         " <PROJECT_ROOT>" +
         " <debug>, where <debug> is True or False." +
         " <SolutionClassName>" + 
-        " <SolutionMethodName>", file=sys.stderr)
+        " <SolutionMethodName>" +
+        " <ParseTypes list string>", file=sys.stderr)
+  print(f"Given args: {sys.argv}.", file=sys.stderr)
   sys.exit(1)
 
 PROJECT_ROOT = sys.argv[4]
@@ -22,152 +24,18 @@ from util.general import load_module_from_path
 USER_LISTNODE = None
 USER_TREENODE = None
 
-
-def add_cycle_aware_eq(cls):
-  """Add a cycle-aware __eq__ method to a class if it doesn't already have one."""
-  if cls is None:
-    return
-  # Override any existing __eq__ (the user's might not handle cycles)
-  if cls.__name__ == 'ListNode':
-    def __eq__(self, other, visited=None):
-      # Handle None
-      if self is None and other is None:
-        return True
-      if self is None or other is None:
-        return False
-      if visited is None:
-        visited = set()
-      pair_id = (id(self), id(other))
-      if pair_id in visited:
-        return True
-      visited.add(pair_id)
-      if not isinstance(other, cls):
-        return False
-      if self.val != other.val:
-        return False
-      # Recursively compare next
-      return __eq__(self.next, other.next, visited)
-
-    cls.__eq__ = __eq__
-
-  elif cls.__name__ == 'TreeNode':
-    def __eq__(self, other, visited=None):
-      # Handle None
-      if self is None and other is None:
-        return True
-      if self is None or other is None:
-        return False
-      if visited is None:
-        visited = set()
-      pair_id = (id(self), id(other))
-      if pair_id in visited:
-        return True
-      visited.add(pair_id)
-      if not isinstance(other, cls):
-        return False
-      if self.val != other.val:
-        return False
-      # Recursively compare left and right
-      if not __eq__(self.left, other.left, visited):
-        return False
-      return __eq__(self.right, other.right, visited)
-
-    cls.__eq__ = __eq__
-
-
-# =========================
-# TYPE PARSING
-# =========================
-
-def parse_value(val, typ):
-   # If the expected type is complex and val is a string, try to parse it as JSON
-
-  complex_types = {"array", "list", "immutable_list", "set", "map", "ListNode", "TreeNode"}
-  if typ["type"] in complex_types and isinstance(val, str):
-    try:
-      val = json.loads(val)  # Convert string to Python object
-    except json.JSONDecodeError:
-      raise Exception(f"Could not parse string as JSON: {val}")
-
-  match typ["type"]:
-    case "int":
-      return int(val)
-    case "long":
-      return int(val)
-    case "float":
-      return float(val)
-    case "boolean":
-      return bool(val)
-    case "string":
-      return str(val)
-    case "array":
-      return [parse_value(v, typ["items"]) for v in val]
-    case "list":
-      return [parse_value(v, typ["items"]) for v in val]
-    case "immutable_list":
-      return tuple([parse_value(v, typ["items"]) for v in val])
-    case "set":
-      return {parse_value(v, typ["items"]) for v in val}
-    case "map":
-      return {
-        parse_value(k, typ["keys"]): parse_value(v, typ["values"])
-        for k, v in val.items()
-      }
-    case "ListNode":
-      if USER_LISTNODE is None:
-        raise Exception("ListNode class not defined in the practice module")
-      dummy = USER_LISTNODE(0, None)
-      cur = dummy
-      for x in val:
-        cur.next = USER_LISTNODE(parse_value(x, typ["val"]), None)
-        cur = cur.next
-      return dummy.next
-
-    case "TreeNode":
-      if USER_TREENODE is None:
-        raise Exception("TreeNode class not defined in the practice module")
-      if not val:
-        return None
-
-      nodes = [
-        None if x is None else USER_TREENODE(parse_value(x, typ["val"]), None, None)
-        for x in val
-      ]
-
-      children = deque(nodes[1:])
-      root = nodes[0]
-      queue = deque([root])
-
-      while queue and children:
-        node = queue.popleft()
-        if node is None:
-          continue
-
-        if children:
-          node.left = children.popleft()
-          queue.append(node.left)
-
-        if children:
-          node.right = children.popleft()
-          queue.append(node.right)
-
-      return root
-
-    case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
-
-
 # =========================
 # MAIN TEST RUNNER
 # =========================
 
-def main():
+def main() -> bool:
   practice_file_path = sys.argv[1]
   info_file_path = sys.argv[2]
   test_file_path = sys.argv[3]
   debug = (sys.argv[5] == "True")
   required_class_name = sys.argv[6]
   required_method_name = sys.argv[7]
+  type_list_str = sys.argv[8]
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
@@ -179,6 +47,8 @@ def main():
     if debug:
       raise
     return False
+  
+  type_list: list[str] = json.loads(type_list_str)
 
   # Load the user's ListNode and TreeNode classes (if defined)
   global USER_LISTNODE, USER_TREENODE
@@ -245,8 +115,140 @@ def main():
 
   return True
 
+
+def add_cycle_aware_eq(cls):
+  """Add a cycle-aware __eq__ method to a class if it doesn't already have one."""
+  if cls is None:
+    return
+  # Override any existing __eq__ (the user's might not handle cycles)
+  if cls.__name__ == 'ListNode':
+    def __eq__(self, other, visited=None):
+      # Handle None
+      if self is None and other is None:
+        return True
+      if self is None or other is None:
+        return False
+      if visited is None:
+        visited = set()
+      pair_id = (id(self), id(other))
+      if pair_id in visited:
+        return True
+      visited.add(pair_id)
+      if not isinstance(other, cls):
+        return False
+      if self.val != other.val:
+        return False
+      # Recursively compare next
+      return __eq__(self.next, other.next, visited)
+
+    cls.__eq__ = __eq__
+
+  elif cls.__name__ == 'TreeNode':
+    def __eq__(self, other, visited=None):
+      # Handle None
+      if self is None and other is None:
+        return True
+      if self is None or other is None:
+        return False
+      if visited is None:
+        visited = set()
+      pair_id = (id(self), id(other))
+      if pair_id in visited:
+        return True
+      visited.add(pair_id)
+      if not isinstance(other, cls):
+        return False
+      if self.val != other.val:
+        return False
+      # Recursively compare left and right
+      if not __eq__(self.left, other.left, visited):
+        return False
+      return __eq__(self.right, other.right, visited)
+
+    cls.__eq__ = __eq__
+
+
+# =========================
+# TYPE PARSING
+# =========================
+
+def parse_value(val, typ):
+  if typ["type"] != "string" and isinstance(val, str):
+    try:
+      val = json.loads(val)
+    except json.JSONDecodeError:
+      raise Exception(f"Could not parse string as JSON: {val}")
+
+  match typ["type"]:
+    case "int":
+      return val
+    case "long":
+      return val
+    case "float":
+      return val
+    case "boolean":
+      return val
+    case "string":
+      return val
+    case "array":
+      return [parse_value(v, typ["items"]) for v in val]
+    case "list":
+      return [parse_value(v, typ["items"]) for v in val]
+    case "immutable_list":
+      return tuple([parse_value(v, typ["items"]) for v in val])
+    case "set":
+      return {parse_value(v, typ["items"]) for v in val}
+    case "map":
+      return {
+        parse_value(k, typ["keys"]): parse_value(v, typ["values"])
+        for k, v in val.items()
+      }
+    case "ListNode":
+      if USER_LISTNODE is None:
+        raise Exception("ListNode class not defined in the practice module")
+      dummy = USER_LISTNODE(0, None)
+      cur = dummy
+      for x in val:
+        cur.next = USER_LISTNODE(parse_value(x, typ["val"]), None)
+        cur = cur.next
+      return dummy.next
+
+    case "TreeNode":
+      if USER_TREENODE is None:
+        raise Exception("TreeNode class not defined in the practice module")
+      if not val:
+        return None
+
+      nodes = [
+        None if x is None else USER_TREENODE(parse_value(x, typ["val"]), None, None)
+        for x in val
+      ]
+
+      children = deque(nodes[1:])
+      root = nodes[0]
+      queue = deque([root])
+
+      while queue and children:
+        node = queue.popleft()
+        if node is None:
+          continue
+
+        if children:
+          node.left = children.popleft()
+          queue.append(node.left)
+
+        if children:
+          node.right = children.popleft()
+          queue.append(node.right)
+
+      return root
+
+    case _:
+      raise Exception(f"Unknown type: {typ["type"]}")
+
 if __name__ == "__main__":
   if not main():
+    print("Runner must be run directly.", file=sys.stderr)
     sys.exit(1)
   else:
     print("All tests passed.")
