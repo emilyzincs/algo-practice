@@ -38,11 +38,11 @@ def handle_commands(
     elif input_is_local_cmd:
       local_cmd: PracticeCommand = member_from_string(PracticeCommand, user_input)
       match local_cmd:
-        case PracticeCommand.D | PracticeCommand.DONE:
+        case PracticeCommand.DONE:
           potential_end_time = time.perf_counter()
           print("Running tests...")
           correct = run_tests(alg, language)
-        case PracticeCommand.S | PracticeCommand.SOL | PracticeCommand.SOLUTION:
+        case PracticeCommand.SOLUTION:
           try:
             load_solution_func(alg)
             print("Successfully loaded solution.")

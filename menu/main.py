@@ -59,16 +59,16 @@ def handle_commands(
     elif input_is_local_cmd:
       local_cmd: MainMenuCommand = member_from_string(MainMenuCommand, user_input)
       match local_cmd:
-        case MainMenuCommand.LANG | MainMenuCommand.LANGUAGE:
+        case MainMenuCommand.LANGUAGE:
           print(f"The current language is {member_to_string(get_language_func())}.")
           input_message = responses[1]
-        case MainMenuCommand.LANGS | MainMenuCommand.LANGUAGES:
+        case MainMenuCommand.LANGUAGES:
           handle_languages(member_name_list(Language))
           input_message = responses[0]
-        case MainMenuCommand.ALGS | MainMenuCommand.ALGORITHMS:
+        case MainMenuCommand.ALGORITHMS:
           handle_algorithms()
           input_message = responses[0]
-        case MainMenuCommand.S | MainMenuCommand.SETTINGS:
+        case MainMenuCommand.SETTINGS:
           handle_settings_func()
           input_message = responses[0]
         case _:

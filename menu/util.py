@@ -11,9 +11,9 @@ def handle_global_command(
   match cmd:
     case GlobalCommand.HELP:
       help_func()
-    case GlobalCommand.Q | GlobalCommand.QUIT | GlobalCommand.EXIT:
+    case GlobalCommand.QUIT:
       exit_func(0)
-    case GlobalCommand.B | GlobalCommand.BACK :
+    case GlobalCommand.BACK:
       return False
     case _:
       assert_never(cmd)
