@@ -1,6 +1,7 @@
 import json
 import sys
 from collections import deque
+from typing import Any, assert_never
 
 if len(sys.argv) != 9 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
   print("Usage: python runner.py" + 
@@ -19,6 +20,8 @@ PROJECT_ROOT = sys.argv[4]
 sys.path.insert(0, PROJECT_ROOT)
 
 from util.general import load_module_from_path
+from util.enums import ParseType, member_name_list, member_from_string
+from boilerplate.util import validate_type
 
 # Global variables that will hold the user's classes (if they exist)
 USER_LISTNODE = None
@@ -49,6 +52,8 @@ def main() -> bool:
     return False
   
   type_list: list[str] = json.loads(type_list_str)
+  if type_list != member_name_list(ParseType):
+    raise ValueError(f"type_list does not match expected. Value: {type_list}.")
 
   # Load the user's ListNode and TreeNode classes (if defined)
   global USER_LISTNODE, USER_TREENODE
@@ -172,38 +177,31 @@ def add_cycle_aware_eq(cls):
 # TYPE PARSING
 # =========================
 
-def parse_value(val, typ):
-  if typ["type"] != "string" and isinstance(val, str):
+def parse_value(val: Any, typ: dict[str, Any]) -> Any:
+  validate_type(typ)
+  curr_type: ParseType = member_from_string(ParseType, typ["type"])
+
+  if curr_type is not ParseType.STRING and isinstance(val, str):
     try:
       val = json.loads(val)
     except json.JSONDecodeError:
-      raise Exception(f"Could not parse string as JSON: {val}")
+      raise Exception(f"Could not parse string as JSON: {val}.")
 
-  match typ["type"]:
-    case "int":
+  match curr_type:
+    case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return val
-    case "long":
-      return val
-    case "float":
-      return val
-    case "boolean":
-      return val
-    case "string":
-      return val
-    case "array":
+    case ParseType.ARRAY | ParseType.LIST:
       return [parse_value(v, typ["items"]) for v in val]
-    case "list":
-      return [parse_value(v, typ["items"]) for v in val]
-    case "immutable_list":
+    case ParseType.IMMUTABLE_LIST:
       return tuple([parse_value(v, typ["items"]) for v in val])
-    case "set":
+    case ParseType.SET:
       return {parse_value(v, typ["items"]) for v in val}
-    case "map":
+    case ParseType.MAP:
       return {
         parse_value(k, typ["keys"]): parse_value(v, typ["values"])
         for k, v in val.items()
       }
-    case "ListNode":
+    case ParseType.LISTNODE:
       if USER_LISTNODE is None:
         raise Exception("ListNode class not defined in the practice module")
       dummy = USER_LISTNODE(0, None)
@@ -213,7 +211,7 @@ def parse_value(val, typ):
         cur = cur.next
       return dummy.next
 
-    case "TreeNode":
+    case ParseType.TREENODE:
       if USER_TREENODE is None:
         raise Exception("TreeNode class not defined in the practice module")
       if not val:
@@ -244,7 +242,7 @@ def parse_value(val, typ):
       return root
 
     case _:
-      raise Exception(f"Unknown type: {typ["type"]}")
+      assert_never(curr_type)
 
 if __name__ == "__main__":
   if not main():
