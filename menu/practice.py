@@ -2,7 +2,7 @@ import sys
 import time
 from user_solution_testing.test import run_tests
 from util.exceptions import UnhandledCaseException
-from menu.util import handle_global_command, get_global_command_descriptions, print_desc
+from menu.util import handle_global_command, print_desc, to_description_lines
 from typing import assert_never
 from util.enums import (
   GlobalCommand,
@@ -61,6 +61,7 @@ def handle_commands(
   return None
 
 def handle_help():
-  command_descriptions = []
+  command_descriptions = to_description_lines(GlobalCommand)
+  command_descriptions.extend(to_description_lines(PracticeCommand))
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

@@ -1,7 +1,7 @@
 import sys
 from typing import assert_never
 
-from menu.util import handle_global_command, get_global_command_descriptions, print_desc
+from menu.util import handle_global_command, print_desc, to_description_lines
 from util.file_paths import get_settings_path, get_default_settings_path
 from util.file_io import read_json, dump_json, copy_file
 from util.type_check import is_type, string_to_bool
@@ -96,11 +96,13 @@ def handle_commands(
       raise UnhandledCaseException(" ".join(user_input), "input")
 
 def handle_help():
-  command_descriptions = [
+  command_descriptions = to_description_lines(GlobalCommand)
+  command_descriptions.extend(to_description_lines(SettingsCommand))
+  command_descriptions.extend([
     "info <setting>: Prints information regarding the given setting",
     "<setting> default: Changes the given setting to have the default value",
     "<setting> <new value>: Changes the given setting to have the" + 
                           " given new value, if possible"
-  ]
+  ])
   print("This menu supports the following inputs:")
   print_desc(command_descriptions) 

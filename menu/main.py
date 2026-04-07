@@ -1,6 +1,6 @@
 import sys
 from typing import assert_never
-from menu.util import handle_global_command, print_desc
+from menu.util import handle_global_command, print_desc, to_description_lines
 from util.type_check import is_type
 from util.constants import TAB
 from util.exceptions import UnhandledCaseException
@@ -108,11 +108,13 @@ def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int
   return alg_list[idx]
 
 def handle_help():
-  command_descriptions = [
+  description_lines = to_description_lines(GlobalCommand)
+  description_lines.extend(to_description_lines(MainMenuCommand))
+  description_lines.extend([
     "<language>: Updates the program to use the given language",
-  ]
+  ])
   print("This menu supports the following inputs:")
-  print_desc(command_descriptions)
+  print_desc(description_lines)
 
 def handle_languages(language_list: list[str]) -> None: 
   print("This program supports the following languages:")
