@@ -2,15 +2,44 @@ package user_testing.test_runners.java;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
   private static String fullPackageClassName;
+
+  private enum ParseType {
+    INT,
+    LONG,
+    BOOLEAN,
+    FLOAT,
+    STRING,
+    ARRAY,
+    LIST,
+    IMMUTABLE_LIST,
+    SET,
+    MAP,
+    LISTNODE,
+    TREENODE
+  }
 
   public static void main(String[] args) throws Exception {
     if (args.length != 7 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
@@ -31,6 +60,23 @@ public class Runner {
     boolean debug = "True".equals(args[3]);
 
     try {
+      String[] parseTypesArg = mapper.readValue(
+        args[6],
+        new TypeReference<String[]>() {}
+      );
+      ParseType[] parseTypes = ParseType.values();
+      if (parseTypesArg.length != parseTypes.length) {
+        throw new IllegalStateException("Given parse types argument must match" + 
+                                        " the Java ParseType Enum, but they have different lengths.");
+      }
+      for (int i = 0; i < parseTypesArg.length; i++) {
+        if (!parseTypes[i].name().equalsIgnoreCase(parseTypesArg[i])) {
+          throw new IllegalStateException("Given parse types argument must match" + 
+                                  " the Java ParseType Enum, but this fails for type" + i + ".");
+        }
+      }
+      
+
       Map<String, Object> root = mapper.readValue(
         Files.readAllBytes(Paths.get(args[1])),
         new TypeReference<Map<String, Object>>() {}
