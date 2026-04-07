@@ -27,13 +27,15 @@ def handle_commands(
     raise ValueError("Settings and default settings must be represented as json dicts")
 
   while True:
-    user_input = input("Enter a setting and new corresponding value" + 
+    user_input = input("\nEnter a setting and new corresponding value" + 
                       " (<setting> <new val>)," + 
                       " or 'help' for options:\n").strip().lower().split()
+    
     is_global_cmd = len(user_input) == 1 and is_member(GlobalCommand, user_input[0])
     is_local_cmd = len(user_input) == 1 and is_member(SettingsCommand, user_input[0])  
     is_setting = len(user_input) == 2 and user_input[0] in settings
     is_info = len(user_input) == 2 and user_input[0] == "info" and user_input[1] in settings
+
     if not (is_global_cmd or is_local_cmd or is_setting or is_info):
       print("Unrecognized input. Type 'help' to see valid inputs.", file=sys.stderr)
       continue
@@ -48,7 +50,7 @@ def handle_commands(
         case SettingsCommand.LIST:
           print("Current settings:")
           for setting, value in settings.items():
-            print(f"{TAB}{setting}: {value}")
+            print(f"{TAB}{setting}: {value["value"]}")
         case SettingsCommand.RESET:
           next_input = input("Confirm resetting all settings to default?" +
                             " To confirm type 'y' or 'yes', to cancel" + 
@@ -63,7 +65,6 @@ def handle_commands(
       setting, new_val = user_input
       if new_val == "default":
         settings[setting]["value"] = default_settings[setting]["value"]
-        dump_json(settings_path, settings)
       else:
         match setting:
           case "default_language":
@@ -88,8 +89,8 @@ def handle_commands(
             settings[setting]["value"] = int(new_val)
           case _:
             raise UnhandledCaseException(user_input[0], "setting")          
-        dump_json(settings_path, settings)
-        print(f"Successfully updated {setting} to {new_val}.")
+      dump_json(settings_path, settings)
+      print(f"Successfully set {setting} to {settings[setting]["value"]}.")
     elif is_info:
       print(f"{user_input[1]}: {settings[user_input[1]]["info"]}")
     else:

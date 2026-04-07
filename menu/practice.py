@@ -24,7 +24,7 @@ def handle_commands(
   potential_end_time = None
   correct = False
   while not correct:
-    user_input = input("Type 'done' when you are finished or 'help' for options:\n")
+    user_input = input("\nType 'done' when you are finished or 'help' for options:\n")
     input_is_global_cmd = is_member(GlobalCommand, user_input)
     input_is_local_cmd = is_member(PracticeCommand, user_input)
     if not input_is_global_cmd and not input_is_local_cmd:

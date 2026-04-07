@@ -36,7 +36,7 @@ def to_description_lines(enum: Type[Enum]) -> list[str]:
       names.append([name])
   if len(descriptions) != len(names):
     raise Exception("Descriptions and names lists must be the same size.")
-  lines = ["/".join(names[i]) + f" : {descriptions[i]}" for i in range(len(names))]
+  lines = ["/".join(names[i]) + f": {descriptions[i]}" for i in range(len(names))]
   return lines
 
 def print_desc(descs: list[str]) -> None:#

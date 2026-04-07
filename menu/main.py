@@ -60,7 +60,7 @@ def handle_commands(
       local_cmd: MainMenuCommand = member_from_string(MainMenuCommand, user_input)
       match local_cmd:
         case MainMenuCommand.LANG | MainMenuCommand.LANGUAGE:
-          print(f"The current language is {get_language_func()}.")
+          print(f"The current language is {member_to_string(get_language_func())}.")
           input_message = responses[1]
         case MainMenuCommand.LANGS | MainMenuCommand.LANGUAGES:
           handle_languages(member_name_list(Language))
