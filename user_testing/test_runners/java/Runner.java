@@ -70,12 +70,11 @@ public class Runner {
                                         " the Java ParseType Enum, but they have different lengths.");
       }
       for (int i = 0; i < parseTypesArg.length; i++) {
-        if (!parseTypes[i].name().equalsIgnoreCase(parseTypesArg[i])) {
+        if (!parseTypes[i].name().equals(parseTypesArg[i].toUpperCase())) {
           throw new IllegalStateException("Given parse types argument must match" + 
                                   " the Java ParseType Enum, but this fails for type" + i + ".");
         }
       }
-      
 
       Map<String, Object> root = mapper.readValue(
         Files.readAllBytes(Paths.get(args[1])),
@@ -171,46 +170,60 @@ public class Runner {
     System.exit(1);
   }
 
-  private static Class<?> parseType(Map<String, Object> def) {
-    String type = (String) def.get("type");
+  private static boolean isParseType(String candidate) {
+    try {
+      toParseType(candidate);
+      return true;
+    }  catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
 
-    switch (type) {
-      case "int":
-        return int.class;
-      case "long":
-        return long.class;
-      case "float":
-        return double.class;
-      case "boolean":
-        return boolean.class;
-      case "string":
-        return String.class;
-      
-      case "immutable_list":
-      case "array": {
+  private static ParseType toParseType(String candidate) {
+    return ParseType.valueOf(candidate.toUpperCase());
+  }
+
+  private static Class<?> parseType(Map<String, Object> def) {
+    String candidate = (String) def.get("type");
+    if (!isParseType(candidate)) {
+      throw new IllegalArgumentException("Type fields should always refer to a ParseType," + 
+                                         " untrue for " + candidate);
+    }
+    ParseType type = toParseType(candidate);
+    return switch (type) {
+      case INT -> int.class;
+      case LONG -> long.class;
+      case FLOAT -> double.class;
+      case BOOLEAN -> boolean.class;
+      case STRING -> String.class;
+      case ARRAY -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
-        return Array.newInstance(inner, 0).getClass();
+        yield Array.newInstance(inner, 0).getClass();
       }
-
-      case "list":
-        return List.class;
-      case "set":
-        return Set.class;
-      case "map":
-        return Map.class;
-
-      case "ListNode":
-      case "TreeNode":
+      case LIST -> List.class;
+      case IMMUTABLE_LIST -> {
+        @SuppressWarnings("unchecked")
+        Class<?> inner = parseType((Map<String, Object>) def.get("items"));
+        yield Array.newInstance(inner, 0).getClass();
+      }
+      case SET -> Set.class;
+      case MAP -> Map.class;
+      case LISTNODE -> {
         try {
-          return Class.forName(fullPackageClassName + "$" + type);
+          yield Class.forName(fullPackageClassName + "$" + candidate);
         } catch (Exception e) {
-          throw new RuntimeException("Missing class: " + type);
+          throw new RuntimeException("Missing class: " + candidate);
         }
-
-      default:
-        throw new RuntimeException("Unknown type: " + type);
-    }
+      }
+      case TREENODE -> {
+        try {
+          yield Class.forName(fullPackageClassName + "$" + candidate);
+        } catch (Exception e) {
+          throw new RuntimeException("Missing class: " + candidate);
+        }
+      }
+    };
   }
 
   // ===== INPUT PARSING =====
