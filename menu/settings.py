@@ -4,7 +4,7 @@ from typing import assert_never
 from menu.util import handle_global_command, get_global_command_descriptions, print_desc
 from util.file_paths import get_settings_path, get_default_settings_path
 from util.file_io import read_json, dump_json, copy_file
-from util.types import is_type, string_to_bool
+from util.type_check import is_type, string_to_bool
 from util.exceptions import UnhandledCaseException
 from util.constants import TAB
 from util.enums import (
@@ -19,20 +19,6 @@ def handle_commands(
     refresh_settings_func,
     exit_func
 ) -> None:
-  # todo: handle more dynamically
-  setting_to_info = {
-    "default_language": "The language the program is initially set to when it" +
-                        " is started without an explicit language argument.",
-    "delete_attempts": "When set to true, clears the practice directory upon completion" +
-                       " of an algorithm, when exiting practice of an algorithm, and" +
-                       " when exiting the program.",
-    "prepopulate_boilerplate": "When set to true, includes the necessary class and method" +
-                        " declaration when initializing a practice file, as well as the" +
-                        " necessary imports and classes corresponding to the declarations.",
-    "tab_size": "The number of spaces to use as a tab when prepopulating a practice" +
-                " file with any text."
-  }
-  
   default_settings_path = get_default_settings_path()
   settings_path = get_settings_path()
   default_settings = read_json(default_settings_path)
@@ -76,7 +62,7 @@ def handle_commands(
     elif is_setting:
       setting, new_val = user_input
       if new_val == "default":
-        settings[setting] = default_settings[setting]
+        settings[setting]["value"] = default_settings[setting]["value"]
         dump_json(settings_path, settings)
       else:
         match setting:
@@ -84,28 +70,28 @@ def handle_commands(
             if not is_member(Language, new_val):
               print(f"Invalid language", file=sys.stderr)
               continue
-            settings[setting] = new_val
+            settings[setting]["value"] = new_val
           case "delete_attempts":
             if not is_type(new_val, string_to_bool):
               print(f"New value must be a bool for this setting.", file=sys.stderr)
               continue
-            settings[setting] = string_to_bool(new_val)
+            settings[setting]["value"] = string_to_bool(new_val)
           case "prepopulate_boilerplate":
             if not is_type(new_val, string_to_bool):
               print(f"New value must be a bool for this setting.", file=sys.stderr)
               continue
-            settings[setting] = string_to_bool(new_val)
+            settings[setting]["value"] = string_to_bool(new_val)
           case "tab_size":
             if not is_type(new_val, int):
               print(f"New value must be an integer for this setting.", file=sys.stderr)
               continue
-            settings[setting] = int(new_val)
+            settings[setting]["value"] = int(new_val)
           case _:
             raise UnhandledCaseException(user_input[0], "setting")          
         dump_json(settings_path, settings)
         print(f"Successfully updated {setting} to {new_val}.")
     elif is_info:
-      print(f"{user_input[1]}: {setting_to_info[user_input[1]]}")
+      print(f"{user_input[1]}: {settings[user_input[1]]["info"]}")
     else:
       raise UnhandledCaseException(" ".join(user_input), "input")
 

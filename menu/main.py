@@ -1,7 +1,7 @@
 import sys
 from typing import assert_never
 from menu.util import handle_global_command, print_desc
-from util.types import is_type
+from util.type_check import is_type
 from util.constants import TAB
 from util.exceptions import UnhandledCaseException
 from util.enums import (
@@ -80,7 +80,7 @@ def handle_commands(
     elif input_is_input_alg or input_is_alg_id:
       alg: SpecificAlgorithm = (
         INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-        else list(SpecificAlgorithm)[int(user_input)] # todo: make better somehow?
+        else list(SpecificAlgorithm)[int(user_input)]
       )
       print(f"Starting {member_to_string(alg)} practice.")
       seconds_spent = handle_practice_func(alg)

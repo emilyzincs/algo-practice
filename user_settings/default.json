@@ -1,6 +1,18 @@
 {
-  "default_language": "python",
-  "delete_attempts": false,
-  "prepopulate_boilerplate": true,
-  "tab_size": 2
+  "default_language": {
+    "value": "python",
+    "info": "The language the program is initially set to when it is started without an explicit language argument."
+  },
+  "delete_attempts": {
+    "value": false,
+    "info": "When set to true, clears the practice directory upon completion of an algorithm, when exiting practice of an algorithm, or when exiting the program."
+  },
+  "prepopulate_boilerplate": {
+    "value": true,
+    "info": "When set to true, includes the necessary class and method declaration when initializing a practice file, as well as the necessary imports and classes corresponding to the declaration."
+  },
+  "tab_size": {
+    "value": 2,
+    "info": "The number of spaces to use as a tab when prepopulating a practice file with text."
+  }
 }
