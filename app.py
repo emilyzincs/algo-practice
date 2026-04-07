@@ -5,9 +5,9 @@ import shutil
 
 import boilerplate.boilerplate as bp
 from menu.main import handle_commands as main_menu_handle_commands
-from menu.practice.practice import handle_commands as practice_handle_commands
+from menu.practice import handle_commands as practice_handle_commands
 from menu.settings import handle_commands as settings_handle_commands
-from menu.practice.java import path_to_package
+from user_solution_testing.test_commands.java import path_to_package
 
 from typing import assert_never
 from util.general import no_op, load_module_from_path
