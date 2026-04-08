@@ -12,7 +12,7 @@ from user_testing.test_commands.java import path_to_package
 from typing import assert_never
 from util.general import no_op, load_module_from_path
 from util.file_io import read_json, copy_file, match_json_keys
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
 from util.enums import (
   Language, 
   is_member, 
@@ -22,20 +22,24 @@ from util.enums import (
 )
 
 
+# If current settings are not set, uses the default settings
 default_settings_path = fp.get_default_settings_path()
 settings_path = fp.get_settings_path()
 if not os.path.exists(settings_path):
   copy_file(default_settings_path, settings_path)
 
+# Ensure the settings (types, not values) are consistent in current and default settings
 match_json_keys(default_settings_path, settings_path)
 settings = read_json(settings_path)
 
-DEBUG = True
+
+# Get the starting language
 DEFAULT_LANGUAGE: Language = member_from_string(Language, settings["default_language"]["value"])
 LANGUAGE: Language = DEFAULT_LANGUAGE
 if __name__ == "__main__":
   if len(sys.argv) > 2:
-    raise ValueError(f"Usage: python {sys.argv[0]} language (default is python if not specified)")
+    raise ValueError(f"Usage: python {sys.argv[0]} <language> (default language is" + 
+                     f" {member_to_string(DEFAULT_LANGUAGE)} if not specified).")
   elif len(sys.argv) == 2:
     lang_str = sys.argv[1]
     if is_member(Language, lang_str):
@@ -44,8 +48,11 @@ if __name__ == "__main__":
         print(f"Unsupported language: {lang_str}. defaulting to {member_to_string(DEFAULT_LANGUAGE)}." + 
               " Type 'languages' for supported languages or <language> to switch to that language.")
 
-def main():  
-  try:  
+
+# Runs the program
+def main() -> None:  
+  try:
+    # This is a command-line based app, starting at main menu
     main_menu_handle_commands(
       get_language,
       set_language,
@@ -54,6 +61,7 @@ def main():
       exit_program
   )
   except (Exception, KeyboardInterrupt) as e:
+    # Handle ctrl-c and ctrl-d as valid ways to exit the program
     if not (isinstance(e, KeyboardInterrupt) or isinstance(e, EOFError)):
       if not DEBUG:
         print(f"Encountered error while running the program:\n{e}", file=sys.stderr)
@@ -63,18 +71,33 @@ def main():
       print()
     exit_program(1)
 
+
+# Returns the current Language
 def get_language() -> Language:
   return LANGUAGE
 
+
+# Sets the current Language to 'lang'
 def set_language(lang: Language) -> None:
   global LANGUAGE
   LANGUAGE = lang
   print(f"Successfully set language to {member_to_string(lang)}.")
 
+
+# Switches command-line to the practice menu, and handles all parts for the user practice
+# of the given SpecificAlgorithm 'alg', including generating the corresponding
+# test file if necessary.
+#
+# Returns the time in seconds it took for the user to successfully implement
+#   the algorithm, as a float, if applicable. In particular, it is the time it takes for a user
+#   to indicate they are done on an implementation that passes the tests. If it
+#   passes the tests, the time to run the tests is not included in the final time.
+# Returns 'None' if the user exits the practice menu without doing the above.
+#   E.g., by using the 'back' commmand.
 def handle_practice(alg: SpecificAlgorithm) -> float|None:
   generate_test_file_if_necessary(alg)
   reset_practice_file(alg)
-  seconds_spent = practice_handle_commands(
+  seconds_spent: float|None = practice_handle_commands(
     alg,
     LANGUAGE,
     delete_all_attempts if settings["delete_attempts"]["value"] else no_op,
@@ -83,6 +106,14 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
   )
   return seconds_spent
 
+
+# Creates the test file corresponding to the given SpecificAlgorithm 'alg'
+# if it does not already exist.
+#
+# Raises: 
+# - RuntimeError if both the corresponding test and test-generation files do not exist.
+# - ModuleNotFoundError if the test file does not exist and the test-generation
+#     file does, but the test-generation file has no generate() function.
 def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_file_path = fp.get_test_file_path(alg)
   if os.path.exists(test_file_path):
@@ -100,6 +131,9 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
                               f" Path: {test_generator}.")
   test_generator.generate()
 
+
+# Resets the practice file for the current Language to hold the
+#   starting practice text for the given 'alg'.
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
   info_file = fp.get_info_file_path(alg)
@@ -107,6 +141,14 @@ def reset_practice_file(alg: SpecificAlgorithm) -> None:
     f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
+
+# Returns the starting practice text string corresponding to the information
+#   in the JSON file specified by 'info_file_path' string.
+#
+# Raises:
+# - RuntimeError if the given path does not correspond to a file.
+# - Exception if the given path does not end in '.json'.
+# - json.JSONDecodeError if the corresponding file does not hold valid JSON.
 def get_starting_practice_text(info_file_path: str) -> str:
   if not os.path.exists(info_file_path):
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
@@ -132,6 +174,10 @@ def get_starting_practice_text(info_file_path: str) -> str:
       LANGUAGE
     )
 
+
+# Loads the solution for the given SpecificAlgorithm 'alg' into the 
+# current practice file, if it exists. Otherwise, prints error
+# message indicating that the solution file does not exist.
 def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
   practice_file_dir = fp.get_practice_file_dir()
   practice_file = fp.get_practice_file_path(LANGUAGE)
@@ -165,16 +211,22 @@ def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
   copy_file(solution_file, practice_file)
 
 
+# Switches command-line to the settings menu and handles
+# user input appropriately.
 def handle_settings() -> None:
   settings_handle_commands(
     refresh_settings,
     exit_program
   )
 
+
+# Updates the global 'settings' dict to match the the current settings file.
 def refresh_settings() -> None:
   global settings 
   settings = read_json(settings_path)
 
+
+# Empties the files in the practice directory.
 def delete_all_attempts() -> None:
   practice_file_dir = fp.get_practice_file_dir()
   if not os.path.exists(practice_file_dir) or not os.path.isdir(practice_file_dir):
@@ -182,11 +234,15 @@ def delete_all_attempts() -> None:
   shutil.rmtree(practice_file_dir)
   os.makedirs(practice_file_dir)
 
+
+# Gracefully exits the program with the given code.
 def exit_program(code: int) -> None:
   print("Exiting...")
   if settings["delete_attempts"]["value"]:
     delete_all_attempts()
   sys.exit(code)
 
+
+# Runs the program
 if __name__ == "__main__":
   main()

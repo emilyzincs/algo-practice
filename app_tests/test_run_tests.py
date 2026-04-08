@@ -13,21 +13,25 @@ from util.enums import (
   SpecificAlgorithm
 )
 
+
+# Tests that testing user implementations works correctly.
 class TestRunTests(parent):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
   def setUp(self) -> None:
     super().setUp()
-    self.fp_base = "user_testing.test.fp."
+    self.fp_base = "user_testing.test.fp."  # for mocking file paths for the tests
 
-  def test_main(self) -> None:
+  # Runs the tests.
+  def test_run_tests(self) -> None:
     if self.language is not None:
       self.run_language_tests(self.language)
     else:
       for language in Language:
         self.run_language_tests(language)
 
+  # Runs tests for the given Language.
   def run_language_tests(self, language: Language):
     practice_file_name_prefix = to_language_file_case("sol", language)
     required_class_name_prefix = None
@@ -41,14 +45,19 @@ class TestRunTests(parent):
       case _:
         assert_never()
 
-    self.abstract_test_run_tests(
+    self.language_test_run_tests(
       language,
       practice_file_dir,
       practice_file_name_prefix,
       required_class_name_prefix
     )
-    self.abstract_test_solutions(language)  
+    self.language_test_solutions(language)  
 
+  # Runs test number 'test_number' for language 'language' that does not correspond
+  #   to an actual algorithm implementation.
+  # Returns True if the test is successful, False if the info, test, and practice
+  #   files for the test do not exist.
+  # Raises and error if the test fails for other reasons.
   def specific_test_run_test(
       self,
       test_number: int,
@@ -86,7 +95,9 @@ class TestRunTests(parent):
       self.assertEqual(expected, result, error_msg)
       print("Test passed.")      
 
-  def abstract_test_run_tests(
+  # Runs tests for the given Language that do not correspond to actual
+  # algorithm implementations. 
+  def language_test_run_tests(
       self,
       language: Language,
       practice_file_dir: str,
@@ -134,6 +145,9 @@ class TestRunTests(parent):
           )
         print("Done.")
 
+  # Returns a tuple containing the info, test, and practice file path strings corresponding
+  #   to the given prefixes, number, and extension, or None if all paths do not exist.
+  # Raises RuntimeError if exactly one or two of the file paths exist.
   def get_paths(
     self,
     info_path_prefix: str, 
@@ -177,7 +191,10 @@ class TestRunTests(parent):
       self.assertEqual(True, result, error_msg)
       print("Solution correct.")
 
-  def abstract_test_solutions(
+  # Runs tests for the given Language that correspond to actual
+  # algorithm implementations. 
+  # If a solution for an algorithm has not been written in the given Language, skips it.
+  def language_test_solutions(
       self,
       language: Language, 
   ) -> None:
@@ -191,8 +208,10 @@ class TestRunTests(parent):
         self.specific_test_solution(alg, language)
       print("Done.")
 
+  # Returns the prefix string for paths to test files for these tests.
   def get_test_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "test")
   
+  # Returns the prefix string for paths to info files for these tests.
   def get_info_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")

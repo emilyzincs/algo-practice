@@ -4,6 +4,9 @@ from util.type_check import is_type, string_to_bool
 from util.enums import Language, SpecificAlgorithm, is_member, Language, member_from_string
 
 
+# A class which factors out the logic for initiazing the environment variables.
+# Meant to be extended by test classes which use the environment variables,
+#   but this class does not hold tests itself.
 class BaseTest(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)

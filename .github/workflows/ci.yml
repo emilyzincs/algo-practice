@@ -6,6 +6,7 @@ on:
     branches: [ '**' ]
 
 jobs:
+  # For if a more complex build system is necessary in the future
   build:
     runs-on: ubuntu-latest
     steps:
