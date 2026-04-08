@@ -246,10 +246,6 @@ public class Runner {
     return res;
   }
 
-  private static String getStringParseErrorMessage(String type) {
-    return "Failed to parse what should be a " + type + " from a String.";
-  }
-
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
     String candidate = (String) def.get("type");
     ParseType type = getParseTypeFromTypeField(candidate);
