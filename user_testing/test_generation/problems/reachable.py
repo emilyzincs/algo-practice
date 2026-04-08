@@ -1,6 +1,6 @@
 from problems.reachable.breadth_first_search.solution import Solution
-import user_test_generation.generation_util as util
-from user_test_generation.base_generator import BaseGenerator as parent
+import user_testing.test_generation.generation_util as util
+from user_testing.test_generation.base_generator import BaseGenerator as parent
 from util.enums import SpecificAlgorithm
 
 sol = Solution()

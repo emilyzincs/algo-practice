@@ -1,6 +1,6 @@
 import sys
 import time
-from user_solution_testing.test import run_tests
+from user_testing.test import run_tests
 from util.exceptions import UnhandledCaseException
 from menu.util import handle_global_command, print_desc, to_description_lines
 from typing import assert_never

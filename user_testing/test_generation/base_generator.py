@@ -1,4 +1,4 @@
-import user_test_generation.generation_util as util
+import user_testing.test_generation.generation_util as util
 from util.file_paths import get_test_file_path
 from util.file_io import dump_json
 from util.enums import SpecificAlgorithm

@@ -52,7 +52,7 @@ def get_test_file_path(specific_alg: SpecificAlgorithm) -> str:
   return os.path.join(get_gen_alg_dir(gen_alg), "test.json")
 
 def get_test_runner_dir_path(lang: Language) -> str:
-  return os.path.join(PROJECT_ROOT, "user_solution_testing", "test_runners", member_to_string(lang))
+  return os.path.join(PROJECT_ROOT, "user_testing", "test_runners", member_to_string(lang))
 
 def get_test_runner_file_path(lang: Language) -> str:
   return os.path.join(get_test_runner_dir_path(lang), 
@@ -69,5 +69,5 @@ def get_abstract_test_dir() -> str:
 
 def get_test_generator_path(specific_alg: SpecificAlgorithm) -> str:
   gen_alg = SPECIFIC_ALG_TO_GENERAL[specific_alg]
-  return os.path.join(PROJECT_ROOT, "user_test_generation", "problems", 
+  return os.path.join(PROJECT_ROOT, "user_testing", "test_generation", "problems", 
                       member_to_string(gen_alg) + ".py")

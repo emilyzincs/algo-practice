@@ -3,7 +3,7 @@ import os
 import argparse
 import unittest
 from util.file_paths import get_abstract_test_dir, PROJECT_ROOT
-from user_solution_testing.test_commands.java import path_to_package
+from user_testing.test_commands.java import path_to_package
 
 TEST_PREFIX = "test_"
 

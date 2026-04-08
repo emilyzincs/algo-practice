@@ -1,19 +1,48 @@
-package user_solution_testing.test_runners.java;
+package user_testing.test_runners.java;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
   private static String fullPackageClassName;
 
+  private enum ParseType {
+    INT,
+    LONG,
+    BOOLEAN,
+    FLOAT,
+    STRING,
+    ARRAY,
+    LIST,
+    IMMUTABLE_LIST,
+    SET,
+    MAP,
+    LISTNODE,
+    TREENODE
+  }
+
   public static void main(String[] args) throws Exception {
-    if (args.length != 6 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
+    if (args.length != 7 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
       System.err.println(
         "Usage: java Runner" + 
         " <practiceFilePackage>" +
@@ -21,15 +50,32 @@ public class Runner {
         " <testFilePath>.json" + 
         " <debug>, where <debug> is True or False." +
         " <SolutionClassName>" + 
-        " <SolutionMethodName>"
+        " <SolutionMethodName>" +
+        " <ParseTypes list string>"
       );
-      System.out.println("Given args: " + Arrays.toString(args));
+      System.err.println("Given args: " + Arrays.toString(args));
       System.exit(1);
     }
 
     boolean debug = "True".equals(args[3]);
 
     try {
+      String[] parseTypesArg = mapper.readValue(
+        args[6],
+        new TypeReference<String[]>() {}
+      );
+      ParseType[] parseTypes = ParseType.values();
+      if (parseTypesArg.length != parseTypes.length) {
+        throw new IllegalStateException("Given parse types argument must match" + 
+                                        " the Java ParseType Enum, but they have different lengths.");
+      }
+      for (int i = 0; i < parseTypesArg.length; i++) {
+        if (!parseTypes[i].name().equals(parseTypesArg[i].toUpperCase())) {
+          throw new IllegalStateException("Given parse types argument must match" + 
+                                  " the Java ParseType Enum, but this fails for type" + i + ".");
+        }
+      }
+
       Map<String, Object> root = mapper.readValue(
         Files.readAllBytes(Paths.get(args[1])),
         new TypeReference<Map<String, Object>>() {}
@@ -124,46 +170,65 @@ public class Runner {
     System.exit(1);
   }
 
-  private static Class<?> parseType(Map<String, Object> def) {
-    String type = (String) def.get("type");
+  private static boolean isParseType(String candidate) {
+    try {
+      toParseType(candidate);
+      return true;
+    }  catch (IllegalArgumentException e) {
+      return false;
+    }
+  }
 
-    switch (type) {
-      case "int":
-        return int.class;
-      case "long":
-        return long.class;
-      case "float":
-        return double.class;
-      case "boolean":
-        return boolean.class;
-      case "string":
-        return String.class;
-      
-      case "immutable_list":
-      case "array": {
+  private static ParseType toParseType(String candidate) {
+    return ParseType.valueOf(candidate.toUpperCase());
+  }
+
+  private static ParseType getParseTypeFromTypeField(String candidate) {
+    if (!isParseType(candidate)) {
+      throw new IllegalArgumentException("Type fields should always refer to a ParseType," + 
+                                         " untrue for " + candidate);
+    }
+    return toParseType(candidate);
+  }
+
+  private static Class<?> parseType(Map<String, Object> def) {
+    String candidate = (String) def.get("type");
+    ParseType type = getParseTypeFromTypeField(candidate);
+
+    return switch (type) {
+      case INT -> int.class;
+      case LONG -> long.class;
+      case FLOAT -> double.class;
+      case BOOLEAN -> boolean.class;
+      case STRING -> String.class;
+      case ARRAY -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
-        return Array.newInstance(inner, 0).getClass();
+        yield Array.newInstance(inner, 0).getClass();
       }
-
-      case "list":
-        return List.class;
-      case "set":
-        return Set.class;
-      case "map":
-        return Map.class;
-
-      case "ListNode":
-      case "TreeNode":
+      case LIST -> List.class;
+      case IMMUTABLE_LIST -> {
+        @SuppressWarnings("unchecked")
+        Class<?> inner = parseType((Map<String, Object>) def.get("items"));
+        yield Array.newInstance(inner, 0).getClass();
+      }
+      case SET -> Set.class;
+      case MAP -> Map.class;
+      case LISTNODE -> {
         try {
-          return Class.forName(fullPackageClassName + "$" + type);
+          yield Class.forName(fullPackageClassName + "$" + candidate);
         } catch (Exception e) {
-          throw new RuntimeException("Missing class: " + type);
+          throw new RuntimeException("Missing class: " + candidate);
         }
-
-      default:
-        throw new RuntimeException("Unknown type: " + type);
-    }
+      }
+      case TREENODE -> {
+        try {
+          yield Class.forName(fullPackageClassName + "$" + candidate);
+        } catch (Exception e) {
+          throw new RuntimeException("Missing class: " + candidate);
+        }
+      }
+    };
   }
 
   // ===== INPUT PARSING =====
@@ -181,66 +246,20 @@ public class Runner {
     return res;
   }
 
-  private static String getStringParseErrorMessage(String type) {
-    return "Failed to parse what should be a " + type + " from a String.";
-  }
-
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
-    String type = (String) def.get("type");
-    if (val instanceof String) {
-      String valStr = (String) val;
-      switch (type) {
-        case "int":
-          try {
-            return Integer.parseInt(valStr);
-          } catch (NumberFormatException e) {
-            System.err.println(getStringParseErrorMessage(type));
-            throw e;
-          }
-        case "long":
-          try {
-            return Long.parseLong(valStr);
-          } catch (NumberFormatException e) {
-            System.err.println(getStringParseErrorMessage(type));
-            throw e;
-          }
-        case "float":
-          try {
-            Double ret = Double.parseDouble(valStr);
-            if (ret == 0)
-              return 0.0; // handles -0.0
-            return ret;
-          } catch (NumberFormatException e) {
-            System.err.println(getStringParseErrorMessage(type));
-            throw e;
-          }
-        case "boolean":
-          if (!valStr.equals("true") && !valStr.equals("false")) {
-            System.err.println(getStringParseErrorMessage(type));
-            throw new RuntimeException("Invalid boolean: " + valStr);
-          }
-          return Boolean.parseBoolean(valStr);
-        case "string":
-          return valStr;
-        default:
-          val = mapper.readValue(valStr, Object.class);
-      }
+    String candidate = (String) def.get("type");
+    ParseType type = getParseTypeFromTypeField(candidate);
+
+    if (type != ParseType.STRING && val instanceof String) {
+      val = mapper.readValue((String) val, Object.class);
     }
-    switch (type) {
-      case "int":
-        return ((Number) val).intValue();
-      case "long":
-        return ((Number) val).longValue();
-      case "float":
-        return ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
-      case "boolean":
-        return val;
-      case "string":
-        return val;
-      
-      case "immutable_list":
-      case "array": {
-        // val must be a List after parsing
+
+    return switch (type) {
+      case INT -> ((Number) val).intValue();
+      case LONG -> ((Number) val).longValue();
+      case FLOAT -> ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
+      case BOOLEAN, STRING -> val;
+      case ARRAY, IMMUTABLE_LIST -> {
         List<?> rawList = (List<?>) val;
         @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
@@ -250,30 +269,27 @@ public class Runner {
         for (int i = 0; i < rawList.size(); i++) {
           Array.set(array, i, parseValue(rawList.get(i), itemDef));
         }
-        return array;
+        yield array;
       }
-
-      case "list": {
+      case LIST -> {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (Object o : raw)
           list.add(parseValue(o, inner));
-        return list;
+        yield list;
       }
-
-      case "set": {
+      case SET -> {
         List<?> raw = (List<?>) val;
         Set<Object> set = new HashSet<>();
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (Object o : raw)
           set.add(parseValue(o, inner));
-        return set;
+        yield set;
       }
-
-      case "map": {
+      case MAP -> {
         Map<?, ?> raw = (Map<?, ?>) val;
         Map<Object, Object> map = new HashMap<>();
         @SuppressWarnings("unchecked")
@@ -284,22 +300,18 @@ public class Runner {
         for (Object k : raw.keySet()) {
           map.put(parseValue(k, keyDef), parseValue(raw.get(k), valDef));
         }
-        return map;
+        yield map;
       }
-
-      case "ListNode":
+      case LISTNODE -> {
         @SuppressWarnings("unchecked")
         Map<String, Object> def_val = (Map<String, Object>) def.get("val");
-        return buildListNode((List<?>) val, def_val);
-
-      case "TreeNode":
+        yield buildListNode((List<?>) val, def_val);
+      } case TREENODE -> {
         @SuppressWarnings("unchecked")
         Map<String, Object> def_val2 = (Map<String, Object>) def.get("val");
-        return buildTreeNode((List<?>) val, def_val2);
-
-      default:
-        throw new RuntimeException("Unknown type: " + type);
-    }
+        yield buildTreeNode((List<?>) val, def_val2);
+      }
+    };
   }
 
   // ===== TYPE VALIDATION =====
@@ -308,78 +320,68 @@ public class Runner {
     if (obj == null)
       return true;
 
-    String type = (String) def.get("type");
+    String candidate = (String) def.get("type");
+    ParseType type = getParseTypeFromTypeField(candidate);
 
-    switch (type) {
-      case "int":
-        return obj instanceof Integer;
-      case "long":
-        return obj instanceof Long;
-      case "float":
-        return obj instanceof Double;
-      case "boolean":
-        return obj instanceof Boolean;
-      case "string":
-        return obj instanceof String;
-
-      case "immutable_list":
-      case "array":
+    return switch (type) {
+      case INT -> obj instanceof Integer;
+      case LONG -> obj instanceof Long;
+      case FLOAT -> obj instanceof Double;
+      case BOOLEAN -> obj instanceof Boolean;
+      case STRING -> obj instanceof String;
+      case ARRAY, IMMUTABLE_LIST -> {
         if (!obj.getClass().isArray())
-          return false;
+          yield false;
         int len = Array.getLength(obj);
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
         for (int i = 0; i < len; i++) {
           if (!validateType(Array.get(obj, i), inner))
-            return false;
+            yield false;
         }
-        return true;
-
-      case "list":
+        yield true;
+      }
+      case LIST -> {
         if (!(obj instanceof List))
-          return false;
+          yield false;
         @SuppressWarnings("unchecked")
         Map<String, Object> listInner = (Map<String, Object>) def.get("items");
         for (Object o : (List<?>) obj) {
           if (!validateType(o, listInner))
-            return false;
+            yield false;
         }
-        return true;
-
-      case "set":
+        yield true;
+      }
+      case SET -> {
         if (!(obj instanceof Set))
-          return false;
+          yield false;
         @SuppressWarnings("unchecked")
         Map<String, Object> setInner = (Map<String, Object>) def.get("items");
         for (Object o : (Set<?>) obj) {
           if (!validateType(o, setInner))
-            return false;
+            yield false;
         }
-        return true;
-
-      case "map":
+        yield true;
+      }
+      case MAP -> {
         if (!(obj instanceof Map))
-          return false;
+          yield false;
         @SuppressWarnings("unchecked")
         Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
         @SuppressWarnings("unchecked")
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
-
+        
         for (Map.Entry<?, ?> e : ((Map<?, ?>) obj).entrySet()) {
           if (!validateType(e.getKey(), keyDef))
-            return false;
+            yield false;
           if (!validateType(e.getValue(), valDef))
-            return false;
+            yield false;
         }
-        return true;
-
-      case "ListNode":
-      case "TreeNode":
-        return obj.getClass().getName().equals(fullPackageClassName + "$" + type);
-
-      default:
-        throw new RuntimeException("Unknown type in validation: " + type);
-    }
+        yield true;
+      }
+      case LISTNODE, TREENODE ->
+       obj.getClass().getName().equals(fullPackageClassName + "$" + candidate);
+    };
   }
 
   // ===== BUILDERS =====
