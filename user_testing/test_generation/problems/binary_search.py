@@ -1,6 +1,7 @@
 import user_testing.test_generation.generation_util as util
 from user_testing.test_generation.base_generator import BaseGenerator as parent
 from util.enums import SpecificAlgorithm
+from typing import override
 
 
 # Returns the list of indices where target appears in arr, or [-1] if not found.
@@ -121,6 +122,7 @@ class BinarySearchGenerator(parent):
   # Returns:
   #   A list of (array, target) tuples covering edge cases, random inputs,
   #   boundary conditions, and large arrays.
+  @override
   def get_all_test_cases(self) -> list[tuple[tuple[int, ...], int]]:
     test_cases = get_edge_cases()
     add_random_cases(test_cases, 3, -100, 100, 4)

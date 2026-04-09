@@ -2,6 +2,7 @@ from problems.reachable.breadth_first_search.solution import Solution
 import user_testing.test_generation.generation_util as util
 from user_testing.test_generation.base_generator import BaseGenerator as parent
 from util.enums import SpecificAlgorithm
+from typing import override
 
 
 # Solution instance for reachability
@@ -116,6 +117,7 @@ class ReachableGenerator(parent):
   # Returns:
   #   A list of (graph, root) tuples covering edge cases, random graphs
   #   of various sizes and densities, and connectedness variations.
+  @override
   def get_all_test_cases(self):
     test_cases = get_edge_cases()
     for i in range(3, 8):

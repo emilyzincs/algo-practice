@@ -1,6 +1,7 @@
 import user_testing.test_generation.generation_util as util
 from user_testing.test_generation.base_generator import BaseGenerator as parent
 from util.enums import SpecificAlgorithm
+from typing import override
 
 
 # Oracle function that returns the sorted version of the input array.
@@ -81,6 +82,7 @@ class SortGenerator(parent):
   # Returns:
   #   A list of (array,) tuples covering edge cases, random inputs,
   #   and large arrays.
+  @override
   def get_all_test_cases(self):
     test_cases = get_edge_cases()
     add_random_cases(test_cases, 3, -100, 100, 4)
