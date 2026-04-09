@@ -15,6 +15,13 @@ from util.enums import (
   Language
 )
 
+
+# Loops, handling user input for settings configuration. Updates settings file and
+# refreshes settings when done.
+#
+# Parameters:
+# - refresh_settings_func: Callable that reloads settings from disk.
+# - exit_func: Callable that exits the program.
 def handle_commands(
     refresh_settings_func,
     exit_func
@@ -96,6 +103,9 @@ def handle_commands(
     else:
       raise UnhandledCaseException(" ".join(user_input), "input")
 
+
+# Prints all commands that can be used in this menu, along with
+# what they do.
 def handle_help():
   command_descriptions = to_description_lines(GlobalCommand)
   command_descriptions.extend(to_description_lines(SettingsCommand))

@@ -132,8 +132,8 @@ def get_alg(user_input: str, alg_list: list[str],
   return alg_list[idx]
 
 
-# Prints the help menu listing all global commands, main menu commands,
-# and the language change option.
+# Prints all commands that can be used in this menu, along with
+# what they do.
 def handle_help():
   description_lines = to_description_lines(GlobalCommand)
   description_lines.extend(to_description_lines(MainMenuCommand))

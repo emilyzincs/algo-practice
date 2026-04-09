@@ -13,6 +13,20 @@ from util.enums import (
   Language
 )
 
+
+# Loops, handling user input during algorithm practice. Runs tests when user indicates
+# they are done, and returns the elapsed time if successful (continues if not).
+#
+# Parameters:
+# - alg: The SpecificAlgorithm being practiced.
+# - language: The current Language the algorithm is being practiced in.
+# - delete_attempts_func: Callable that deletes any stored attempt data.
+# - load_solution_func: Callable that loads the solution for the given algorithm.
+# - exit_func: Callable that exits the program.
+#
+# Returns:
+#   The time spent in seconds (float) if all tests passed.
+#   None if the user exits practice without passing all the tests.
 def handle_commands(
     alg: SpecificAlgorithm,
     language: Language,
@@ -60,6 +74,9 @@ def handle_commands(
     return potential_end_time - start_time
   return None
 
+
+# Prints all commands that can be used in this menu, along with
+# what they do.
 def handle_help():
   command_descriptions = to_description_lines(GlobalCommand)
   command_descriptions.extend(to_description_lines(PracticeCommand))
