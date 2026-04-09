@@ -1,11 +1,12 @@
 import sys
 from importlib import util as lib_util
+from types import ModuleType
 
-def load_module_from_path(module_name, file_path):
+def load_module_from_path(module_name, file_path) -> ModuleType:
     spec = lib_util.spec_from_file_location(module_name, file_path)
-    if spec is None:
+    if spec is None or spec.loader is None:
         raise ImportError(f"Could not load spec for {file_path}")
-    module = lib_util.module_from_spec(spec)
+    module: ModuleType = lib_util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module

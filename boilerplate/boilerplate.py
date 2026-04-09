@@ -1,10 +1,13 @@
-from util.file_paths import get_practice_file_dir, PROJECT_ROOT
+from util.file_paths import get_practice_file_dir, PROJECT_ROOT, get_boilerplate_language_file_path
 from user_testing.test_commands.java import path_to_package
 from typing import assert_never, Any
 from util.enums import Language, ParseType, member_from_string, member_to_string
+from util.general import load_module_from_path
 from boilerplate.util import validate_type
-import boilerplate.language.java as java_bp
-import boilerplate.language.python as python_bp
+from boilerplate.interface import BpInterface
+from boilerplate.language import java
+
+BP_LANG_CLASS: type[BpInterface]
 
 def get_boilerplate_text(
   parameter_names: list[str],
@@ -15,52 +18,68 @@ def get_boilerplate_text(
   solution_function_name: str,
   language: Language
 ):
-  parameter_type_strings = [parse_type_string(input_type, language) for input_type in input_types]
-  return_type_string = parse_type_string(expected_type, language)
+  set_bp_lang_class(language)
+
+  parameter_type_strings = [BP_LANG_CLASS.parse_type_string(input_type) for input_type in input_types]
+  return_type_string = BP_LANG_CLASS.parse_type_string(expected_type)
   included_types: set[ParseType] = recursively_get_included_types(input_types, expected_type)
 
-  beginning = get_beginning(language)
-  imports = get_required_imports(included_types, language)
-  class_line = get_required_class_line(solution_class_name, one_indent, language)
-  method_line = get_required_method_line(
+  start = BP_LANG_CLASS.get_start()
+
+  class_declaration = BP_LANG_CLASS.get_class_declaration(solution_class_name, one_indent)
+  method_declaration = BP_LANG_CLASS.get_method_declaration(
+    solution_function_name,
     parameter_names, 
     parameter_type_strings, 
     return_type_string, 
-    one_indent,
-    solution_function_name,
-    language
+    one_indent
   )
-  list_node_text = ""
-  tree_node_text = ""
+
+  list_node = ""
+  tree_node = ""
+
   if ParseType.LISTNODE in included_types:
     val_type_string = get_nested_type_string(ParseType.LISTNODE, "val",
-                                            input_types, expected_type, language)
-    list_node_text = get_list_node_text(val_type_string, one_indent, 1, language) 
+                                            input_types, expected_type)
+    list_node = BP_LANG_CLASS.list_node(val_type_string, one_indent, one_indent * 1) 
+
   if ParseType.TREENODE in included_types:
     val_type_string = get_nested_type_string(ParseType.TREENODE, "val",
-                                             input_types, expected_type, language)
-    tree_node_text = get_tree_node_text(val_type_string, one_indent, 1, language)
+                                             input_types, expected_type)
+    tree_node = BP_LANG_CLASS.tree_node(val_type_string, one_indent, one_indent * 1)
+
   end = get_ending(one_indent, language)
 
   ret = "".join([
-    beginning, 
-    imports, 
-    class_line, 
-    method_line, 
-    list_node_text, 
-    tree_node_text, 
+    start,
+    class_declaration, 
+    method_declaration, 
+    list_node, 
+    tree_node, 
     end
   ])
+
   return ret
 
-def parse_type_string(typ, language: Language) -> str:
-  match language:
+def set_bp_lang_class(lang: Language) -> None:
+  lang_class_name: str
+  path = get_boilerplate_language_file_path(lang)
+
+  # This match logic is not strictly necessary, but it is a useful
+  # static flag that a new class needs to be implemented when 
+  # a new language is added
+  match lang:
     case Language.PYTHON:
-      return python_bp.parse_type_string(typ)
+      lang_class_name = "PythonBp"
     case Language.JAVA:
-      return java_bp.parse_type_string(typ)
+      lang_class_name = "JavaBp"
     case _:
-      assert_never()
+      assert_never(lang)
+  global BP_LANG_CLASS
+  module = load_module_from_path(lang_class_name, path)
+  BP_LANG_CLASS = getattr(module, lang_class_name)
+  if not issubclass(BP_LANG_CLASS, BpInterface):
+    raise TypeError(f"{lang_class_name} must inherit from BpInterface.")
 
 def get_beginning(language: Language) -> str:
   match language:
@@ -69,48 +88,7 @@ def get_beginning(language: Language) -> str:
     case Language.JAVA:
       return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
     case _:
-      assert_never()
-
-def get_required_method_line(
-    parameter_names: list[str],
-    parameter_types: list[str], 
-    return_type: str, 
-    one_indent: str, 
-    required_method_name: str, 
-    language: Language
-) -> str:
-  if len(parameter_names) != len(parameter_types):
-    raise ValueError(f"Must have same number of parameter names and types." +
-                     f" Names: {parameter_names}. Types: {parameter_types}.")
-  match language:
-    case Language.PYTHON:
-      return python_bp.get_method_line(parameter_names, parameter_types, 
-                                    return_type, one_indent, required_method_name)
-    case Language.JAVA:
-      return java_bp.get_method_line(parameter_names, parameter_types, 
-                                  return_type, one_indent, required_method_name)
-    case _:
-      assert_never()
-
-def get_list_node_text(val_type_string: str, one_indent: str, 
-                       num_indents: int, language: Language) -> str:
-  match language:
-    case Language.PYTHON:
-      return python_bp.list_node(val_type_string, one_indent, one_indent * num_indents)
-    case Language.JAVA:
-      return java_bp.list_node(val_type_string, one_indent, one_indent * num_indents)
-    case _:
-      assert_never()
-
-def get_tree_node_text(val_type_string: str, one_indent: str,
-                      num_indents: int, language: Language) -> str:
-    match language:
-      case Language.PYTHON:
-        return python_bp.tree_node(val_type_string, one_indent, one_indent * num_indents)
-      case Language.JAVA:
-        return java_bp.tree_node(val_type_string, one_indent, one_indent * num_indents)
-      case _:
-        assert_never()
+      assert_never(language)
 
 def add_nested_included_types(typ: dict[str, Any], s: set[ParseType]) -> None:
   validate_type(typ)
@@ -190,7 +168,7 @@ def find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None:
       assert_never(curr_type)
 
 def get_nested_type_string(to_find: ParseType, field: str, 
-                           input_types, expected_type, language: Language):
+                           input_types, expected_type):
   typ: dict[str, Any] | None = None
   for input_type in input_types:
     curr = find_type(input_type, to_find)
@@ -201,8 +179,4 @@ def get_nested_type_string(to_find: ParseType, field: str,
     typ = find_type(expected_type, to_find)
   if typ is None:
     raise RuntimeError(f"Type not found: {to_find}")
-  return parse_type_string(typ[field], language)
-
-
-
-
+  return BP_LANG_CLASS.parse_type_string(typ[field])
