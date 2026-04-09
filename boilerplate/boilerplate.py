@@ -6,7 +6,7 @@ from util.general import load_module_from_path
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
 
-BP_LANG_CLASS: type[BpInterface]
+BP_LANG_INSTANCE: BpInterface
 
 def get_boilerplate_text(
   parameter_names: list[str],
@@ -19,15 +19,15 @@ def get_boilerplate_text(
 ):
   set_bp_lang_class(language)
 
-  parameter_type_strings = [BP_LANG_CLASS.parse_type_string(input_type) for input_type in input_types]
-  return_type_string = BP_LANG_CLASS.parse_type_string(expected_type)
+  parameter_type_strings = [BP_LANG_INSTANCE.parse_type_string(input_type) for input_type in input_types]
+  return_type_string = BP_LANG_INSTANCE.parse_type_string(expected_type)
   included_types: set[ParseType] = recursively_get_included_types(input_types, expected_type)
 
-  start = BP_LANG_CLASS.get_start()
-  imports = BP_LANG_CLASS.get_imports(included_types)
+  start = BP_LANG_INSTANCE.get_start()
+  imports = BP_LANG_INSTANCE.get_imports(included_types)
 
-  class_declaration = BP_LANG_CLASS.get_class_declaration(solution_class_name, one_indent)
-  method_declaration = BP_LANG_CLASS.get_method_declaration(
+  class_declaration = BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent)
+  method_declaration = BP_LANG_INSTANCE.get_method_declaration(
     solution_function_name,
     parameter_names, 
     parameter_type_strings, 
@@ -41,14 +41,14 @@ def get_boilerplate_text(
   if ParseType.LISTNODE in included_types:
     val_type_string = get_nested_type_string(ParseType.LISTNODE, "val",
                                             input_types, expected_type)
-    list_node = BP_LANG_CLASS.list_node(val_type_string, one_indent, one_indent * 1) 
+    list_node = BP_LANG_INSTANCE.list_node(val_type_string, one_indent, one_indent * 1) 
 
   if ParseType.TREENODE in included_types:
     val_type_string = get_nested_type_string(ParseType.TREENODE, "val",
                                              input_types, expected_type)
-    tree_node = BP_LANG_CLASS.tree_node(val_type_string, one_indent, one_indent * 1)
+    tree_node = BP_LANG_INSTANCE.tree_node(val_type_string, one_indent, one_indent * 1)
 
-  end = BP_LANG_CLASS.get_end(one_indent)
+  end = BP_LANG_INSTANCE.get_end(one_indent)
 
   ret = "".join([
     start,
@@ -66,10 +66,10 @@ def set_bp_lang_class(lang: Language) -> None:
   lang_class_name = member_to_string(lang).capitalize() + "Bp"
   path = get_boilerplate_language_file_path(lang)
 
-  global BP_LANG_CLASS
+  global BP_LANG_INSTANCE
   module = load_module_from_path(lang_class_name, path)
-  BP_LANG_CLASS = getattr(module, lang_class_name)
-  if not issubclass(BP_LANG_CLASS, BpInterface):
+  BP_LANG_INSTANCE = getattr(module, lang_class_name)()
+  if not issubclass(type(BP_LANG_INSTANCE), BpInterface):
     raise TypeError(f"{lang_class_name} must inherit from BpInterface.")
 
 def add_nested_included_types(typ: dict[str, Any], s: set[ParseType]) -> None:
@@ -126,4 +126,4 @@ def get_nested_type_string(to_find: ParseType, field: str,
     typ = find_type(expected_type, to_find)
   if typ is None:
     raise RuntimeError(f"Type not found: {to_find}")
-  return BP_LANG_CLASS.parse_type_string(typ[field])
+  return BP_LANG_INSTANCE.parse_type_string(typ[field])

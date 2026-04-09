@@ -10,13 +10,11 @@ from user_testing.test_commands.java import path_to_package
 class JavaBp(BpInterface):
 
   @override
-  @staticmethod
-  def get_start() -> str:
+  def get_start(self) -> str:
     return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
   
   @override
-  @staticmethod
-  def get_imports(included_types: set[ParseType]) -> str:
+  def get_imports(self, included_types: set[ParseType]) -> str:
     imports = ""
     for t in [ParseType.LIST, ParseType.SET, ParseType.MAP]:
       if t in included_types:
@@ -26,13 +24,12 @@ class JavaBp(BpInterface):
     return imports 
 
   @override
-  @staticmethod
-  def get_class_declaration(class_name, one_indent) -> str:
+  def get_class_declaration(self, class_name, one_indent) -> str:
     return f"public class {class_name}" + " {\n"
 
   @override
-  @staticmethod
-  def get_method_declaration(require_method_name: str, parameter_names: list[str], parameter_types: list[str], 
+  def get_method_declaration(self, require_method_name: str, parameter_names: list[str], 
+                             parameter_types: list[str], 
                             return_type: str, one_indent: str) -> str:
     in_parentheses = None
     n = len(parameter_names)
@@ -46,8 +43,7 @@ class JavaBp(BpInterface):
             " {\n" + (one_indent * 2) + f"\n{one_indent}" + "}\n")
 
   @override
-  @staticmethod
-  def parse_type_string(typ: dict[str, Any], should_box_if_primitive: bool = False) -> str:
+  def parse_type_string(self, typ: dict[str, Any], should_box_if_primitive: bool = False) -> str:
     validate_type(typ)
     curr_type: ParseType = member_from_string(ParseType, typ["type"])
     match curr_type:
@@ -62,16 +58,16 @@ class JavaBp(BpInterface):
       case ParseType.STRING:
         return "String"
       case ParseType.ARRAY:
-        return f"{JavaBp.parse_type_string(typ["items"], False)}[]"
+        return f"{self.parse_type_string(typ["items"], False)}[]"
       case ParseType.LIST:
-        return f"List<{JavaBp.parse_type_string(typ["items"], True)}>"
+        return f"List<{self.parse_type_string(typ["items"], True)}>"
       case ParseType.IMMUTABLE_LIST:
-        return f"{JavaBp.parse_type_string(typ["items"], False)}[]"
+        return f"{self.parse_type_string(typ["items"], False)}[]"
       case ParseType.SET:
-        return f"Set<{JavaBp.parse_type_string(typ["items"], True)}>"
+        return f"Set<{self.parse_type_string(typ["items"], True)}>"
       case ParseType.MAP:
-        return (f"Map<{JavaBp.parse_type_string(typ["keys"], True)}," + 
-              f" {JavaBp.parse_type_string(typ["values"], True)}>")
+        return (f"Map<{self.parse_type_string(typ["keys"], True)}," + 
+              f" {self.parse_type_string(typ["values"], True)}>")
       case ParseType.LISTNODE:
         return "ListNode"
       case ParseType.TREENODE:
@@ -80,8 +76,7 @@ class JavaBp(BpInterface):
         assert_never(curr_type)
 
   @override
-  @staticmethod
-  def list_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
+  def list_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
     return (
       "\n\n" +
       f"{base_indent}public static class ListNode" + " {\n" +
@@ -97,8 +92,7 @@ class JavaBp(BpInterface):
     )
 
   @override
-  @staticmethod
-  def tree_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
+  def tree_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
     return (
       "\n\n" + 
       f"{base_indent}public static class TreeNode" + " {\n" +
@@ -116,6 +110,5 @@ class JavaBp(BpInterface):
     )
   
   @override
-  @staticmethod
-  def get_end(one_indent: str) -> str:
+  def get_end(self, one_indent: str) -> str:
     return "}\n"

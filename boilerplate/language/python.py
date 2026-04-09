@@ -8,26 +8,23 @@ from util.enums import ParseType, member_from_string
 class PythonBp(BpInterface):
 
   @override
-  @staticmethod
-  def get_start() -> str:
+  def get_start(self) -> str:
     return ""
   
 
   @override
-  @staticmethod
-  def get_imports(included_types: set[ParseType]) -> str:
+  def get_imports(self, included_types: set[ParseType]) -> str:
     return ("from __future__ import annotations\n" + "from typing import Optional\n\n"
               if ParseType.LISTNODE in included_types or ParseType.TREENODE in included_types
               else "")
 
   @override
-  @staticmethod
-  def get_class_declaration(class_name, one_indent) -> str:
+  def get_class_declaration(self, class_name, one_indent) -> str:
     return f"class {class_name}:\n"
 
   @override
-  @staticmethod
-  def get_method_declaration(require_method_name: str, parameter_names: list[str], parameter_types: list[str], 
+  def get_method_declaration(self, require_method_name: str, parameter_names: list[str], 
+                             parameter_types: list[str], 
                             return_type: str, one_indent: str) -> str:
     in_parentheses = None
     n = len(parameter_names)
@@ -38,8 +35,7 @@ class PythonBp(BpInterface):
             f" -> {return_type}:\n{one_indent * 2}")
 
   @override
-  @staticmethod
-  def parse_type_string(typ: dict[str, Any]) -> str:
+  def parse_type_string(self, typ: dict[str, Any]) -> str:
     validate_type(typ)
     curr_type: ParseType = member_from_string(ParseType, typ["type"])
     match curr_type:
@@ -54,16 +50,16 @@ class PythonBp(BpInterface):
       case ParseType.STRING:
         return "str"
       case ParseType.ARRAY:
-        return f"list[{PythonBp.parse_type_string(typ["items"])}]"
+        return f"list[{self.parse_type_string(typ["items"])}]"
       case ParseType.LIST:
-        return f"list[{PythonBp.parse_type_string(typ["items"])}]"
+        return f"list[{self.parse_type_string(typ["items"])}]"
       case ParseType.IMMUTABLE_LIST:
-        return f"tuple[{PythonBp.parse_type_string(typ["items"])}, ...]"
+        return f"tuple[{self.parse_type_string(typ["items"])}, ...]"
       case ParseType.SET:
-        return f"set[{PythonBp.parse_type_string(typ["items"])}]"
+        return f"set[{self.parse_type_string(typ["items"])}]"
       case ParseType.MAP:
-        return (f"dict[{PythonBp.parse_type_string(typ["keys"])}," + 
-              f" {PythonBp.parse_type_string(typ["values"])}]")
+        return (f"dict[{self.parse_type_string(typ["keys"])}," + 
+              f" {self.parse_type_string(typ["values"])}]")
       case ParseType.LISTNODE:
         return "Optional[ListNode]"
       case ParseType.TREENODE:
@@ -72,8 +68,7 @@ class PythonBp(BpInterface):
         assert_never(curr_type)
 
   @override
-  @staticmethod
-  def list_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
+  def list_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
     base_indent = ""
     return (
       "\n\n" +
@@ -85,8 +80,7 @@ class PythonBp(BpInterface):
     )
 
   @override
-  @staticmethod
-  def tree_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
+  def tree_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
     base_indent = ""
     return (
       "\n\n" +
@@ -100,6 +94,5 @@ class PythonBp(BpInterface):
     )
 
   @override
-  @staticmethod
-  def get_end(one_indent: str) -> str:
+  def get_end(self, one_indent: str) -> str:
     return ""
