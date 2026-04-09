@@ -4,7 +4,7 @@ from menu.util import handle_global_command, print_desc, to_description_lines
 
 from util.type_check import is_type
 from util.constants import TAB
-from util.exceptions import UnhandledCaseException
+from util.exceptions import UnhandledCaseError
 
 from util.enums import (
   MainMenuCommand, 
@@ -106,7 +106,7 @@ def handle_commands(
           print(f"Successfully completed {member_to_string(alg)} in {minutes}m" +
                 f" {seconds}s!")
     else:
-      raise UnhandledCaseException(user_input, "input")
+      raise UnhandledCaseError(user_input, "input")
 
 
 # Validates and extracts an algorithm name from user input.

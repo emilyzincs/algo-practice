@@ -1,7 +1,7 @@
 import sys
 import time
 from user_testing.test import run_tests
-from util.exceptions import UnhandledCaseException
+from util.exceptions import UnhandledCaseError
 from menu.util import handle_global_command, print_desc, to_description_lines
 from typing import assert_never
 from util.enums import (
@@ -65,7 +65,7 @@ def handle_commands(
         case _:
           assert_never(local_cmd)
     else:
-      raise UnhandledCaseException(user_input, "input")
+      raise UnhandledCaseError(user_input, "input")
 
   delete_attempts_func()    
   if correct:
