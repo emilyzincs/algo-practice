@@ -1,6 +1,14 @@
 from typing import Any
 from util.enums import ParseType, is_member
 
+
+# Validates that the given 'typ' is (locally) a language-agnostic type representation
+# matching the expected representation.
+#
+# I.e., that it is a dictionary with strings for keys where "type" is one key,
+# the value corresponding to "type" is a string, and that value corresponds to a ParseType.
+#
+# Raises ValueError if any of the checks fail.
 def validate_type(typ: dict[str, Any]) -> None:
   if type(typ) != dict:
     raise ValueError(f"Not a dict: {typ}.")

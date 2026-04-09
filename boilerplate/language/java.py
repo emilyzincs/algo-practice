@@ -1,7 +1,8 @@
 from typing import assert_never, Any, override
 from boilerplate.util import validate_type
-from util.enums import ParseType, member_from_string, member_to_string
 from boilerplate.interface import BpInterface
+
+from util.enums import ParseType, member_from_string, member_to_string
 from util.file_paths import get_practice_file_dir, PROJECT_ROOT
 from user_testing.test_commands.java import path_to_package
 
