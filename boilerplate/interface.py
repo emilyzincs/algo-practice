@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
+from util.enums import ParseType
 
 
 # Interface for boilerplate text generation that each language must implement
@@ -9,6 +10,12 @@ class BpInterface(ABC):
   @abstractmethod
   @staticmethod
   def get_start() -> str:
+    pass
+
+  # TODO: comment
+  @abstractmethod
+  @staticmethod
+  def get_imports(included_types: set[ParseType]) -> str:
     pass
   
   # TODO: comment
@@ -52,5 +59,5 @@ class BpInterface(ABC):
   # TODO: comment
   @abstractmethod
   @staticmethod
-  def get_end() -> str:
+  def get_end(one_indent: str) -> str:
     pass

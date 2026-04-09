@@ -6,6 +6,19 @@ from util.enums import ParseType, member_from_string
 
 # Python implementation of the boilerplate interface
 class PythonBp(BpInterface):
+  @staticmethod
+  def get_start() -> str:
+    return ""
+  
+  @staticmethod
+  def get_imports(included_types: set[ParseType]) -> str:
+    return ("from __future__ import annotations\n" + "from typing import Optional\n\n"
+              if ParseType.LISTNODE in included_types or ParseType.TREENODE in included_types
+              else "")
+
+  @staticmethod
+  def get_class_declaration(class_name, one_indent):
+    return f"class {class_name}:\n"
 
   @staticmethod
   def get_method_line(parameter_names: list[str], parameter_types: list[str], 
@@ -76,3 +89,7 @@ class PythonBp(BpInterface):
       f"{base_indent}{one_indent * 2}self.left = left\n" + 
       f"{base_indent}{one_indent * 2}self.right = right\n"
     )
+
+  @staticmethod
+  def get_end(one_indent: str) -> str:
+    return ""

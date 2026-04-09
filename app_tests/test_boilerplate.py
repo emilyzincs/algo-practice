@@ -18,8 +18,6 @@ class TestBoilerplate(parent):
 
   def setUp(self) -> None:
     super().setUp()
-    if self.alg is not None:
-      raise ValueError("Alg arguments are not applicable to boilerplate tests.")
     self.fp_base = "boilerplate.boilerplate."  # for mocking file paths for the tests
 
   # Runs the tests.
