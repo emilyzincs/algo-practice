@@ -6,6 +6,22 @@ from util.enums import SpecificAlgorithm, Language, member_name_list, ParseType
 from user_testing.test_commands.java import get_test_command as java_get_test_command
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 
+
+# Runs the test suite for a given algorithm and language by executing the appropriate
+# test runner. Returns True if all tests pass, False otherwise.
+#
+# Parameters:
+# - alg: The SpecificAlgorithm being tested.
+# - language: The Language in which the solution is written.
+# - show_subprocess_text: If True, subprocess output is printed to the console;
+# - debug: string "True" or "False" – enables detailed error logging in the runner.
+# - required_class_name: Name of the class containing the solution method
+#                        (defaults to SOLUTION_CLASS_NAME).
+# - required_method_name: Name of the method to test
+#                         (defaults to SOLUTION_FUNCTION_NAME).
+#
+# Returns:
+#   True if the subprocess returns exit code 0 (all tests passed), False otherwise.
 def run_tests(
     alg: SpecificAlgorithm,
     language: Language, 
