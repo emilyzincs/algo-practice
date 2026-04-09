@@ -6,8 +6,8 @@ def get_null():
 def get_empty_list():
   return []
 
-def rand_array(n: int, lo: int, hi: int) -> list[int]:
-  return [random.randint(lo, hi) for _ in range(n)]
+def rand_array(n: int, lo: int, hi: int) -> tuple[int, ...]:
+  return tuple([random.randint(lo, hi) for _ in range(n)])
 
 def rand_choice(arr):
   return random.choice(arr)
