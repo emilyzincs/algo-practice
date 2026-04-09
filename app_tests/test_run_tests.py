@@ -43,7 +43,7 @@ class TestRunTests(parent):
       case Language.JAVA:
         required_class_name_prefix = "Sol"
       case _:
-        assert_never()
+        assert_never(language)
 
     self.language_test_run_tests(
       language,

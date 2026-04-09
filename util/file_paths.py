@@ -19,7 +19,7 @@ def to_language_file_case(string: str, lang: Language) -> str:
         words[i] = word.capitalize()
       return "".join(words)
     case _:
-      assert_never()
+      assert_never(lang)
     
 def get_practice_file_dir() -> str:
   return os.path.join(PROJECT_ROOT, "practice")

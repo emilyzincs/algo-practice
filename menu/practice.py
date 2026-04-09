@@ -63,7 +63,7 @@ def handle_commands(
           except FileNotFoundError:
             print(f"Cannot load solution because it does not exist.", file=sys.stderr)
         case _:
-          assert_never()
+          assert_never(local_cmd)
     else:
       raise UnhandledCaseException(user_input, "input")
 

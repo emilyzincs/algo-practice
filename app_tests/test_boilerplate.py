@@ -39,7 +39,7 @@ class TestBoilerplate(parent):
       case Language.JAVA:
         required_class_name_prefix = "Bp"
       case _:
-        assert_never()
+        assert_never(language)
     self.language_test_boilerplate(
       language,
       boilerplate_file_dir,

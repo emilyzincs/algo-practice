@@ -42,7 +42,7 @@ def run_tests(
         debug
       )
     case _:
-      assert_never()
+      assert_never(language)
   if cmd is None:
     return False
   cmd.extend(additional_args)
