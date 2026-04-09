@@ -23,13 +23,13 @@ from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 # Returns:
 #   True if the subprocess returns exit code 0 (all tests passed), False otherwise.
 def run_tests(
-    alg: SpecificAlgorithm,
-    language: Language, 
-    show_subprocess_text: bool = True,
-    debug: str = "False",
-    required_class_name: str = SOLUTION_CLASS_NAME,
-    required_method_name: str = SOLUTION_FUNCTION_NAME,
-  ) -> bool:
+  alg: SpecificAlgorithm,
+  language: Language, 
+  show_subprocess_text: bool = True,
+  debug: str = "False",
+  required_class_name: str = SOLUTION_CLASS_NAME,
+  required_method_name: str = SOLUTION_FUNCTION_NAME,
+) -> bool:
   practice_file_dir = fp.get_practice_file_dir()
   practice_file = fp.get_practice_file_path(language)
   test_runner_dir = fp.get_test_runner_dir_path(language)

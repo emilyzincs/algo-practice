@@ -16,14 +16,14 @@ from shutil import copyfile as shutil_copy_file
 #   PermissionError if the operation lacks permission.
 #   FileNotFoundError if the source file does not exist.
 def copy_file(src: str, dest: str) -> None:
-    try:
-      shutil_copy_file(src, dest)
-    except PermissionError as e:
-      print(f"Error: do not have permission to copy {src} to {dest}.", file=sys.stderr)
-      raise e
-    except FileNotFoundError as e:
-      print(f"File does not exist: {src}.", file=sys.stderr)
-      raise e
+  try:
+    shutil_copy_file(src, dest)
+  except PermissionError as e:
+    print(f"Error: do not have permission to copy {src} to {dest}.", file=sys.stderr)
+    raise e
+  except FileNotFoundError as e:
+    print(f"File does not exist: {src}.", file=sys.stderr)
+    raise e
 
 
 # Reads the JSON data in the given path, then returns the parsed data.
