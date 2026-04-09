@@ -1,4 +1,4 @@
-from typing import assert_never, Any
+from typing import assert_never, Any, override
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
 from util.enums import ParseType, member_from_string
@@ -6,23 +6,29 @@ from util.enums import ParseType, member_from_string
 
 # Python implementation of the boilerplate interface
 class PythonBp(BpInterface):
+
+  @override
   @staticmethod
   def get_start() -> str:
     return ""
   
+
+  @override
   @staticmethod
   def get_imports(included_types: set[ParseType]) -> str:
     return ("from __future__ import annotations\n" + "from typing import Optional\n\n"
               if ParseType.LISTNODE in included_types or ParseType.TREENODE in included_types
               else "")
 
+  @override
   @staticmethod
-  def get_class_declaration(class_name, one_indent):
+  def get_class_declaration(class_name, one_indent) -> str:
     return f"class {class_name}:\n"
 
+  @override
   @staticmethod
-  def get_method_line(parameter_names: list[str], parameter_types: list[str], 
-                            return_type: str, one_indent: str, require_method_name: str) -> str:
+  def get_method_declaration(require_method_name: str, parameter_names: list[str], parameter_types: list[str], 
+                            return_type: str, one_indent: str) -> str:
     in_parentheses = None
     n = len(parameter_names)
     in_parentheses = "self"
@@ -31,6 +37,7 @@ class PythonBp(BpInterface):
     return (f"{one_indent}def {require_method_name}({in_parentheses})" + 
             f" -> {return_type}:\n{one_indent * 2}")
 
+  @override
   @staticmethod
   def parse_type_string(typ: dict[str, Any]) -> str:
     validate_type(typ)
@@ -64,6 +71,7 @@ class PythonBp(BpInterface):
       case _:
         assert_never(curr_type)
 
+  @override
   @staticmethod
   def list_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
     base_indent = ""
@@ -76,6 +84,7 @@ class PythonBp(BpInterface):
       f"{base_indent}{one_indent * 2}self.next = next\n"
     )
 
+  @override
   @staticmethod
   def tree_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
     base_indent = ""
@@ -90,6 +99,7 @@ class PythonBp(BpInterface):
       f"{base_indent}{one_indent * 2}self.right = right\n"
     )
 
+  @override
   @staticmethod
   def get_end(one_indent: str) -> str:
     return ""

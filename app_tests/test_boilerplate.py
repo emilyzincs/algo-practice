@@ -18,7 +18,6 @@ class TestBoilerplate(parent):
 
   def setUp(self) -> None:
     super().setUp()
-    self.fp_base = "boilerplate.boilerplate."  # for mocking file paths for the tests
 
   # Runs the tests.
   def test_boilerplate(self) -> None:
@@ -100,7 +99,9 @@ class TestBoilerplate(parent):
   ):
     info_path_prefix = self.get_info_path_prefix()
     boilerplate_file_prefix = os.path.join(boilerplate_file_dir, boilerplate_file_name_prefix)
-    with patch(self.fp_base + "get_practice_file_dir", return_value=boilerplate_file_dir):
+
+    to_patch = "util.file_paths.get_practice_file_dir"
+    with patch(to_patch, return_value=boilerplate_file_dir):
       if self.num is not None:
         res = self.specific_test_boilerplate(
           self.num,

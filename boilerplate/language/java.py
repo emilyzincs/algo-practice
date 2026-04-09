@@ -1,16 +1,20 @@
-from typing import assert_never, Any
+from typing import assert_never, Any, override
 from boilerplate.util import validate_type
 from util.enums import ParseType, member_from_string, member_to_string
 from boilerplate.interface import BpInterface
 from util.file_paths import get_practice_file_dir, PROJECT_ROOT
 from user_testing.test_commands.java import path_to_package
 
+
 # Java implementation of the boilerplate interface
 class JavaBp(BpInterface):
+
+  @override
   @staticmethod
   def get_start() -> str:
     return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
   
+  @override
   @staticmethod
   def get_imports(included_types: set[ParseType]) -> str:
     imports = ""
@@ -21,13 +25,15 @@ class JavaBp(BpInterface):
       imports += "\n"
     return imports 
 
+  @override
   @staticmethod
-  def get_class_declaration(class_name, one_indent):
+  def get_class_declaration(class_name, one_indent) -> str:
     return f"public class {class_name}" + " {\n"
 
+  @override
   @staticmethod
-  def get_method_line(parameter_names: list[str], parameter_types: list[str], 
-                            return_type: str, one_indent: str, require_method_name: str) -> str:
+  def get_method_declaration(require_method_name: str, parameter_names: list[str], parameter_types: list[str], 
+                            return_type: str, one_indent: str) -> str:
     in_parentheses = None
     n = len(parameter_names)
     if n == 0:
@@ -39,6 +45,7 @@ class JavaBp(BpInterface):
     return (f"{one_indent}public static {return_type} {require_method_name}({in_parentheses})" +
             " {\n" + (one_indent * 2) + f"\n{one_indent}" + "}\n")
 
+  @override
   @staticmethod
   def parse_type_string(typ: dict[str, Any], should_box_if_primitive: bool = False) -> str:
     validate_type(typ)
@@ -72,6 +79,7 @@ class JavaBp(BpInterface):
       case _:
         assert_never(curr_type)
 
+  @override
   @staticmethod
   def list_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
     return (
@@ -88,6 +96,7 @@ class JavaBp(BpInterface):
       f"{base_indent}" + "}\n"
     )
 
+  @override
   @staticmethod
   def tree_node(val_type_string: str, one_indent: str, base_indent: str) -> str:
     return (
@@ -106,6 +115,7 @@ class JavaBp(BpInterface):
       f"{base_indent}" + "}\n"
     )
   
+  @override
   @staticmethod
   def get_end(one_indent: str) -> str:
     return "}\n"
