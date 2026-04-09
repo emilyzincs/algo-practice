@@ -1,11 +1,13 @@
 import sys
 from typing import assert_never
 from menu.util import handle_global_command, print_desc, to_description_lines
+
 from util.type_check import is_type
 from util.constants import TAB
 from util.exceptions import UnhandledCaseException
+
 from util.enums import (
-MainMenuCommand, 
+  MainMenuCommand, 
   INPUT_ALG_TO_SPECIFIC, 
   SpecificAlgorithm, 
   is_member, 
@@ -16,6 +18,16 @@ MainMenuCommand,
   member_to_string
 )
 
+
+# Loops, processing user input in the main command-line menu.
+# 
+# Parameters:
+# - get_language_func: Callable that returns the current Language.
+# - set_language_func: Callable that sets the current Language.
+# - handle_practice_func: Callable that starts practice for a SpecificAlgorithm,
+#                         returns seconds spent or None.
+# - handle_settings_func: Callable that handles settings menu.
+# - exit_func: Callable that exits the program.
 def handle_commands(
     get_language_func,
     set_language_func,
@@ -63,10 +75,10 @@ def handle_commands(
           print(f"The current language is {member_to_string(get_language_func())}.")
           input_message = responses[1]
         case MainMenuCommand.LANGS | MainMenuCommand.LANGUAGES:
-          handle_languages(member_name_list(Language))
+          print_languages(member_name_list(Language))
           input_message = responses[0]
         case MainMenuCommand.ALGS | MainMenuCommand.ALGORITHMS:
-          handle_algorithms()
+          print_algorithms()
           input_message = responses[0]
         case MainMenuCommand.S | MainMenuCommand.SETTINGS:
           handle_settings_func()
@@ -96,7 +108,19 @@ def handle_commands(
     else:
       raise UnhandledCaseException(user_input, "input")
 
-def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int], num_algs) -> str|None:
+
+# Validates and extracts an algorithm name from user input.
+# 
+# Parameters:
+# - user_input: Raw input string (algorithm name, ID, or alias).
+# - alg_list: List of algorithm names indexed by ID.
+# - alg_name_to_idx: Dictionary mapping algorithm names to indices.
+# - num_algs: Total number of algorithms.
+# 
+# Returns:
+#   The algorithm name string if valid, otherwise None.
+def get_alg(user_input: str, alg_list: list[str], 
+            alg_name_to_idx: dict[str, int], num_algs) -> str|None:
   if is_type(user_input, int):
     idx = int(user_input)
     if idx < 0 or idx >= num_algs:
@@ -107,6 +131,9 @@ def get_alg(user_input: str, alg_list: list[str], alg_name_to_idx: dict[str, int
     idx = alg_name_to_idx[user_input]
   return alg_list[idx]
 
+
+# Prints the help menu listing all global commands, main menu commands,
+# and the language change option.
 def handle_help():
   description_lines = to_description_lines(GlobalCommand)
   description_lines.extend(to_description_lines(MainMenuCommand))
@@ -116,19 +143,23 @@ def handle_help():
   print("This menu supports the following inputs:")
   print_desc(description_lines)
 
-def handle_languages(language_list: list[str]) -> None: 
+
+# Prints the list of supported languages, using 'language_list'.
+def print_languages(language_list: list[str]) -> None: 
   print("This program supports the following languages:")
   print_desc(language_list)
 
-def handle_algorithms() -> None:
-  grouped_alg_names = get_grouped_alg_names()
-  print_help_message(grouped_alg_names)
 
-def print_help_message(grouped_alg_names: list[str]) -> None:
+# Prints the available algorithms grouped by ID with '/'-delimited aliases.
+def print_algorithms() -> None:
+  grouped_alg_names: list[str] = get_grouped_alg_names()
   print("This program supports practicing the following algorithms:")
   for i, grouped_alg_name in enumerate(grouped_alg_names):
-    print(f"{TAB} ID: {i} {TAB} Name: {grouped_alg_name}")
+    print(f"{TAB} ID: {i} {TAB} Name: {grouped_alg_name}")  
  
+
+# Returns a list of strings where each index (0‑based) corresponds to an algorithm's ID
+# and contains the algorithm's '/'-delimited aliases.
 def get_grouped_alg_names() -> list[str]:
   ret = ["" for _ in range(len(SpecificAlgorithm))]
   for (alg_name, alg) in INPUT_ALG_TO_SPECIFIC.items():
