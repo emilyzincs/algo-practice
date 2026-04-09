@@ -10,23 +10,24 @@ from util.file_io import read_json
 from util.enums import Language, member_to_string
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 
+
+# Tests boilerplate text generation for practice files.
 class TestBoilerplate(parent):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
   def setUp(self) -> None:
     super().setUp()
-    if self.alg is not None:
-      raise ValueError("Alg arguments are not applicable to boilerplate tests.")
-    self.fp_base = "boilerplate.boilerplate."
 
-  def test_main(self) -> None:
+  # Runs the tests.
+  def test_boilerplate(self) -> None:
     if self.language is not None:
       self.run_language_tests(self.language)
     else:
       for language in Language:
         self.run_language_tests(language)
 
+  # Runs tests for the given Language.
   def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
@@ -38,33 +39,35 @@ class TestBoilerplate(parent):
       case Language.JAVA:
         required_class_name_prefix = "Bp"
       case _:
-        assert_never()
-    self.abstract_test_boilerplate(
+        assert_never(language)
+    self.language_test_boilerplate(
       language,
       boilerplate_file_dir,
       boilerplate_file_name_prefix,
       required_class_name_prefix
     )
 
+  # Runs test number 'test_number' for language 'language'.
+  # Returns True if the test is successful, False if the info and boilerplate
+  #   files for the test do not exist.
+  # Raises and error if the test fails for other reasons.
   def specific_test_boilerplate(
       self,
       test_number: int,
       language: Language,
       info_path_prefix: str,
-      test_path_prefix: str,
       boilerplate_file_path_prefix: str,
       required_class_name_prefix: Optional[str]
   ) -> bool:
     res = self.get_paths(
       info_path_prefix,
-      test_path_prefix,
       boilerplate_file_path_prefix,
       test_number,
       extension=".txt",
     )
     if res is None:
       return False
-    info_path, test_path, boilerplate_file_path = res
+    info_path, boilerplate_file_path = res
     print(f"\nRunning {member_to_string(language)} boilerplate test {test_number}:")
     info = read_json(info_path)
     boilerplate = get_boilerplate_text(
@@ -86,7 +89,8 @@ class TestBoilerplate(parent):
     print("Test passed.")
     return True
 
-  def abstract_test_boilerplate(
+  # Runs tests for the given Language.
+  def language_test_boilerplate(
       self,
       language: Language,
       boilerplate_file_dir: str,
@@ -94,15 +98,15 @@ class TestBoilerplate(parent):
       required_class_name_prefix: Optional[str] = None,
   ):
     info_path_prefix = self.get_info_path_prefix()
-    test_path_prefix = self.get_test_path_prefix()
     boilerplate_file_prefix = os.path.join(boilerplate_file_dir, boilerplate_file_name_prefix)
-    with patch(self.fp_base + "get_practice_file_dir", return_value=boilerplate_file_dir):
+
+    to_patch = "util.file_paths.get_practice_file_dir"
+    with patch(to_patch, return_value=boilerplate_file_dir):
       if self.num is not None:
-        res =self.specific_test_boilerplate(
+        res = self.specific_test_boilerplate(
           self.num,
           language,
           info_path_prefix,
-          test_path_prefix,
           boilerplate_file_prefix,
           required_class_name_prefix
         )
@@ -116,7 +120,6 @@ class TestBoilerplate(parent):
             i,
             language,
             info_path_prefix,
-            test_path_prefix,
             boilerplate_file_prefix,
             required_class_name_prefix
           )
@@ -125,30 +128,27 @@ class TestBoilerplate(parent):
           i += 1
         print("Done.")
   
+  # Returns a tuple containing the info and boilerplate file path strings corresponding
+  #   to the given prefixes, number, and extension, or None if both paths do not exist.
+  # Raises RuntimeError if exactly one of the file paths exist.
   def get_paths(
     self,
     info_path_prefix: str, 
-    test_path_prefix: str, 
     boilerplate_file_prefix: str, 
     i: int, 
     extension: str,
-  ) -> tuple[str, str, str]|None:
+  ) -> tuple[str, str]|None:
     info_path = info_path_prefix + f"{i}.json"
-    test_path = test_path_prefix + f"{i}.json"
     boilerplate_file_path = boilerplate_file_prefix + f"{i}{extension}"
-    if not (os.path.exists(test_path) == 
-            os.path.exists(info_path) == os.path.exists(boilerplate_file_path)):
-      raise RuntimeError("Test file must exist iff info file exists iff boilerplate file exists." +
+    if os.path.exists(info_path) != os.path.exists(boilerplate_file_path):
+      raise RuntimeError("Info file must exist iff boilerplate file exists." +
                         " Violated for paths:\n" +
-                        f"test_path: {test_path},\n" +
                         f"info_path: {info_path},\n" +
                         f"boilerplate_file_path: {boilerplate_file_path}")
-    if not os.path.exists(test_path): 
+    if not os.path.exists(info_path): 
       return None
-    return info_path, test_path, boilerplate_file_path
-
-  def get_test_path_prefix(self) -> str:
-    return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "test")
+    return info_path, boilerplate_file_path
   
+  # Returns the prefix string for paths to info files for these tests.
   def get_info_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")

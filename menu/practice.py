@@ -1,7 +1,7 @@
 import sys
 import time
 from user_testing.test import run_tests
-from util.exceptions import UnhandledCaseException
+from util.exceptions import UnhandledCaseError
 from menu.util import handle_global_command, print_desc, to_description_lines
 from typing import assert_never
 from util.enums import (
@@ -13,6 +13,20 @@ from util.enums import (
   Language
 )
 
+
+# Loops, handling user input during algorithm practice. Runs tests when user indicates
+# they are done, and returns the elapsed time if successful (continues if not).
+#
+# Parameters:
+# - alg: The SpecificAlgorithm being practiced.
+# - language: The current Language the algorithm is being practiced in.
+# - delete_attempts_func: Callable that deletes any stored attempt data.
+# - load_solution_func: Callable that loads the solution for the given algorithm.
+# - exit_func: Callable that exits the program.
+#
+# Returns:
+#   The time spent in seconds (float) if all tests passed.
+#   None if the user exits practice without passing all the tests.
 def handle_commands(
     alg: SpecificAlgorithm,
     language: Language,
@@ -49,9 +63,9 @@ def handle_commands(
           except FileNotFoundError:
             print(f"Cannot load solution because it does not exist.", file=sys.stderr)
         case _:
-          assert_never()
+          assert_never(local_cmd)
     else:
-      raise UnhandledCaseException(user_input, "input")
+      raise UnhandledCaseError(user_input, "input")
 
   delete_attempts_func()    
   if correct:
@@ -60,6 +74,9 @@ def handle_commands(
     return potential_end_time - start_time
   return None
 
+
+# Prints all commands that can be used in this menu, along with
+# what they do.
 def handle_help():
   command_descriptions = to_description_lines(GlobalCommand)
   command_descriptions.extend(to_description_lines(PracticeCommand))

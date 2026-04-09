@@ -1,3 +1,4 @@
 SOLUTION_CLASS_NAME = "Solution"
 SOLUTION_FUNCTION_NAME = "solve"
 TAB = "  "
+DEBUG = False

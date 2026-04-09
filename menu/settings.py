@@ -5,7 +5,7 @@ from menu.util import handle_global_command, print_desc, to_description_lines
 from util.file_paths import get_settings_path, get_default_settings_path
 from util.file_io import read_json, dump_json, copy_file
 from util.type_check import is_type, string_to_bool
-from util.exceptions import UnhandledCaseException
+from util.exceptions import UnhandledCaseError
 from util.constants import TAB
 from util.enums import (
   GlobalCommand,
@@ -15,6 +15,13 @@ from util.enums import (
   Language
 )
 
+
+# Loops, handling user input for settings configuration. Updates settings file and
+# refreshes settings when done.
+#
+# Parameters:
+# - refresh_settings_func: Callable that reloads settings from disk.
+# - exit_func: Callable that exits the program.
 def handle_commands(
     refresh_settings_func,
     exit_func
@@ -88,14 +95,17 @@ def handle_commands(
               continue
             settings[setting]["value"] = int(new_val)
           case _:
-            raise UnhandledCaseException(user_input[0], "setting")          
+            raise UnhandledCaseError(user_input[0], "setting")          
       dump_json(settings_path, settings)
       print(f"Successfully set {setting} to {settings[setting]["value"]}.")
     elif is_info:
       print(f"{user_input[1]}: {settings[user_input[1]]["info"]}")
     else:
-      raise UnhandledCaseException(" ".join(user_input), "input")
+      raise UnhandledCaseError(" ".join(user_input), "input")
 
+
+# Prints all commands that can be used in this menu, along with
+# what they do.
 def handle_help():
   command_descriptions = to_description_lines(GlobalCommand)
   command_descriptions.extend(to_description_lines(SettingsCommand))

@@ -9,6 +9,9 @@ from util.enums import (
   member_to_string
 )
 
+
+# Changes the given 'string' to have capitalization consistent
+# with a file name in the given Language, and returns it.
 def to_language_file_case(string: str, lang: Language) -> str:
   words = string.strip().split()
   match lang:
@@ -19,8 +22,14 @@ def to_language_file_case(string: str, lang: Language) -> str:
         words[i] = word.capitalize()
       return "".join(words)
     case _:
-      assert_never()
-    
+      assert_never(lang)
+
+
+# ==============================================================
+# PATHS
+# =============================================================
+
+
 def get_practice_file_dir() -> str:
   return os.path.join(PROJECT_ROOT, "practice")
 
@@ -71,3 +80,10 @@ def get_test_generator_path(specific_alg: SpecificAlgorithm) -> str:
   gen_alg = SPECIFIC_ALG_TO_GENERAL[specific_alg]
   return os.path.join(PROJECT_ROOT, "user_testing", "test_generation", "problems", 
                       member_to_string(gen_alg) + ".py")
+
+def get_boilerplate_dir() -> str:
+  return os.path.join(PROJECT_ROOT, "boilerplate")
+
+def get_boilerplate_language_file_path(lang: Language) -> str:
+  return os.path.join(get_boilerplate_dir(), "language", 
+                                            member_to_string(lang) + ".py")

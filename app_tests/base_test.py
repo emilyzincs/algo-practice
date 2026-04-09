@@ -2,12 +2,17 @@ import unittest
 import os
 from util.type_check import is_type, string_to_bool
 from util.enums import Language, SpecificAlgorithm, is_member, Language, member_from_string
+from abc import ABC, abstractmethod
 
 
-class BaseTest(unittest.TestCase):
+# A class which factors out the logic for initiazing the environment variables.
+# Meant to be extended by test classes which use the environment variables,
+#   but this class does not hold tests itself.
+class BaseTest(unittest.TestCase, ABC):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
+  @abstractmethod
   def setUp(self) -> None:
     self.language: Language | None = None
     self.alg: SpecificAlgorithm | None = None

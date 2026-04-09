@@ -21,11 +21,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+
+// Main test runner for Java solutions. Reads test definitions, invokes the user's method,
+// and compares results using deep equality.
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
   private static String fullPackageClassName;
 
+  // Enumeration of all supported data types for parsing and validation.
   private enum ParseType {
     INT,
     LONG,
@@ -41,6 +45,17 @@ public class Runner {
     TREENODE
   }
 
+  // Entry point: validates arguments, loads the user's class, runs all tests,
+  // and prints the result.
+  //
+  // Parameters:
+  // - args[0]: practiceFilePackage – package name of the user's solution.
+  // - args[1]: infoFilePath – JSON file describing input/output types.
+  // - args[2]: testFilePath – JSON file containing the test cases.
+  // - args[3]: debug – "True" or "False", enables stack trace on error.
+  // - args[4]: SolutionClassName – name of the class containing the method.
+  // - args[5]: SolutionMethodName – name of the method to test.
+  // - args[6]: ParseTypes list string – JSON array of strings matching ParseType enum.
   public static void main(String[] args) throws Exception {
     if (args.length != 7 || (!"True".equals(args[3]) && !"False".equals(args[3]))) {
       System.err.println(
@@ -148,7 +163,7 @@ public class Runner {
         }
         
         if (fail) {
-          printErr("Test " + (i + 1) + " failed. Incorrect value: " + deepToString(actual) + ".");
+          printErr("Test " + (i + 1) + " failed.");
         }
       }
     } catch (Exception e) {
@@ -163,37 +178,34 @@ public class Runner {
     System.out.println("All tests passed");
   }
 
-  // ===== TYPE PARSER =====
-
+  // Prints the given error message and terminates the program with exit code 1.
   private static void printErr(String msg) {
     System.err.println(msg);
     System.exit(1);
   }
 
-  private static boolean isParseType(String candidate) {
-    try {
-      toParseType(candidate);
-      return true;
-    }  catch (IllegalArgumentException e) {
-      return false;
-    }
-  }
-
+  // Converts the 'candidate' string to a ParseType enum constant (case‑insensitive),
+  // returning the corresponding ParseType value on success, and throwing an
+  // IllegalArgumentException on failure.
   private static ParseType toParseType(String candidate) {
-    return ParseType.valueOf(candidate.toUpperCase());
-  }
-
-  private static ParseType getParseTypeFromTypeField(String candidate) {
-    if (!isParseType(candidate)) {
+    try {
+      return ParseType.valueOf(candidate.toUpperCase());
+    } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Type fields should always refer to a ParseType," + 
                                          " untrue for " + candidate);
     }
-    return toParseType(candidate);
   }
 
+  // Converts a type definition (JSON map) into the corresponding Java Class object.
+  //
+  // Parameters:
+  // - def: A map containing at least a "type" key; for container types also "items", "keys", "values".
+  //
+  // Returns:
+  //   The Java Class representing that type (e.g., int.class, List.class, or a custom ListNode class).
   private static Class<?> parseType(Map<String, Object> def) {
     String candidate = (String) def.get("type");
-    ParseType type = getParseTypeFromTypeField(candidate);
+    ParseType type = toParseType(candidate);
 
     return switch (type) {
       case INT -> int.class;
@@ -231,8 +243,14 @@ public class Runner {
     };
   }
 
-  // ===== INPUT PARSING =====
-
+  // Parses a list of raw inputs into an array of Java objects according to the given definitions.
+  //
+  // Parameters:
+  // - raw: List of raw JSON values (already partially parsed).
+  // - defs: List of type definitions, one per input.
+  //
+  // Returns:
+  //   An Object[] suitable for passing to the user's method via reflection.
   private static Object[] parseInputs(List<?> raw, List<Map<String, Object>> defs)
       throws Exception {
     if (raw.size() != defs.size()) {
@@ -246,9 +264,18 @@ public class Runner {
     return res;
   }
 
+  // Parses a single value according to a type definition.
+  //
+  // Parameters:
+  // - val: The raw JSON value (may be a String, Number, List, Map, etc.).
+  // - def: The type definition map.
+  //
+  // Returns:
+  //   The parsed Java object (Integer, Long, Double, Boolean, String, array, List, Set, Map,
+  //   ListNode, or TreeNode).
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
     String candidate = (String) def.get("type");
-    ParseType type = getParseTypeFromTypeField(candidate);
+    ParseType type = toParseType(candidate);
 
     if (type != ParseType.STRING && val instanceof String) {
       val = mapper.readValue((String) val, Object.class);
@@ -314,14 +341,21 @@ public class Runner {
     };
   }
 
-  // ===== TYPE VALIDATION =====
-
+  // Verifies that an object's runtime type matches the expected type definition.
+  // null is considered valid for ListNodes and TreeNodes.
+  //
+  // Parameters:
+  // - obj: The object to check.
+  // - def: The type definition map.
+  //
+  // Returns:
+  //   true if the type matches, false otherwise.
   private static boolean validateType(Object obj, Map<String, Object> def) {
-    if (obj == null)
-      return true;
-
     String candidate = (String) def.get("type");
-    ParseType type = getParseTypeFromTypeField(candidate);
+    ParseType type = toParseType(candidate);
+
+    if (obj == null)
+      return type == ParseType.LISTNODE || type == ParseType.TREENODE;
 
     return switch (type) {
       case INT -> obj instanceof Integer;
@@ -384,15 +418,14 @@ public class Runner {
     };
   }
 
-  // ===== BUILDERS =====
-
-  /**
-   * Builds a ListNode from a list of raw values and the definition of its value type.
-   *
-   * @param vals    the list of values (already parsed as JSON objects)
-   * @param valDef  the type definition for the ListNode's "val" field
-   * @return the head ListNode, or null if the list is empty
-   */
+  // Builds a linked list (ListNode) from a list of values.
+  //
+  // Parameters:
+  // - vals: The list of raw values (already parsed according to valDef).
+  // - valDef: Type definition for the ListNode's "val" field.
+  //
+  // Returns:
+  //   The head ListNode, or null if vals is empty.
   private static Object buildListNode(List<?> vals, Map<String, Object> valDef) throws Exception {
     if (vals.isEmpty())
       return null;
@@ -401,11 +434,9 @@ public class Runner {
     Class<?> valType = parseType(valDef);
     Constructor<?> ctor = clazz.getConstructor(valType, clazz);
 
-    // Build the head node
     Object headVal = parseValue(vals.get(0), valDef);
     Object head = ctor.newInstance(headVal, null);
 
-    // Link the rest
     Object prev = head;
     Field nextField = clazz.getDeclaredField("next");
     nextField.setAccessible(true);
@@ -420,13 +451,14 @@ public class Runner {
     return head;
   }
 
-  /**
-   * Builds a TreeNode from a list of level‑order values and the definition of its value type.
-   *
-   * @param vals    the level‑order list (may contain nulls for missing nodes)
-   * @param valDef  the type definition for the TreeNode's "val" field
-   * @return the root TreeNode, or null if the list is empty
-   */
+  // Builds a binary tree (TreeNode) from a level‑order list of values.
+  //
+  // Parameters:
+  // - vals: Level‑order list (may contain null for missing nodes).
+  // - valDef: Type definition for the TreeNode's "val" field.
+  //
+  // Returns:
+  //   The root TreeNode, or null if vals is empty.
   private static Object buildTreeNode(List<?> vals, Map<String, Object> valDef) throws Exception {
     if (vals.isEmpty())
       return null;
@@ -435,7 +467,6 @@ public class Runner {
     Class<?> valType = parseType(valDef);
     Constructor<?> ctor = clazz.getConstructor(valType, clazz, clazz);
 
-    // Parse the root value (first element) – it must not be null
     Object rootVal = parseValue(vals.get(0), valDef);
     Object root = ctor.newInstance(rootVal, null, null);
 
@@ -451,7 +482,6 @@ public class Runner {
     while (!queue.isEmpty() && i < vals.size()) {
       Object node = queue.poll();
 
-      // Left child
       if (vals.get(i) != null) {
         Object leftVal = parseValue(vals.get(i), valDef);
         Object leftNode = ctor.newInstance(leftVal, null, null);
@@ -460,7 +490,6 @@ public class Runner {
       }
       i++;
 
-      // Right child
       if (i < vals.size() && vals.get(i) != null) {
         Object rightVal = parseValue(vals.get(i), valDef);
         Object rightNode = ctor.newInstance(rightVal, null, null);
@@ -473,16 +502,25 @@ public class Runner {
     return root;
   }
 
-  // ===== DEEP EQUALS =====
-
+  // Returns whether an object 'o' is a ListNode.
   private static boolean isListNode(Object o) {
     return o != null && o.getClass().getName().endsWith("$ListNode");
   }
 
+  // Returns whether an object 'o' is a TreeNode.
   private static boolean isTreeNode(Object o) {
     return o != null && o.getClass().getName().endsWith("$TreeNode");
   }
 
+  // Performs a deep equality comparison between two objects, supporting arrays,
+  // collections, maps, ListNode, TreeNode, and standard objects.
+  //
+  // Parameters:
+  // - a: First object.
+  // - b: Second object.
+  //
+  // Returns:
+  //   true if the objects are deeply equal, false otherwise.
   private static boolean deepEquals(Object a, Object b) {
     if (a == b)
       return true;
@@ -554,6 +592,15 @@ public class Runner {
     return a.equals(b);
   }
 
+  // Recursively compares two ListNode structures, handling cycles.
+  //
+  // Parameters:
+  // - a: First ListNode.
+  // - b: Second ListNode.
+  // - visited: Set of already‑compared node pairs (identity hash strings) to avoid cycles.
+  //
+  // Returns:
+  //   true if the two lists are structurally equal, false otherwise.
   private static boolean compareListNode(Object a, Object b, Set<String> visited) {
     if (a == b)
       return true;
@@ -589,6 +636,15 @@ public class Runner {
     }
   }
 
+  // Recursively compares two TreeNode structures, handling cycles.
+  //
+  // Parameters:
+  // - a: First TreeNode.
+  // - b: Second TreeNode.
+  // - visited: Set of already‑compared node pairs (identity hash strings) to avoid cycles.
+  //
+  // Returns:
+  //   true if the two trees are structurally equal, false otherwise.
   private static boolean compareTreeNode(Object a, Object b, Set<String> visited) {
     if (a == b)
       return true;
@@ -630,6 +686,14 @@ public class Runner {
     }
   }
 
+  // Converts a primitive array into an array of its boxed wrapper type.
+  // Non‑primitive arrays are returned unchanged.
+  //
+  // Parameters:
+  // - arr: The array (may be primitive or object array).
+  //
+  // Returns:
+  //   An Object[] of boxed values (or the original array if already boxed).
   private static Object box(Object arr) {
     if (arr instanceof int[]) {
       int[] a = (int[]) arr;
@@ -660,13 +724,5 @@ public class Runner {
       return b;
     }
     return arr;
-  }
-
-  private static String deepToString(Object o) {
-    if (o == null)
-      return "null";
-    if (o.getClass().isArray())
-      return Arrays.deepToString((Object[]) box(o));
-    return o.toString();
   }
 }

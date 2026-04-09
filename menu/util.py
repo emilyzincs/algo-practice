@@ -2,6 +2,18 @@ from util.enums import GlobalCommand
 from typing import assert_never, Type
 from enum import Enum
 
+
+# Handles global commands (i.e., commands that can be used in all menus). 
+# Returns False if the command signals that the calling menu should 
+# return to the previous menu.
+#
+# Parameters:
+# - cmd: The GlobalCommand to execute.
+# - help_func: Callable that displays help information.
+# - exit_func: Callable that exits the program with a status code.
+#
+# Returns:
+#   False if the command is a variant of 'back', otherwise True.
 def handle_global_command(
   cmd: GlobalCommand,
   help_func,
@@ -19,8 +31,19 @@ def handle_global_command(
       assert_never(cmd)
   return True
 
+
+# Converts an Enum into a list of description lines where aliases are grouped
+# (e.g., "q/quit/exit: Exits the program"). Assumes that the Enum values are 
+# (possibly non-unique) string descriptions. Preserves the order of first
+# appearance.
+#
+# Parameters:
+# - enum: The Enum class (e.g., GlobalCommand, SettingsCommand).
+#
+# Returns:
+#   A list of strings, each formatted as "alias1/alias2/...: description".
 def to_description_lines(enum: Type[Enum]) -> list[str]:
-  # use lists to preserve ordering and since the enums do not have many fields
+  # We use lists to preserve ordering and since the enums do not have many fields.
   descriptions: list[str] = []
   names: list[list[str]] = []
   for name, member in enum.__members__.items():
@@ -39,6 +62,12 @@ def to_description_lines(enum: Type[Enum]) -> list[str]:
   lines = ["/".join(names[i]) + f": {descriptions[i]}" for i in range(len(names))]
   return lines
 
+
+# Prints a numbered list of description strings, each on its own line with a
+# trailing period.
+#
+# Parameters:
+# - descs: List of description strings to print.
 def print_desc(descs: list[str]) -> None:#
   for i, desc in enumerate(descs):
     print(f"{i+1}. {desc}.")
