@@ -48,6 +48,7 @@ class SortGenerator(BaseGenerator):
     return test_cases
   
   # Returns the sorted version of the input array.
+  @override
   def oracle(self, arr):
     return sorted(arr)
   

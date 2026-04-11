@@ -48,17 +48,9 @@ Note the potential values of a "type" key correspond exactly to the members of t
 ### Generating Tests
 Start by going to the problems folder in the test_generation directory, and create a file named ```<general_name>.py```, then open it. 
 
-Import the BaseGenerator class from base_generator, and create a class that extends it, named the pascal-case version of ```<general_name>```. This class must override the ```get_all_test_cases()``` method, which returns a list of test inputs, and it must not override the ```generate_tests()``` method. User helper functions in ````generation_util``` and defining your own helpers will likely be useful. 
+Import the ```BaseGenerator``` class from ```base_generator```, and create a class that extends it, named the pascal-case version of ```<general_name> + Generator```. This class must override the methods decorated with ```@abstractmethod``` in ```BaseGenerator```, and it must not override the methods decorated with ```@final```. The functions in ```command_util``` and defining custom helpers will likely be useful. 
 
-The file top-level file 
-
-
-
-
-
-
-
-
+Once the required methods are implemented, you are done. The program will use the class to generate the tests automatically when necessary. The generated tests will be used to check the correctness of algorithm implementations, so make sure they are as exhaustive as possible.
 
 ### Writing Solution
 Fix a supported language.

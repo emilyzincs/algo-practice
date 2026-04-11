@@ -2,6 +2,7 @@ from util.file_paths import general_alg_to_test_path
 from util.file_io import dump_json
 from util.enums import GeneralAlgorithm
 from abc import ABC, abstractmethod
+from typing import final
 
 
 # A class which factors out the logic for generating tests into
@@ -14,6 +15,7 @@ class BaseGenerator(ABC):
   # Parameters:
   # - alg: The SpecificAlgorithm to generate tests for.
   # - oracle_func: A callable that takes test inputs and returns the expected output.
+  @final
   def generate_tests(self) -> None:
     test_cases = self.get_all_test_cases()
     tests = self.make_tests(test_cases, self.oracle)
@@ -28,6 +30,7 @@ class BaseGenerator(ABC):
   #
   # Returns:
   #   A list of test dictionaries (as created by make_test).
+  @final
   def make_tests(self, cases, oracle):
     tests = []
     for inputs in cases:
@@ -43,6 +46,7 @@ class BaseGenerator(ABC):
   #
   # Returns:
   #   A dictionary with keys "inputs" and "expected".
+  @final
   def make_test(self, inputs, expected):
     return {
         "inputs": inputs,
@@ -62,7 +66,7 @@ class BaseGenerator(ABC):
   def oracle(self, *args, **kwargs):
     pass
   
-  # Returns the SpecificAlgorithm this is a generator for
+  # Returns the GeneralAlgorithm this is a generator for
   @abstractmethod
   def get_algorithm(self) -> GeneralAlgorithm:
     pass

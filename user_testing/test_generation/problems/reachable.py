@@ -40,6 +40,7 @@ class ReachableGenerator(BaseGenerator):
   #
   # Returns:
   #   List of vertices reachable from root (order may vary).
+  @override
   def oracle(self, graph, root):
     return list(sol.solve(graph, root))
   
