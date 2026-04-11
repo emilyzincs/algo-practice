@@ -9,8 +9,10 @@ from menu.practice import handle_commands as practice_handle_commands
 from menu.settings import handle_commands as settings_handle_commands
 from user_testing.test_commands.java import path_to_package
 
+from user_testing.test_generation.base_generator import BaseGenerator
 from typing import assert_never
-from util.general import no_op, load_module_from_path
+from types import ModuleType
+from util.general import no_op, load_module_from_path, snake_to_pascal_case
 from util.file_io import read_json, copy_file, match_json_keys
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
 from util.enums import (
@@ -18,7 +20,9 @@ from util.enums import (
   is_member, 
   member_to_string,
   SpecificAlgorithm,
+  GeneralAlgorithm,
   member_from_string,
+  SPECIFIC_ALG_TO_GENERAL
 )
 
 
@@ -125,12 +129,17 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
                        f" and test_generator for {member_to_string(alg)} does not exist" +
                        f" (path: {test_generator_path})")
   try:
-    test_generator = load_module_from_path("generate", test_generator_path)
+    module: ModuleType = load_module_from_path("generate", test_generator_path)
   except ModuleNotFoundError:
-    raise ModuleNotFoundError(f"Test generator for {member_to_string(alg)} has no 'generate' method." + 
-                              f" Path: {test_generator}.")
-  test_generator.generate()
-
+    raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
+  gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[alg]
+  generator_class_name = snake_to_pascal_case(member_to_string(gen_alg)) + "Generator"
+  try:
+    generator_class: BaseGenerator = module.__getattr__(generator_class_name)
+  except AttributeError:
+    raise AttributeError(f"Test generator class for {member_to_string(alg)} must" +
+                         f" be named {generator_class_name} in {test_generator_path}.")
+  generator_class.generate_tests()
 
 # Resets the practice file for the current Language to hold the
 #   starting practice text for the given 'alg'.
