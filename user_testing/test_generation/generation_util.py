@@ -123,6 +123,22 @@ def rand_vertex(graph: list[list[int]]) -> int:
   return random.randint(0, n-1)
 
 
+# Generates a random graph and a random root vertex.
+#
+# Parameters:
+# - n: Number of vertices.
+# - directed: Whether the graph is directed.
+# - edge_prob: Probability of an edge existing between two vertices.
+#
+# Returns:
+#   A tuple (adjacency list, root vertex).
+def rand_graph_and_root(n: int, directed: bool, 
+                    edge_prob: float) -> tuple[list[list[int]], int]: 
+  graph = rand_graph(n, directed, edge_prob)
+  root = rand_vertex(graph)
+  return graph, root
+
+
 # Modifies the given 'graph' to ensure it is connected by 
 # adding edges between consecutive vertices.
 def connect_graph(graph: list[list[int]]) -> None:
