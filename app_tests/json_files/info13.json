@@ -4,7 +4,7 @@
   "input_types": [
     { "type": "long" }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "float"
   }
 }

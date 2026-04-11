@@ -161,7 +161,7 @@ def get_starting_practice_text(info_file_path: str) -> str:
           + parameter_info_line)
   else:
     input_types = data["input_types"]
-    expected_type = data["expected_type_wrapper"]
+    expected_type = data["expected_type"]
     user_tab_size = settings["tab_size"]["value"]
     one_indent = " " * user_tab_size
     return bp.get_boilerplate_text(

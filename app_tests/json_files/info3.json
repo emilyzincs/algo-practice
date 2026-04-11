@@ -6,7 +6,7 @@
     { "type": "int" },
     { "type": "boolean" }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "int"
   }
 }

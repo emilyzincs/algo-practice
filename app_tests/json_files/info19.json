@@ -7,7 +7,7 @@
       "val": { "type": "int" }
     }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "TreeNode",
     "val": { "type": "int" }
   }

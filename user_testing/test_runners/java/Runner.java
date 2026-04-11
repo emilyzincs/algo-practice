@@ -122,7 +122,7 @@ public class Runner {
 
       boolean unique = (boolean) root.get("unique_answer");
       @SuppressWarnings("unchecked")
-      Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type_wrapper");
+      Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type");
       
       List<Map<String, Object>> tests = mapper.readValue(
           Files.readAllBytes(Paths.get(args[2])),

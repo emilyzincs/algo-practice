@@ -2,7 +2,7 @@
   "unique_answer": false,
   "parameter_names": [],
   "input_types": [],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "int"
   }
 }

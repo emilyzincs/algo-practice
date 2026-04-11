@@ -8,7 +8,7 @@
       "items": { "type": "float" }
     }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "long"
   }
 }

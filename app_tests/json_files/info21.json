@@ -20,7 +20,7 @@
       }
     }
   ],
-  "expected_type_wrapper": { 
+  "expected_type": { 
     "type": "list",
     "items": {
       "type": "map",

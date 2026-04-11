@@ -8,7 +8,7 @@
       "values": { "type": "boolean" }
     }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "set",
     "items": { "type": "float" }
   }

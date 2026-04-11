@@ -73,7 +73,7 @@ class TestBoilerplate(parent):
     boilerplate = get_boilerplate_text(
       info["parameter_names"],
       info["input_types"],
-      info["expected_type_wrapper"],
+      info["expected_type"],
       " " * settings["tab_size"]["value"],
       (
         SOLUTION_CLASS_NAME if not required_class_name_prefix 

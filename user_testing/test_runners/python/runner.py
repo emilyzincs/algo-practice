@@ -70,7 +70,7 @@ def main() -> bool:
   
   unique_answer = data["unique_answer"]
   input_types = data.get("input_types")
-  expected_type = data.get("expected_type_wrapper")
+  expected_type = data.get("expected_type")
 
   with open(test_file_path, "r", encoding="utf-8") as f:
     tests = json.load(f)
