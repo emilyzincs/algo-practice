@@ -7,6 +7,9 @@ from typing import override
 # Generator for binary search algorithm tests.
 class BinarySearchGenerator(parent):
 
+  def __init__(self):
+    super().__init__(SpecificAlgorithm.BINARY_SEARCH)
+
   # Builds the complete list of test cases for binary search.
   #
   # Returns:
@@ -151,14 +154,3 @@ class BinarySearchGenerator(parent):
     test_cases = list(set(test_cases))
     test_cases.sort(key=lambda x: len(x))
     return test_cases
-
-
-# Generates test files for the binary search algorithm using this generator.
-# Calls the parent method to write tests based on the oracle.
-def generate():
-  BinarySearchGenerator().generate_tests(SpecificAlgorithm.BINARY_SEARCH)
-
-
-# Runs test generation when the script is executed directly.
-if __name__ == "__main__":
-  generate()

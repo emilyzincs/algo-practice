@@ -9,16 +9,20 @@ from abc import ABC, abstractmethod
 # Meant to be extended by all test generators.
 class BaseGenerator(ABC):
 
+  # Stores the algorithm this is a test generator for
+  def __init__(self, algorithm: SpecificAlgorithm):
+    self.algorithm = algorithm
+
   # Generates test cases, runs them through the oracle to get the expected outputs, 
   # and writes the results to the appropriate JSON file, as determined by 'alg'.
   #
   # Parameters:
   # - alg: The SpecificAlgorithm to generate tests for.
   # - oracle_func: A callable that takes test inputs and returns the expected output.
-  def generate_tests(self, alg: SpecificAlgorithm) -> None:
+  def generate_tests(self) -> None:
     test_cases = self.get_all_test_cases()
     tests = self.make_tests(test_cases, self.oracle)
-    test_file_path = get_test_file_path(alg)
+    test_file_path = get_test_file_path(self.algorithm)
     dump_json(test_file_path, tests)
   
   # Builds a list of tests by applying the oracle to each input case.

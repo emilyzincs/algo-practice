@@ -12,6 +12,9 @@ sol = Solution()
 # Generator for reachability algorithm tests.
 class ReachableGenerator(parent):
 
+  def __init__(self):
+    super().__init__(SpecificAlgorithm.BREADTH_FIRST_SEARCH)
+
   # Builds the complete list of test cases for reachability.
   #
   # Returns:
@@ -96,7 +99,8 @@ class ReachableGenerator(parent):
           util.connect_graph(graph)
           test_cases.append((graph, root))
 
-  # Removes duplicate test cases (identical graph structure and root) and sorts by graph size.
+  # Removes duplicate test cases (identical graph structure and root) 
+  # and sorts by graph size.
   #
   # Parameters:
   # - test_cases: List of (graph, root) tuples with possible duplicates.
@@ -112,14 +116,3 @@ class ReachableGenerator(parent):
       unique_cases = list(set(hashable_cases))
       unique_cases.sort(key=lambda x: len(x[0]))
       return unique_cases
-
-
-# Generates test files for the reachability algorithm using this generator.
-# Calls the parent method to write tests based on the oracle.
-def generate():
-  ReachableGenerator().generate_tests(SpecificAlgorithm.DEPTH_FIRST_SEARCH)
-
-
-# Runs test generation when the script is executed directly.
-if __name__ == "__main__":
-  generate()
