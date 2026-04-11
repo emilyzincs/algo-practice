@@ -1,7 +1,7 @@
 from problems.reachable.breadth_first_search.solution import Solution
 import user_testing.test_generation.generation_util as util
-from user_testing.test_generation.base_generator import BaseGenerator as parent
-from util.enums import SpecificAlgorithm
+from user_testing.test_generation.base_generator import BaseGenerator
+from util.enums import GeneralAlgorithm
 from typing import override
 
 
@@ -10,10 +10,7 @@ sol = Solution()
 
 
 # Generator for reachability algorithm tests.
-class ReachableGenerator(parent):
-
-  def __init__(self):
-    super().__init__(SpecificAlgorithm.BREADTH_FIRST_SEARCH)
+class ReachableGenerator(BaseGenerator):
 
   # Builds the complete list of test cases for reachability.
   #
@@ -45,6 +42,10 @@ class ReachableGenerator(parent):
   #   List of vertices reachable from root (order may vary).
   def oracle(self, graph, root):
     return list(sol.solve(graph, root))
+  
+  @override
+  def get_algorithm(self) -> GeneralAlgorithm:
+    return GeneralAlgorithm.REACHABLE
 
   # Returns a list of edge-case test inputs for reachability.
   #

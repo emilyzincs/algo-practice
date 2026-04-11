@@ -52,12 +52,18 @@ def get_solution_file_path(alg: SpecificAlgorithm, lang: Language) -> str:
 def get_gen_alg_dir(alg: GeneralAlgorithm) -> str:
   return os.path.join(PROJECT_ROOT, "problems", member_to_string(alg))
 
-def get_info_file_path(specific_alg: SpecificAlgorithm) -> str:
+def specific_alg_to_info_path(specific_alg: SpecificAlgorithm) -> str:
   gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[specific_alg]
+  return general_alg_to_info_path(gen_alg)
+
+def general_alg_to_info_path(gen_alg: GeneralAlgorithm) -> str:
   return os.path.join(get_gen_alg_dir(gen_alg), "info.json")
 
-def get_test_file_path(specific_alg: SpecificAlgorithm) -> str:
+def specific_alg_to_test_path(specific_alg: SpecificAlgorithm) -> str:
   gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[specific_alg]
+  return general_alg_to_test_path(gen_alg)
+
+def general_alg_to_test_path(gen_alg: GeneralAlgorithm) -> str:
   return os.path.join(get_gen_alg_dir(gen_alg), "test.json")
 
 def get_test_runner_dir_path(lang: Language) -> str:

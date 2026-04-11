@@ -119,7 +119,7 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
 # - ModuleNotFoundError if the test file does not exist and the test-generation
 #     file does, but the test-generation file has no generate() function.
 def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
-  test_file_path = fp.get_test_file_path(alg)
+  test_file_path = fp.specific_alg_to_test_path(alg)
   if os.path.exists(test_file_path):
     return
   print(f"Generating {member_to_string(alg)} tests...")
@@ -132,20 +132,24 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
     module: ModuleType = load_module_from_path("generate", test_generator_path)
   except ModuleNotFoundError:
     raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
+  
   gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[alg]
   generator_class_name = snake_to_pascal_case(member_to_string(gen_alg)) + "Generator"
+
   try:
-    generator_class: BaseGenerator = module.__getattr__(generator_class_name)
+    generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
   except AttributeError:
     raise AttributeError(f"Test generator class for {member_to_string(alg)} must" +
                          f" be named {generator_class_name} in {test_generator_path}.")
-  generator_class.generate_tests()
+  
+  generator_class().generate_tests()
+
 
 # Resets the practice file for the current Language to hold the
 #   starting practice text for the given 'alg'.
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
-  info_file = fp.get_info_file_path(alg)
+  info_file = fp.specific_alg_to_info_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")

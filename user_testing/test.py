@@ -34,8 +34,8 @@ def run_tests(
   practice_file = fp.get_practice_file_path(language)
   test_runner_dir = fp.get_test_runner_dir_path(language)
   test_runner_file = fp.get_test_runner_file_path(language)
-  info_file = fp.get_info_file_path(alg)
-  test_file = fp.get_test_file_path(alg)
+  info_file = fp.specific_alg_to_info_path(alg)
+  test_file = fp.specific_alg_to_test_path(alg)
 
   parse_types_list = member_name_list(ParseType)
   additional_args = [

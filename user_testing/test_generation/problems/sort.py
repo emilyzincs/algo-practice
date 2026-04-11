@@ -1,14 +1,11 @@
 import user_testing.test_generation.generation_util as util
-from user_testing.test_generation.base_generator import BaseGenerator as parent
-from util.enums import SpecificAlgorithm
+from user_testing.test_generation.base_generator import BaseGenerator
+from util.enums import GeneralAlgorithm
 from typing import override
 
 
 # Generator for sorting algorithm tests.
-class SortGenerator(parent):
-
-  def __init__(self):
-    super().__init__(SpecificAlgorithm.MERGE_SORT)
+class SortGenerator(BaseGenerator):
 
   # Builds the complete list of test cases for sorting.
   #
@@ -50,9 +47,13 @@ class SortGenerator(parent):
     test_cases = self.remove_redundant_cases(test_cases)
     return test_cases
   
-  # Retunrs the sorted version of the input array.
+  # Returns the sorted version of the input array.
   def oracle(self, arr):
     return sorted(arr)
+  
+  @override
+  def get_algorithm(self) -> GeneralAlgorithm:
+    return GeneralAlgorithm.SORT
 
   # Returns a list of edge-case test inputs for sorting.
   def get_edge_cases(self):

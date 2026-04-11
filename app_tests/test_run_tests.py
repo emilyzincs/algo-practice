@@ -79,8 +79,8 @@ class TestRunTests(parent):
         total_tests
       )
       with (
-        patch(self.fp_base + "get_test_file_path", return_value=test_path),
-        patch(self.fp_base + "get_info_file_path", return_value=info_path),
+        patch(self.fp_base + "specific_alg_to_test_path", return_value=test_path),
+        patch(self.fp_base + "specific_alg_to_info_path", return_value=info_path),
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH

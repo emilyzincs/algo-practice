@@ -1,14 +1,11 @@
 import user_testing.test_generation.generation_util as util
-from user_testing.test_generation.base_generator import BaseGenerator as parent
-from util.enums import SpecificAlgorithm
+from user_testing.test_generation.base_generator import BaseGenerator
+from util.enums import GeneralAlgorithm
 from typing import override
 
 
 # Generator for binary search algorithm tests.
-class BinarySearchGenerator(parent):
-
-  def __init__(self):
-    super().__init__(SpecificAlgorithm.BINARY_SEARCH)
+class BinarySearchGenerator(BaseGenerator):
 
   # Builds the complete list of test cases for binary search.
   #
@@ -71,11 +68,16 @@ class BinarySearchGenerator(parent):
   #
   # Returns:
   #   List of indices (sorted) or [-1].
+  @override
   def oracle(self, arr: tuple[int, ...], target: int) -> list[int]:
     inds = [i for i, num in enumerate(arr) if num == target]
     if not inds:
       inds.append(-1)
     return inds
+  
+  @override
+  def get_algorithm(self) -> GeneralAlgorithm:
+    return GeneralAlgorithm.BINARY_SEARCH
 
   # Returns a list of edge case test inputs for binary search.
   #

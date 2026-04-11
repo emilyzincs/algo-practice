@@ -1,6 +1,6 @@
-from util.file_paths import get_test_file_path
+from util.file_paths import general_alg_to_test_path
 from util.file_io import dump_json
-from util.enums import SpecificAlgorithm
+from util.enums import GeneralAlgorithm
 from abc import ABC, abstractmethod
 
 
@@ -8,11 +8,6 @@ from abc import ABC, abstractmethod
 #   the appropriate file.
 # Meant to be extended by all test generators.
 class BaseGenerator(ABC):
-
-  # Stores the algorithm this is a test generator for
-  def __init__(self, algorithm: SpecificAlgorithm):
-    self.algorithm = algorithm
-
   # Generates test cases, runs them through the oracle to get the expected outputs, 
   # and writes the results to the appropriate JSON file, as determined by 'alg'.
   #
@@ -22,7 +17,7 @@ class BaseGenerator(ABC):
   def generate_tests(self) -> None:
     test_cases = self.get_all_test_cases()
     tests = self.make_tests(test_cases, self.oracle)
-    test_file_path = get_test_file_path(self.algorithm)
+    test_file_path = general_alg_to_test_path(self.get_algorithm())
     dump_json(test_file_path, tests)
   
   # Builds a list of tests by applying the oracle to each input case.
@@ -65,4 +60,9 @@ class BaseGenerator(ABC):
   # or a list of all solutions for the test.
   @abstractmethod
   def oracle(self, *args, **kwargs):
+    pass
+  
+  # Returns the SpecificAlgorithm this is a generator for
+  @abstractmethod
+  def get_algorithm(self) -> GeneralAlgorithm:
     pass
