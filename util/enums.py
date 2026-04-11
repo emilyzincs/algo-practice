@@ -139,5 +139,3 @@ class ParseType(Enum):
   IMMUTABLE_LIST = auto()
   SET = auto()
   MAP = auto()
-  LISTNODE = auto()
-  TREENODE = auto()

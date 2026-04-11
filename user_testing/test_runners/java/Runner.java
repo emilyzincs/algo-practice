@@ -3,8 +3,6 @@ package user_testing.test_runners.java;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
@@ -15,10 +13,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 
@@ -41,8 +37,6 @@ public class Runner {
     IMMUTABLE_LIST,
     SET,
     MAP,
-    LISTNODE,
-    TREENODE
   }
 
   // Entry point: validates arguments, loads the user's class, runs all tests,
@@ -202,7 +196,7 @@ public class Runner {
   // - def: A map containing at least a "type" key; for container types also "items", "keys", "values".
   //
   // Returns:
-  //   The Java Class representing that type (e.g., int.class, List.class, or a custom ListNode class).
+  //   The Java Class representing that type (e.g., int.class, List.class).
   private static Class<?> parseType(Map<String, Object> def) {
     String candidate = (String) def.get("type");
     ParseType type = toParseType(candidate);
@@ -226,20 +220,6 @@ public class Runner {
       }
       case SET -> Set.class;
       case MAP -> Map.class;
-      case LISTNODE -> {
-        try {
-          yield Class.forName(fullPackageClassName + "$" + candidate);
-        } catch (Exception e) {
-          throw new RuntimeException("Missing class: " + candidate);
-        }
-      }
-      case TREENODE -> {
-        try {
-          yield Class.forName(fullPackageClassName + "$" + candidate);
-        } catch (Exception e) {
-          throw new RuntimeException("Missing class: " + candidate);
-        }
-      }
     };
   }
 
@@ -271,8 +251,7 @@ public class Runner {
   // - def: The type definition map.
   //
   // Returns:
-  //   The parsed Java object (Integer, Long, Double, Boolean, String, array, List, Set, Map,
-  //   ListNode, or TreeNode).
+  //   The parsed Java object (Integer, Long, Double, Boolean, String, array, List, Set, Map).
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
     String candidate = (String) def.get("type");
     ParseType type = toParseType(candidate);
@@ -329,20 +308,10 @@ public class Runner {
         }
         yield map;
       }
-      case LISTNODE -> {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> def_val = (Map<String, Object>) def.get("val");
-        yield buildListNode((List<?>) val, def_val);
-      } case TREENODE -> {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> def_val2 = (Map<String, Object>) def.get("val");
-        yield buildTreeNode((List<?>) val, def_val2);
-      }
     };
   }
 
   // Verifies that an object's runtime type matches the expected type definition.
-  // null is considered valid for ListNodes and TreeNodes.
   //
   // Parameters:
   // - obj: The object to check.
@@ -353,9 +322,6 @@ public class Runner {
   private static boolean validateType(Object obj, Map<String, Object> def) {
     String candidate = (String) def.get("type");
     ParseType type = toParseType(candidate);
-
-    if (obj == null)
-      return type == ParseType.LISTNODE || type == ParseType.TREENODE;
 
     return switch (type) {
       case INT -> obj instanceof Integer;
@@ -413,114 +379,11 @@ public class Runner {
         }
         yield true;
       }
-      case LISTNODE, TREENODE ->
-       obj.getClass().getName().equals(fullPackageClassName + "$" + candidate);
     };
   }
 
-  // Builds a linked list (ListNode) from a list of values.
-  //
-  // Parameters:
-  // - vals: The list of raw values (already parsed according to valDef).
-  // - valDef: Type definition for the ListNode's "val" field.
-  //
-  // Returns:
-  //   The head ListNode, or null if vals is empty.
-  private static Object buildListNode(List<?> vals, Map<String, Object> valDef) throws Exception {
-    if (vals.isEmpty())
-      return null;
-
-    Class<?> clazz = Class.forName(fullPackageClassName + "$ListNode");
-    Class<?> valType = parseType(valDef);
-    Constructor<?> ctor = clazz.getConstructor(valType, clazz);
-
-    Object headVal = parseValue(vals.get(0), valDef);
-    Object head = ctor.newInstance(headVal, null);
-
-    Object prev = head;
-    Field nextField = clazz.getDeclaredField("next");
-    nextField.setAccessible(true);
-
-    for (int i = 1; i < vals.size(); i++) {
-      Object currVal = parseValue(vals.get(i), valDef);
-      Object curr = ctor.newInstance(currVal, null);
-      nextField.set(prev, curr);
-      prev = curr;
-    }
-
-    return head;
-  }
-
-  // Builds a binary tree (TreeNode) from a level‑order list of values.
-  //
-  // Parameters:
-  // - vals: Level‑order list (may contain null for missing nodes).
-  // - valDef: Type definition for the TreeNode's "val" field.
-  //
-  // Returns:
-  //   The root TreeNode, or null if vals is empty.
-  private static Object buildTreeNode(List<?> vals, Map<String, Object> valDef) throws Exception {
-    if (vals.isEmpty())
-      return null;
-
-    Class<?> clazz = Class.forName(fullPackageClassName + "$TreeNode");
-    Class<?> valType = parseType(valDef);
-    Constructor<?> ctor = clazz.getConstructor(valType, clazz, clazz);
-
-    Object rootVal = parseValue(vals.get(0), valDef);
-    Object root = ctor.newInstance(rootVal, null, null);
-
-    Queue<Object> queue = new LinkedList<>();
-    queue.add(root);
-
-    Field leftField = clazz.getDeclaredField("left");
-    Field rightField = clazz.getDeclaredField("right");
-    leftField.setAccessible(true);
-    rightField.setAccessible(true);
-
-    int i = 1;
-    while (!queue.isEmpty() && i < vals.size()) {
-      Object node = queue.poll();
-
-      if (vals.get(i) != null) {
-        Object leftVal = parseValue(vals.get(i), valDef);
-        Object leftNode = ctor.newInstance(leftVal, null, null);
-        leftField.set(node, leftNode);
-        queue.add(leftNode);
-      }
-      i++;
-
-      if (i < vals.size() && vals.get(i) != null) {
-        Object rightVal = parseValue(vals.get(i), valDef);
-        Object rightNode = ctor.newInstance(rightVal, null, null);
-        rightField.set(node, rightNode);
-        queue.add(rightNode);
-      }
-      i++;
-    }
-
-    return root;
-  }
-
-  // Returns whether an object 'o' is a ListNode.
-  private static boolean isListNode(Object o) {
-    return o != null && o.getClass().getName().endsWith("$ListNode");
-  }
-
-  // Returns whether an object 'o' is a TreeNode.
-  private static boolean isTreeNode(Object o) {
-    return o != null && o.getClass().getName().endsWith("$TreeNode");
-  }
-
-  // Performs a deep equality comparison between two objects, supporting arrays,
-  // collections, maps, ListNode, TreeNode, and standard objects.
-  //
-  // Parameters:
-  // - a: First object.
-  // - b: Second object.
-  //
-  // Returns:
-  //   true if the objects are deeply equal, false otherwise.
+  // Performs a deep equality comparison between two objects.
+  // Returns true if the objects are deeply equal, false otherwise.
   private static boolean deepEquals(Object a, Object b) {
     if (a == b)
       return true;
@@ -581,109 +444,7 @@ public class Runner {
       return true;
     }
 
-    if (isListNode(a) && isListNode(b)) {
-      return compareListNode(a, b, new HashSet<>());
-    }
-
-    if (isTreeNode(a) && isTreeNode(b)) {
-      return compareTreeNode(a, b, new HashSet<>());
-    }
-
     return a.equals(b);
-  }
-
-  // Recursively compares two ListNode structures, handling cycles.
-  //
-  // Parameters:
-  // - a: First ListNode.
-  // - b: Second ListNode.
-  // - visited: Set of already‑compared node pairs (identity hash strings) to avoid cycles.
-  //
-  // Returns:
-  //   true if the two lists are structurally equal, false otherwise.
-  private static boolean compareListNode(Object a, Object b, Set<String> visited) {
-    if (a == b)
-      return true;
-    if (a == null || b == null)
-      return false;
-
-    String key = System.identityHashCode(a) + ":" + System.identityHashCode(b);
-    if (visited.contains(key))
-      return true;
-    visited.add(key);
-
-    try {
-      Class<?> clazz = a.getClass();
-
-      Field val = clazz.getDeclaredField("val");
-      Field next = clazz.getDeclaredField("next");
-      val.setAccessible(true);
-      next.setAccessible(true);
-
-      Object v1 = val.get(a);
-      Object v2 = val.get(b);
-
-      if (!deepEquals(v1, v2))
-        return false;
-
-      Object n1 = next.get(a);
-      Object n2 = next.get(b);
-
-      return compareListNode(n1, n2, visited);
-
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  // Recursively compares two TreeNode structures, handling cycles.
-  //
-  // Parameters:
-  // - a: First TreeNode.
-  // - b: Second TreeNode.
-  // - visited: Set of already‑compared node pairs (identity hash strings) to avoid cycles.
-  //
-  // Returns:
-  //   true if the two trees are structurally equal, false otherwise.
-  private static boolean compareTreeNode(Object a, Object b, Set<String> visited) {
-    if (a == b)
-      return true;
-    if (a == null || b == null)
-      return false;
-
-    String key = System.identityHashCode(a) + ":" + System.identityHashCode(b);
-    if (visited.contains(key))
-      return true;
-    visited.add(key);
-
-    try {
-      Class<?> clazz = a.getClass();
-
-      Field val = clazz.getDeclaredField("val");
-      Field left = clazz.getDeclaredField("left");
-      Field right = clazz.getDeclaredField("right");
-
-      val.setAccessible(true);
-      left.setAccessible(true);
-      right.setAccessible(true);
-
-      Object v1 = val.get(a);
-      Object v2 = val.get(b);
-
-      if (!deepEquals(v1, v2))
-        return false;
-
-      Object l1 = left.get(a);
-      Object l2 = left.get(b);
-
-      Object r1 = right.get(a);
-      Object r2 = right.get(b);
-
-      return compareTreeNode(l1, l2, visited) && compareTreeNode(r1, r2, visited);
-
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   // Converts a primitive array into an array of its boxed wrapper type.

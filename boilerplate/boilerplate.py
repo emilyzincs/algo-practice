@@ -49,28 +49,13 @@ def get_boilerplate_text(
     one_indent
   )
 
-  list_node = ""
-  tree_node = ""
-
-  if ParseType.LISTNODE in included_types:
-    val_type_string = _get_nested_type_string(ParseType.LISTNODE, "val",
-                                            input_types, expected_type)
-    list_node = BP_LANG_INSTANCE.list_node(val_type_string, one_indent, one_indent * 1) 
-
-  if ParseType.TREENODE in included_types:
-    val_type_string = _get_nested_type_string(ParseType.TREENODE, "val",
-                                             input_types, expected_type)
-    tree_node = BP_LANG_INSTANCE.tree_node(val_type_string, one_indent, one_indent * 1)
-
   end = BP_LANG_INSTANCE.get_end(one_indent)
 
   ret = "".join([
     start,
     imports,
     class_declaration, 
-    method_declaration, 
-    list_node, 
-    tree_node, 
+    method_declaration,
     end
   ])
 
@@ -109,8 +94,6 @@ def _add_nested_types(typ: dict[str, Any], s: set[ParseType]) -> None:
     case ParseType.MAP:
       _add_nested_types(typ["keys"], s)
       _add_nested_types(typ["values"], s)
-    case ParseType.LISTNODE | ParseType.TREENODE:
-      _add_nested_types(typ["val"], s)
     case _:
       assert_never(curr_type)
 
@@ -143,8 +126,6 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
     case ParseType.MAP:
       key_typ = _find_type(typ["keys"], to_find)
       return key_typ if key_typ is not None else _find_type(typ["values"], to_find)
-    case ParseType.LISTNODE | ParseType.TREENODE:
-      return _find_type(typ["val"], to_find)
     case _:
       assert_never(curr_type)
 

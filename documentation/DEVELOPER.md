@@ -2,7 +2,6 @@ TODO update with links
 # Sections
 - Adding an Algorithm
 - Adding a Language
-- Adding a Required Class
 - Running App Tests
 
 ## Test Runners
@@ -21,11 +20,9 @@ Used in `info.json` files. Each type is a dict with a `"type"` key. Possible val
 | Primitive | `{ "type": "int" }`, `{ "type": "string" }` |
 | Collection | `{ "type": "array", "items": <T> }` |
 | Map | `{ "type": "map", "keys": <T>, "values": <T> }` |
-| Required class | `{ "type": "ListNode", "val": <T> }` |
 
 Allowed primitives: `int`, `long`, `float`, `boolean`, `string`  
 Allowed collections: `array`, `list`, `immutable_list`, `set`  
-Allowed required classes: `ListNode`, `TreeNode`
 
 
 ## Python Types to JSON

@@ -69,47 +69,9 @@ class JavaBp(BpInterface):
       case ParseType.MAP:
         return (f"Map<{self.parse_type_string(typ["keys"], True)}," + 
               f" {self.parse_type_string(typ["values"], True)}>")
-      case ParseType.LISTNODE:
-        return "ListNode"
-      case ParseType.TREENODE:
-        return "TreeNode"
       case _:
         assert_never(curr_type)
 
-  @override
-  def list_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    return (
-      "\n\n" +
-      f"{base_indent}public static class ListNode" + " {\n" +
-      f"{base_indent}{one_indent}public {val_type_string} val;\n" +
-      f"{base_indent}{one_indent}public ListNode next;\n\n" +
-
-      f"{base_indent}{one_indent}public ListNode({val_type_string} val," + 
-                                " ListNode next) {\n" +
-      f"{base_indent}{one_indent * 2}this.val = val;\n" +
-      f"{base_indent}{one_indent * 2}this.next = next;\n" +
-      f"{base_indent}{one_indent}" + "}\n" +
-      f"{base_indent}" + "}\n"
-    )
-
-  @override
-  def tree_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    return (
-      "\n\n" + 
-      f"{base_indent}public static class TreeNode" + " {\n" +
-      f"{base_indent}{one_indent}public {val_type_string} val;\n" +
-      f"{base_indent}{one_indent}public TreeNode left;\n" +
-      f"{base_indent}{one_indent}public TreeNode right;\n\n" +
-
-      f"{base_indent}{one_indent}public TreeNode({val_type_string} val," + 
-                                " TreeNode left, TreeNode right) {\n" +
-      f"{base_indent}{one_indent * 2}this.val = val;\n" +
-      f"{base_indent}{one_indent * 2}this.left = left;\n" +
-      f"{base_indent}{one_indent * 2}this.right = right;\n" +
-      f"{base_indent}{one_indent}" + "}\n" +
-      f"{base_indent}" + "}\n"
-    )
-  
   @override
   def get_end(self, one_indent: str) -> str:
     return "}\n"

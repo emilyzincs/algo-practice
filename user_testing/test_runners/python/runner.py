@@ -1,6 +1,5 @@
 import json
 import sys
-from collections import deque
 from typing import Any, assert_never
 
 # Validate command‑line arguments and print usage if incorrect.
@@ -25,13 +24,8 @@ from util.general import load_module_from_path
 from util.enums import ParseType, member_name_list, member_from_string
 from boilerplate.util import validate_type
 
-# Global variables that will hold the user's classes (if they exist)
-USER_LISTNODE = None
-USER_TREENODE = None
 
-
-# Main test runner: loads the user's module, parses test cases, invokes the solution method,
-# and compares results. Returns True if all tests pass, False otherwise.
+# Returns True if all tests pass, False otherwise.
 def main() -> bool:
   practice_file_path = sys.argv[1]
   info_file_path = sys.argv[2]
@@ -55,15 +49,6 @@ def main() -> bool:
   type_list: list[str] = json.loads(type_list_str)
   if type_list != member_name_list(ParseType):
     raise ValueError(f"type_list does not match expected. Value: {type_list}.")
-
-  # Load the user's ListNode and TreeNode classes (if defined)
-  global USER_LISTNODE, USER_TREENODE
-  USER_LISTNODE = getattr(practice_module, "ListNode", None)
-  USER_TREENODE = getattr(practice_module, "TreeNode", None)
-
-  # Add cycle-aware __eq__ methods if applicable
-  add_cycle_aware_eq(USER_LISTNODE)
-  add_cycle_aware_eq(USER_TREENODE)
 
   with open(info_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -122,59 +107,6 @@ def main() -> bool:
   return True
 
 
-# Adds a cycle‑aware __eq__ method to a class (ListNode or TreeNode) to handle recursive
-# structures without infinite loops. Overrides any existing __eq__.
-#
-# Parameters:
-# - cls: The class to modify (ListNode or TreeNode), or None.
-def add_cycle_aware_eq(cls):
-  """Add a cycle-aware __eq__ method to a class if it doesn't already have one."""
-  if cls is None:
-    return
-
-  if cls.__name__ == 'ListNode':
-    def __eq__(self, other, visited=None):
-      if self is None and other is None:
-        return True
-      if self is None or other is None:
-        return False
-      if visited is None:
-        visited = set()
-      pair_id = (id(self), id(other))
-      if pair_id in visited:
-        return True
-      visited.add(pair_id)
-      if not isinstance(other, cls):
-        return False
-      if self.val != other.val:
-        return False
-      return __eq__(self.next, other.next, visited)
-
-    cls.__eq__ = __eq__
-
-  elif cls.__name__ == 'TreeNode':
-    def __eq__(self, other, visited=None):
-      if self is None and other is None:
-        return True
-      if self is None or other is None:
-        return False
-      if visited is None:
-        visited = set()
-      pair_id = (id(self), id(other))
-      if pair_id in visited:
-        return True
-      visited.add(pair_id)
-      if not isinstance(other, cls):
-        return False
-      if self.val != other.val:
-        return False
-      if not __eq__(self.left, other.left, visited):
-        return False
-      return __eq__(self.right, other.right, visited)
-
-    cls.__eq__ = __eq__
-
-
 # Parses a JSON value according to a type definition, converting it into a Python object
 # (primitive, list, set, dict, ListNode, TreeNode, etc.).
 #
@@ -208,46 +140,6 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
         parse_value(k, typ["keys"]): parse_value(v, typ["values"])
         for k, v in val.items()
       }
-    case ParseType.LISTNODE:
-      if USER_LISTNODE is None:
-        raise Exception("ListNode class not defined in the practice module")
-      dummy = USER_LISTNODE(0, None)
-      cur = dummy
-      for x in val:
-        cur.next = USER_LISTNODE(parse_value(x, typ["val"]), None)
-        cur = cur.next
-      return dummy.next
-
-    case ParseType.TREENODE:
-      if USER_TREENODE is None:
-        raise Exception("TreeNode class not defined in the practice module")
-      if not val:
-        return None
-
-      nodes = [
-        None if x is None else USER_TREENODE(parse_value(x, typ["val"]), None, None)
-        for x in val
-      ]
-
-      children = deque(nodes[1:])
-      root = nodes[0]
-      queue = deque([root])
-
-      while queue and children:
-        node = queue.popleft()
-        if node is None:
-          continue
-
-        if children:
-          node.left = children.popleft()
-          queue.append(node.left)
-
-        if children:
-          node.right = children.popleft()
-          queue.append(node.right)
-
-      return root
-
     case _:
       assert_never(curr_type)
 
