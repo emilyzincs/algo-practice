@@ -2,7 +2,9 @@
 A strong understanding of fundamental algorithms is paramount, no matter the language. This project is built to enable users to exercise these algorithms with consistent, automated testing across languages.
 
 # Installing the Project
-Start by cloning the repository. Using the terminal, navigate to the directory that you want to contain the project, then enter
+Start by cloning the repository: 
+
+Using the terminal, navigate to the directory that you want to contain the project, then enter
 ```
 git clone https://github.com/emilyzincs/algo-practice.git
 ```
