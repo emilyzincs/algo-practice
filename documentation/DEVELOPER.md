@@ -5,58 +5,54 @@ TODO update with links
 - Adding a Required Class
 - Running App Tests
 
-## Adding an Algorithm
-Let ```<alias>``` represent an alias of the algorithm's name in lowercase and wih spaces for different words. Note the algorithm's name itself (in this format) is always an alias. So, for example, ```dfs``` and ```depth first search``` are both aliases of the algorithm depth first search.
+## Test Runners
 
-Let ```<specific_name>``` be the algorithm's name but snake-case. (E.g. binary_search).
+## Info Files
 
-Say that the algorithm is 'specific' if is just one way to implement of a more general algorithm that is also well-known. For example, depth first search is specific, since it and breadth first search both implement the reachable algorithm. On the other hand, binary search is not specific.
+## (User) Test Files
 
-Let ```<general_name>``` be the snake-case version of the name of the general algorithm that the specific algorithm refers to, or ```<specific_name>``` if there is no such general algorithm. (E.g. reachable for depth first search, binary_search for binary search).
 
-Finally, let capitalizing between the brackets indicate all caps. (E.g. ```<SPECIFIC_NAME>``` would be BINARY_SEARCH for binary search). 
+## Language‑Agnostic Types
 
-Add the algorithm by continuing as follows.
+Used in `info.json` files. Each type is a dict with a `"type"` key. Possible values correspond to `ParseType` in `enums.py`. Letting `<T>` represent a nested language-agnostic type, language-agnostic types are as follows.
 
-First, in enums.py (found in the util folder):
-- Update the ```SpecificAlgorithm``` enum by adding ```<SPECIFIC_NAME>``` as an entry.
-- Update the ```INPUT_ALG_TO_SPECIFIC``` dictionary by adding the item ```("<alias>": SpecificAlgorithm.<SPECIFIC_NAME>)``` for each alias of the algorithm.
-- Update the ```GeneralAlgorithm``` alias by adding ```<GENERAL_NAME>``` as an entry, if it does not already exist.
-- Update the ```SPECIFIC_ALG_TO_GENERAL dictionary``` by adding the item ```(SpecificAlgorithm.<SPECIFIC_NAME>, GeneralAlgorithm.<GENERAL_NAME>)```.
+| Category | Example |
+|----------|---------|
+| Primitive | `{ "type": "int" }`, `{ "type": "string" }` |
+| Collection | `{ "type": "array", "items": <T> }` |
+| Map | `{ "type": "map", "keys": <T>, "values": <T> }` |
+| Required class | `{ "type": "ListNode", "val": <T> }` |
 
-If ```<GENERAL_NAME>``` was already an entry in ```GeneralAlgorithm```, you are done, other than potentially [adding solutions](#writing-solution). Otherwise, continue.
+Allowed primitives: `int`, `long`, `float`, `boolean`, `string`  
+Allowed collections: `array`, `list`, `immutable_list`, `set`  
+Allowed required classes: `ListNode`, `TreeNode`
 
-Go into the problems directory and create a folder named ```<general_name>```. Enter that folder and create a file named ```info.json``` with layout specified by [Format of info.json](#format-of-infojson).
 
-### Format of info.json
-Each info.json file must be JSON dictionary with the following keys.
-- "unique_answer": A boolean value representing whether the algorithm has exactly one solution for each problem instance. 
-- "parameter_names": An array of strings holding natural names for the parameters (in order) that make it clear what the parameters represents if you are familiar with the algorithm. (E.g. for binary search, this might be ["nums", "target"]).
-- "input_types": An array of [language-agnostic types](#language-agnostic-types) of the input parameter types in order.
-- "expected_type": A [language-agnostic types](#language-agnostic-types) of the expected return type.
+## Python Types to JSON
 
-### Language-Agnostic Types
-This project uses JSON to represent types in a way that is agnostic to language. Each such representation ```<T>``` is a dictionary with a "type" key. The possible representations are layed out below.
 
-- Primitive case: ```{ "type": <primitive> }``` where ```<primitive>``` is one of ```"int", "long", "float", "boolean", "string"```.
-- Collection case: ```{ "type": <collection>, "items": <T> }``` where ```<collection>``` is one of ```"array", "list", "immutable_list", "set"```.
-- Map case: ```{ "type": "map", "keys": <T>, "values": <T> }```
-- Required Class case: ```{ "type": <required_class>, "val": <T> }``` where ```<required_class>``` is one of ```"ListNode", "TreeNode"```.
 
-Note the potential values of a "type" key correspond exactly to the members of the ```ParseType``` enum in enums.py, enabling safe, exhaustive handling. 
+### Writing an Algorithm Solution File
+This section covers how to create a solution file for an algorithm in a particular language. 
 
-### Generating Tests
-Start by going to the problems folder in the test_generation directory, and create a file named ```<general_name>.py```, then open it. 
+#### Motivation
+Solution files enable users to use the `solution` command when the practicing the algorithm in that language, which loads the solution into their practice file. They also make the program more robust, since the app-level tests check that all solutions pass their corresponding (generated) tests.
 
-Import the ```BaseGenerator``` class from ```base_generator```, and create a class that extends it, named the pascal-case version of ```<general_name> + Generator```. This class must override the methods decorated with ```@abstractmethod``` in ```BaseGenerator```, and it must not override the methods decorated with ```@final```. The functions in ```command_util``` and defining custom helpers will likely be useful. 
+> **Before you start**  
+> Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](#TODO))
 
-Once the required methods are implemented, you are done. The program will use the class to generate the tests automatically when necessary. The generated tests will be used to check the correctness of algorithm implementations, so make sure they are as exhaustive as possible.
+Pick a supported language. Let `<extension>` be the file extension for that language (e.g., `.py`).
 
-### Writing Solution
-Fix a supported language.
+- **If the algorithm is specific** (e.g., DFS):  
+  Path: `problems/<general_name>/<specific_name>/solution.<extension>`  
+  Example: `problems/reachable/depth_first_search/solution.py`
 
-Let ```<solution>``` be "solution" in file-name case matching the language, and let ```<extension>``` be the extension used for files in the language.
+- **If the algorithm is not specific** (e.g., binary search):  
+  Path: `problems/<specific_name>/solution.<extension>`  
+  Example: `problems/binary_search/solution.py`
 
-To write the solution for an algorithm in the fixed language, go to ```problems/<general_name>/<specific_name>/<solution>.<extention>``` if the algorithm is specific or ```problems/<specific_name>/<solution>.<extention>``` otherwise, creating files in the path if they do not already exist. Then, using that language, write a solution for the algorithm in the file, making sure to follow the [implementation requirements](USER_IMPLEMENTATION.md) 
+Follow the [implementation requirements](USER_IMPLEMENTATION.md).  
+Once test generation is in place, run the [app tests](#TODO) to validate your solution – they will fail if your solution does not pass the user tests.
 
-Assuming test generation for the algorithm has already been successfully implemented, the [app tests]() <--- TODO may then be used to validate the solution, since they will fail if a solution file is does not pass its corresponding (user) tests. 
+
+
