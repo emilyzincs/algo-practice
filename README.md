@@ -10,7 +10,7 @@ git clone https://github.com/emilyzincs/algo-practice.git
 ```
 The directory will then contain the algo-practice folder.
 
-Before running the project, all that remains is checking that you use the [required language versions](#supported-languages) for the languages you practice.
+Before running the project, all that remains is checking that you use the [required language versions](#supported-languages) for python and the languages you practice.
 
 ## Running the Project
 Navigate to the root of the algo-practice directory and enter

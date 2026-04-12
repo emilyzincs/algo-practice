@@ -64,14 +64,7 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
 ### 2. Create the general algorithm folder (only if new)
 
 Inside the `problems/` directory, create a folder named `<general_name>` (e.g., `problems/reachable/`).  
-Inside it, create `info.json` with the following keys:
-
-| Key | Type | Description |
-|-----|------|-------------|
-| `"unique_answer"` | boolean | Does this algorithm have exactly one solution per problem instance? |
-| `"parameter_names"` | array of strings | Human‑readable names for parameters, in order (e.g., `["graph", "start"]`) |
-| `"input_types"` | array of [language‑agnostic types](#languageagnostic-types-reference) | Types of the parameters, in order |
-| `"expected_type"` | [language‑agnostic type](#languageagnostic-types-reference) | Return type |
+Inside it, create an [info file](#TODO).
 
 ### 3. Generate tests (if the general algorithm is new)
 
@@ -81,4 +74,3 @@ Inside it, create `info.json` with the following keys:
 - Use helpers from `command_util` and write custom helpers as needed.
 
 The program will automatically use the generator to create the tests when necessary. Since these tests will be used to validate the correctness of algorithm implementations, it is paramount that they are as exhaustive as possible.
-
