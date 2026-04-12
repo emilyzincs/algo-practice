@@ -1,21 +1,25 @@
 {
-  "unique_answer": true,
+  "unique_answer": false,
   "parameter_names": ["input"],
   "input_types": [
     { 
       "type": "list",
       "items": {
-        "type": "map",
-        "keys": {
-          "type": "immutable_list",
+        "type": "array",
+        "items": {
+          "type": "array",
           "items": {
-            "type": "immutable_list",
-            "items": { "type": "float" }
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "set",
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
-        },
-        "values": {
-          "type": "list",
-          "items": { "type": "TreeNode", "val": { "type": "int" } }
         }
       }
     }
@@ -23,15 +27,22 @@
   "expected_type": { 
     "type": "list",
     "items": {
-      "type": "map",
-      "keys": {
-        "type": "immutable_list",
-        "items": { "type": "float" }
-      },
-      "values": {
-        "type": "list",
-        "items": { "type": "ListNode", "val": { "type": "int" } }
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "set",
+              "items": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
       }
     }
-  } 
+  }
 }

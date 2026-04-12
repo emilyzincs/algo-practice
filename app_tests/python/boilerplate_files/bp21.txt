@@ -1,18 +1,3 @@
-from __future__ import annotations
-from typing import Optional
-
 class Solution:
-  def solve(self, input: list[dict[tuple[tuple[float, ...], ...], list[Optional[TreeNode]]]]) -> list[dict[tuple[float, ...], list[Optional[ListNode]]]]:
+  def solve(self, input: list[list[list[list[list[set[bool]]]]]]) -> list[list[list[list[list[set[bool]]]]]]:
     
-
-class ListNode:
-  def __init__(self, val: int, next: Optional[ListNode]) -> None:
-    self.val = val
-    self.next = next
-
-
-class TreeNode:
-  def __init__(self, val: int, left: Optional[TreeNode], right: Optional[TreeNode]) -> None:
-    self.val = val
-    self.left = left
-    self.right = right

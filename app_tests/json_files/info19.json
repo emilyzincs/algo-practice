@@ -1,14 +1,48 @@
 {
-  "unique_answer": true,
-  "parameter_names": ["root"],
+  "unique_answer": false,
+  "parameter_names": ["input"],
   "input_types": [
     { 
-      "type": "TreeNode",
-      "val": { "type": "int" }
+      "type": "list",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "set",
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ],
-  "expected_type": {
-    "type": "TreeNode",
-    "val": { "type": "int" }
+  "expected_type": { 
+    "type": "list",
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "set",
+              "items": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

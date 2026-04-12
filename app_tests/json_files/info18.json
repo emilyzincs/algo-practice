@@ -1,14 +1,48 @@
 {
   "unique_answer": true,
-  "parameter_names": ["arr"],
+  "parameter_names": ["input"],
   "input_types": [
     { 
       "type": "list",
-      "items": { "type": "long" }
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "set",
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ],
-  "expected_type": {
-    "type": "ListNode",
-    "val": { "type": "long" } 
+  "expected_type": { 
+    "type": "list",
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "set",
+              "items": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

@@ -1,14 +1,13 @@
 [
   {
     "inputs": [
-      [1, 2, 3, 4]
+      [
+        ["foo", "biz"],
+        ["bar"],
+        [],
+        ["baz", "buz"]
+      ]
     ],
-    "expected": [2, 3, 4]
-  },
-  {
-    "inputs": [
-      []
-    ],
-    "expected": []
+    "expected": ["buz", "biz", "foo", "bar", "baz"]
   }
 ]

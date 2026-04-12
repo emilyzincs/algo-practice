@@ -1,17 +1,16 @@
 package app_tests.java.solution_files;
 
+import java.util.Set;
+import java.util.HashSet;
+
 public class Sol17 {
-  public static ListNode solve(ListNode head) {
-    return head != null ? head.next : null;
-  }
-
-  public static class ListNode {
-    public int val;
-    public ListNode next;
-
-    public ListNode(int val, ListNode next) {
-      this.val = val;
-      this.next = next;
+  public static Set<String> solve(Set<String[]> input) {
+    Set<String> ret = new HashSet<>();
+    for (String[] arr : input) {
+      for (String s : arr) {
+        ret.add(s);
+      }
     }
+    return ret;
   }
 }

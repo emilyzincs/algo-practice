@@ -1,14 +1,14 @@
 {
   "unique_answer": true,
-  "parameter_names": ["head"],
+  "parameter_names": ["input"],
   "input_types": [
     { 
-      "type": "ListNode",
-      "val": { "type": "int" }
+      "type": "set",
+      "items": { "type": "immutable_list", "items": { "type": "string" } }
     }
   ],
   "expected_type": {
-    "type": "ListNode",
-    "val": { "type": "int" } 
+    "type": "set",
+    "items": { "type": "string" }
   }
 }
