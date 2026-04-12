@@ -1,4 +1,4 @@
-package app_tests.java.solution_files;
+package app_tests.language.java.solution_files;
 
 public class Sol12 {
   public static long solve(double f, double[] a) {

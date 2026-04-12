@@ -1,4 +1,4 @@
-package app_tests.java.solution_files;
+package app_tests.language.java.solution_files;
 import java.util.Map;
 import java.util.List;
 

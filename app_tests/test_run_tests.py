@@ -35,7 +35,7 @@ class TestRunTests(parent):
   def run_language_tests(self, language: Language):
     practice_file_name_prefix = to_language_file_case("sol", language)
     required_class_name_prefix = None
-    practice_file_dir = os.path.join(get_abstract_test_dir(), 
+    practice_file_dir = os.path.join(get_abstract_test_dir(), "language",
                                      member_to_string(language), "solution_files")
     match language:
       case Language.PYTHON:

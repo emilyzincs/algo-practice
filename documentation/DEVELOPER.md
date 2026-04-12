@@ -24,6 +24,8 @@ This document explains the core concepts and components of the project. It is in
     - [Running the tests](#running-the-tests)
       - [Additional arguments](#additional-arguments)
     - [Auxiliary Files](#auxiliary-files)
+      - [The `test_run_tests` test](#the-test_run_tests-test)
+      - [The `test_boilerplate` test](#the-test_boilerplate-test)
 
 ---
 
@@ -231,8 +233,36 @@ python test.py
 
 For example, to test the Java boilerplate generation for the 14th pair of JSON files, run
 ```
-python test.py --test boilerplate --num 14  --language Java
+python test.py --test boilerplate --num 14 --language Java
 ```
 from the project root. Note the order of the additional arguments does not matter.
 
 ### Auxiliary Files
+The `app_tests/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
+
+As hinted above, some tests make use of these files.
+
+#### The `test_run_tests` test
+
+This test checks that the `run_tests` function in `user_testing/test.py` accurately reports the correctness of implementations for the auxiliary files.
+
+In addition to using the auxiliary files, it requires that for each language there is a directory 
+```
+app_test/language/<language>/solution_files/
+```
+containing files `<sol>1.<extension>`, `<sol>2.<extension>`, ..., `<sol>N.<extension>`, where `<language>` is the language name in lowercase, `<sol>` is "sol" in the language's file-name-case (e.g., "Sol" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
+
+The `k`th solution file should correctly implement the `k`th pair of auxiliary files if the `k`th entry of the `expected_values` list (one-indexed) in the `language_test_run_tests` function is `True`, otherwise it should not.
+
+>Implementation Tip: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](TODO) for the language, and write the implementations for there.
+
+#### The `test_boilerplate` test
+This test checks that the starting boilerplate text generation for practice files works correctly
+
+In addition to using the auxiliary files, it requires that for each language there is a directory 
+```
+app_test/language/<language>/boilerplate_files/
+```
+containing files `<bp>1.<extension>`, `<bp>2.<extension>`, ..., `<bp>N.<extension>`, where `<language>` is the language name in lowercase, `<bp>` is "bp" in the language's file-name-case (e.g., "Bp" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
+
+The `k`th boilerplate file must contain a character-perfect copy of the expected boilerplate for the `k`th pair of auxiliary files in the target language.

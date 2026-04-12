@@ -1,6 +1,6 @@
-package app_tests.java.solution_files;
+package app_tests.language.java.solution_files;
 
-public class Sol9 {
+public class Sol10 {
   public static String[] solve() {
     return new String[]{"foo", "bar", "biz"};
   }

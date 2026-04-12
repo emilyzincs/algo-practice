@@ -54,12 +54,12 @@ See existing implementations (e.g., `boilerplate/language/python.py`) for guidan
 
 ### 4. Update App Tests
 
-The app tests ensure that boilerplate generation and test-runners work correctly. In the `app_tests/` directory, create a folder named `<language>`. Inside it, create two subdirectories:
+The app tests ensure that boilerplate generation and test-runners work correctly. In the `app_tests/language/` directory, create a folder named `<language>`. Inside it, create two subdirectories:
 
-- `boilerplate_files/` – Stores the expected boilerplate for various algorithms.
-- `solution_files/` – Stores the expected solution file contents.
+- `boilerplate_files/`
+- `solution_files/`
 
-Then update the app test runner to include your new language. The exact test cases can be copied and adapted from an existing language folder.
+Then fill them with the appropriate files, as specified by [Auxiliary Files](#todo). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
 
 >Note: The new tests will not run until after step five.
 
