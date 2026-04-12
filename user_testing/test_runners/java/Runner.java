@@ -203,17 +203,12 @@ public class Runner {
       case FLOAT -> double.class;
       case BOOLEAN -> boolean.class;
       case STRING -> String.class;
-      case ARRAY -> {
+      case ARRAY, IMMUTABLE_LIST -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         yield Array.newInstance(inner, 0).getClass();
       }
       case LIST -> List.class;
-      case IMMUTABLE_LIST -> {
-        @SuppressWarnings("unchecked")
-        Class<?> inner = parseType((Map<String, Object>) def.get("items"));
-        yield Array.newInstance(inner, 0).getClass();
-      }
       case SET -> Set.class;
       case MAP -> Map.class;
     };

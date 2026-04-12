@@ -10,12 +10,12 @@ Let `<Language>` be the same name capitalized (e.g., `Java`).
 
 ### 1. Create a Test Runner
 
-The first and most important step in adding a new language is to create a test-runner for it. Details about test-runners can be found [here](#TODO).
+The first and most important step in adding a new language is to create a test-runner for it. Details about test-runners can be found [here](#TODO), including implementation advice.
 
 
 ### 2. Update `run_tests` Function in `user_testing/test.py`
 
-The main test orchestration function needs to know how to invoke your new test runner. Locate the `run_tests` function (or equivalent) and add a branch for `<language>` that constructs the appropriate command line.
+This is how your new test-runner will be invoked. In the function's match statement, add a branch for `<language>` that constructs the appropriate command-line.
 
 Example for Python:
 ```python
@@ -24,7 +24,7 @@ case Language.PYTHON:
            info_file, test_file, fp.PROJECT_ROOT, debug]
 ```
 
-Add a similar block for your language. You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command.
+You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command. Recall, some staple command-line arguments for test-runners are given [here](DEVELOPER.md#command-line-arguments).
 
 
 ### 3. Update `boilerplate/<language>`

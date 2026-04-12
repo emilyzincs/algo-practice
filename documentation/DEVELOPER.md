@@ -8,7 +8,7 @@ This document explains the core concepts and components of the project. It is in
   - [Table of Contents](#table-of-contents)
   - [Test Runners](#test-runners)
     - [Command-Line Arguments](#command-line-arguments)
-    - [General Structure](#general-structure)
+    - [Implementation Advice](#implementation-advice)
   - [Info Files (`info.json`)](#info-files-infojson)
   - [Test Files (`test.json`)](#test-files-testjson)
   - [Language‑Agnostic Types](#languageagnostic-types)
@@ -43,7 +43,7 @@ Given a user's algorithm implementation, written in the target language, the tes
 
 ### Command-Line Arguments
 
-Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one argument). However, some arguments should usually or pretty much always be include. They are shared below.
+Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one argument). However, some arguments should usually or pretty much always be included. They are shared below.
 
 | Variable | Description |
 |----------|-------------|
@@ -56,14 +56,14 @@ Test-runners must be passed the necessary command-line arguments to fulfill thei
 | `<required_method_name>` | The name the method implementing the algorithm must have. |
 | `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings in order (e.g. `["int", "long", ...]`), serialized as a JSON string. This enables runners to check that their handled types are not outdated.
 
-### General Structure
-- Validates command-line arguments match the expected form.
-- Has own version of `ParseType` enum for static type safety.
-- Checks `ParseType` enum matches `<parse_types_list>` argument for runtime safety.
-- Has recursive function for parsing a value from JSON into a value in the target language by using a language-agnostic type.
-  - Statically typed languages 
+### Implementation Advice
+- Use a JSON library to initially load the JSON files into concrete types.
+- Validate command-line arguments match the expected form.
+- Use a custom version of the `ParseType` enum for static type safety, and check that the `ParseType` enum matches `<parse_types_list>` argument for runtime safety.
+- Create a recursive function for parsing the (initially loaded) test JSON items into values in the target language that match their language-agnostic type.
+- Potentially, add a function for parsing a language-agnostic type into a type in the target language. 
 
-> **Tip:** Look at existing test runners (e.g., `test_runners/python/runner.py`) for a concrete example.
+> **Tip:** Look at existing test runners (e.g., `runner.py`) for concrete examples.
 
 ---
 
