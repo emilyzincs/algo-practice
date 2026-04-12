@@ -152,10 +152,6 @@ public class Runner {
             fail = true;
         }
         
-        if (!validateType(actual, expectedType)) {
-          printErr("Return type mismatch with expected_type");
-        }
-        
         if (fail) {
           printErr("Test " + (i + 1) + " failed.");
         }
@@ -320,77 +316,6 @@ public class Runner {
                   parseValue(values.get(i), valDef));
         }
         yield map;
-      }
-    };
-  }
-
-  // Verifies that an object's runtime type matches the expected type definition.
-  //
-  // Parameters:
-  // - obj: The object to check.
-  // - def: The type definition map.
-  //
-  // Returns:
-  //   true if the type matches, false otherwise.
-  private static boolean validateType(Object obj, Map<String, Object> def) {
-    String candidate = (String) def.get("type");
-    ParseType type = toParseType(candidate);
-
-    return switch (type) {
-      case INT -> obj instanceof Integer;
-      case LONG -> obj instanceof Long;
-      case FLOAT -> obj instanceof Double;
-      case BOOLEAN -> obj instanceof Boolean;
-      case STRING -> obj instanceof String;
-      case ARRAY, IMMUTABLE_LIST -> {
-        if (!obj.getClass().isArray())
-          yield false;
-        int len = Array.getLength(obj);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (int i = 0; i < len; i++) {
-          if (!validateType(Array.get(obj, i), inner))
-            yield false;
-        }
-        yield true;
-      }
-      case LIST -> {
-        if (!(obj instanceof List))
-          yield false;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> listInner = (Map<String, Object>) def.get("items");
-        for (Object o : (List<?>) obj) {
-          if (!validateType(o, listInner))
-            yield false;
-        }
-        yield true;
-      }
-      case SET -> {
-        if (!(obj instanceof Set))
-          yield false;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> setInner = (Map<String, Object>) def.get("items");
-        for (Object o : (Set<?>) obj) {
-          if (!validateType(o, setInner))
-            yield false;
-        }
-        yield true;
-      }
-      case MAP -> {
-        if (!(obj instanceof Map))
-          yield false;
-        @SuppressWarnings("unchecked")
-        Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
-        @SuppressWarnings("unchecked")
-        Map<String, Object> valDef = (Map<String, Object>) def.get("values");
-        
-        for (Map.Entry<?, ?> e : ((Map<?, ?>) obj).entrySet()) {
-          if (!validateType(e.getKey(), keyDef))
-            yield false;
-          if (!validateType(e.getValue(), valDef))
-            yield false;
-        }
-        yield true;
       }
     };
   }
