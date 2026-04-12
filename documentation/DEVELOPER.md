@@ -27,7 +27,7 @@ Algorithm test files (named test.json) are JSON arrays of test cases. Each [gene
 ```
 Where `"inputs"` holds the list of parameter values (in order) for the test case, and `"expected"` holds the expected output of the algorithm.
 
-The JSON type of each parameter value and expected return value must match the corresponding [language-agnostic type](#TODO) in the corresponding [info file](#TODO). This means
+The JSON type of each parameter value and expected return value must match the corresponding [language-agnostic type](#TODO) in the corresponding [info file](#TODO). This means recursively matching:
 
 | language-agnostic type                   | JSON type  |
 |------------------------------------------|------------|
@@ -35,12 +35,12 @@ The JSON type of each parameter value and expected return value must match the c
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
 | `array`, `list`, `immutable_list`, `set` | Array      |
-| `map`                                    | Object     |
+| `map`                                    | Array holding two Arrays of equal size  |
 
 
 ## Language‑Agnostic Types
 
-Used in `info.json` files. Each type is a dictionary with a `"type"` key. Possible values correspond to `ParseType` in `enums.py`. Letting `<T>` represent a nested language-agnostic type, language-agnostic types are as follows.
+Used in [info files](#TODO). Each type is an object with a `"type"` key. Possible values correspond to `ParseType` in `enums.py`. Letting `<T>` represent a nested language-agnostic type, language-agnostic types are as follows.
 
 | Category   | Example                                         |
 |------------|-------------------------------------------------|
