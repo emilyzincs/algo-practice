@@ -1,33 +1,84 @@
-TODO update with links
-# Sections
-- Adding an Algorithm
-- Adding a Language
-- Running App Tests
+# Developer Documentation
+
+This document explains the core concepts and components of the project. It is intended for contributors who need to understand the architecture before adding algorithms, languages, or tests.
+
+> **Note**  
+> Placeholder links marked `#TODO` will be replaced with actual anchors once the full documentation is assembled.
+
+## Table of Contents
+- [Developer Documentation](#developer-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Test Runners](#test-runners)
+  - [Info Files (`info.json`)](#info-files-infojson)
+  - [Test Files (`test.json`)](#test-files-testjson)
+    - [Mapping language‑agnostic types to JSON](#mapping-languageagnostic-types-to-json)
+  - [Language‑Agnostic Types](#languageagnostic-types)
+    - [Basic structure](#basic-structure)
+  - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
+    - [Motivation](#motivation)
+    - [Before you start](#before-you-start)
+    - [Steps](#steps)
+
+---
 
 ## Test Runners
-Test runners are the core of a language implementation. Each language has one test-runner, which is responsible for using [language-agnostic types](#todo) to parse JSON into concrete types in the language. In particular, given an algorithm, a test-runner must use the corresponding [info file](#TODO) to parse tests in the corresponding [test file](#TODO) into concrete inputs and expected outputs. It is called a test-runner, because after doing this parsing, it calls the user's current implementation of the algorithm with the concrete inputs, and verifies that the outputs matches the expected--running the tests. If any test fails, it prints an error message and exits with nonzero status code, otherwise it prints that all tests passed and exits with status code zero.
 
-## Info Files (JSON)
-Algorithm info files (named `info.json`) are JSON objects which hold useful information for [test-runners](#TODO) for parsing/validating tests in the corresponding [test file](#TODO). Each [general algorithm](#todo) has exactly one info file, located in `problems/<general_name>/`, where `<general_name>` is the general algorithm's name in snake_case. Info files hold the following.
+A **test runner** is the core of a language implementation. Each supported language has exactly one test runner – an executable script (or compiled program) that:
+
+1. Reads a **test file** (`test.json`) and its corresponding **info file** (`info.json`).
+2. Parses each test case from the JSON into concrete values of the target language (using the language‑agnostic type definitions).
+3. Calls the user’s implementation of the algorithm with those concrete inputs.
+4. Compares the actual output to the expected output.
+5. Prints a message and exits with:
+   - **Exit code 0** if all tests pass.
+   - **Non‑zero exit code** if any test fails (along with an error message).
+
+The test runner is invoked by the main testing framework. To add a new language, you must implement its test runner (see [Adding a Language](language-addition.md#TODO)).
+
+---
+
+## Info Files (`info.json`)
+
+Every **general algorithm** has exactly one `info.json` file, located in `problems/<general_name>/` (where `<general_name>` is the snake‑case name of the general algorithm).
+
+The file is a JSON object with the following keys:
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `"unique_answer"` | boolean | Does this algorithm have exactly one solution per problem instance? |
-| `"parameter_names"` | array of strings | Human‑readable names for the algorithm parameters, in order (e.g., `["graph", "start"]`) |
-| `"input_types"` | array of [language‑agnostic types](#TODO) | Types of the algorithm parameters, in order |
-| `"expected_type"` | [language‑agnostic type](#TODO) | Return type |
+| `"unique_answer"` | boolean | Does this algorithm have exactly one correct solution per problem instance? (Used for certain test generation strategies.) |
+| `"parameter_names"` | array of strings | Human‑readable names for the algorithm’s parameters, in order (e.g., `["graph", "start"]`). |
+| `"input_types"` | array of [language‑agnostic types](#languageagnostic-types) | The expected type of each parameter, in the same order. |
+| `"expected_type"` | [language‑agnostic type](#languageagnostic-types) | The return type of the algorithm. |
 
-## Test Files (JSON)
-Algorithm test files (named test.json) are JSON arrays of test cases. Each [general algorithm](#todo) has exactly one test file, located in `problems/<general_name>/`, where `<general_name>` is the general algorithm's name in snake_case. Each test file has the form:
-```
+Example `info.json` for binary search:
+```json
 {
-  "inputs": [...]
-  "expected": ...
+  "unique_answer": false,
+  "parameter_names": ["nums", "target"],
+  "input_types": [
+    { "type": "array",
+      "items": { "type": "int" }
+    },
+    { "type": "int" }
+  ],
+  "expected_type": { "type": "int" }
 }
 ```
-Where `"inputs"` holds the list of parameter values (in order) for the test case, and `"expected"` holds the expected output of the algorithm.
 
-The JSON type of each parameter value and expected return value must match the corresponding [language-agnostic type](#TODO) in the corresponding [info file](#TODO). This means recursively matching:
+---
+
+## Test Files (`test.json`)
+
+Each **general algorithm** also has exactly one `test.json` file, stored in the same folder as its `info.json` file (`problems/<general_name>/test.json`).
+
+The file is a JSON **array** of test case objects. Each test case object has two fields:
+
+- `"inputs"`: an array of input values (in the same order as `parameter_names` in the info file).
+- `"expected"`: the expected output value.
+
+The JSON representation of each input and the expected output must match the corresponding [language‑agnostic type](#languageagnostic-types) from the info file.
+
+### Mapping language‑agnostic types to JSON
 
 | language-agnostic type                   | JSON type  |
 |------------------------------------------|------------|
@@ -35,12 +86,17 @@ The JSON type of each parameter value and expected return value must match the c
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
 | `array`, `list`, `immutable_list`, `set` | Array      |
-| `map`                                    | Array holding two Arrays of equal size  |
+| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values) |
 
+---
 
 ## Language‑Agnostic Types
 
-Used in [info files](#TODO). Each type is an object with a `"type"` key. Possible values correspond to `ParseType` in `enums.py`. Letting `<T>` represent a nested language-agnostic type, language-agnostic types are as follows.
+These types are used in `info.json` files to describe algorithm interfaces irrespective of programming language. Each type is a JSON object with a `"type"` key. The allowed values correspond to the `ParseType` enum in `enums.py`.
+
+### Basic structure
+
+Let `<T>` represent a nested language‑agnostic type.
 
 | Category   | Example                                         |
 |------------|-------------------------------------------------|
@@ -48,28 +104,37 @@ Used in [info files](#TODO). Each type is an object with a `"type"` key. Possibl
 | Collection | `{ "type": "array", "items": <T> }`             |
 | Map        | `{ "type": "map", "keys": <T>, "values": <T> }` |
 
-Allowed primitives: `int`, `long`, `float`, `boolean`, `string`  
-Allowed collections: `array`, `list`, `immutable_list`, `set`  
+**Allowed primitives:** `int`, `long`, `float`, `boolean`, `string`  
+**Allowed collection kinds:** `array`, `list`, `immutable_list`, `set`
 
+> The distinction between `array`, `list`, and `immutable_list` is only relevant for languages that differentiate them (e.g., Python’s `list` vs `tuple`). Test runners should map them to the most natural mutable/immutable sequence type.
 
-### Writing an Algorithm Solution File
-This section covers how to create a solution file for an algorithm in a particular language. 
+---
 
-#### Motivation
-Solution files enable users to use the `solution` command when the practicing the algorithm in that language, which loads the solution into their practice file. They also make the program more robust, since the app-level tests check that all solutions pass their corresponding (generated) tests.
+## Writing an Algorithm Solution File
 
-> **Before you start**  
-> Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](#TODO))
+This section explains how to create a solution file for a specific algorithm in a given language.
 
-Pick a supported language. Let `<extension>` be the file extension for that language (e.g., `.py`).
+### Motivation
 
-- **If the algorithm is specific** (e.g., DFS):  
+Solution files enable the `solution` command. When a user practices an algorithm, they can load the official solution into their working file. Additionally, app‑level tests verify that every solution passes its generated tests, ensuring correctness across language implementations.
+
+### Before you start
+
+Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
+
+### Steps
+
+Pick a supported language. Let `<extension>` be the file extension for that language (e.g., `.py` for Python).
+
+- **If the algorithm is specific** (i.e., it implements a more general algorithm, like DFS for `reachable`):  
   Path: `problems/<general_name>/<specific_name>/solution.<extension>`  
   Example: `problems/reachable/depth_first_search/solution.py`
 
-- **If the algorithm is not specific** (e.g., binary search):  
+- **If the algorithm is not specific** (i.e., it stands alone, like binary search):  
   Path: `problems/<specific_name>/solution.<extension>`  
   Example: `problems/binary_search/solution.py`
 
-Follow the [implementation requirements](USER_IMPLEMENTATION.md).  
-Once test generation is in place, run the [app tests](#TODO) to validate your solution – they will fail if your solution does not pass the user tests.
+Write the solution in the file specified by the above path, creating any files or directories necessary. Make sure to follow the [implementation requirements](USER_IMPLEMENTATION.md#TODO), and note that the solution method signature types must match the description in the corresponding `info.json` file.
+
+Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to validate your solution. They will fail if your solution does not pass the generated tests.

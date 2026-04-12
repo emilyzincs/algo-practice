@@ -46,7 +46,8 @@ def run_tests(
   cmd: list[str]|None
   match language:
     case Language.PYTHON:
-      cmd = ["python", test_runner_file, practice_file, info_file, test_file, fp.PROJECT_ROOT, debug]
+      cmd = ["python", test_runner_file, practice_file, 
+             info_file, test_file, fp.PROJECT_ROOT, debug]
     case Language.JAVA:
       cmd = java_get_test_command(
         practice_file_dir,
