@@ -296,15 +296,28 @@ public class Runner {
         yield set;
       }
       case MAP -> {
-        Map<?, ?> raw = (Map<?, ?>) val;
+        @SuppressWarnings("unchecked")
+        List<List<?>> keysAndValues = (List<List<?>>) val;
+        if (keysAndValues.size() != 2 || 
+            keysAndValues.get(0).size() != 
+            keysAndValues.get(1).size()) {
+          throw new IllegalArgumentException("Maps must be represented as two"
+            + " lists of equal length.");
+        }
+
+        List<?> keys = keysAndValues.get(0);
+        List<?> values = keysAndValues.get(1);
+        int n = keys.size();
         Map<Object, Object> map = new HashMap<>();
+
         @SuppressWarnings("unchecked")
         Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
         @SuppressWarnings("unchecked")
         Map<String, Object> valDef = (Map<String, Object>) def.get("values");
 
-        for (Object k : raw.keySet()) {
-          map.put(parseValue(k, keyDef), parseValue(raw.get(k), valDef));
+        for (int i = 0; i < n; i++) {
+          map.put(parseValue(keys.get(i), keyDef), 
+                  parseValue(values.get(i), valDef));
         }
         yield map;
       }

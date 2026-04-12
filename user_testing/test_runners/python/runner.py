@@ -120,12 +120,6 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
   validate_type(typ)
   curr_type: ParseType = member_from_string(ParseType, typ["type"])
 
-  if curr_type is not ParseType.STRING and isinstance(val, str):
-    try:
-      val = json.loads(val)
-    except json.JSONDecodeError:
-      raise Exception(f"Could not parse string as JSON: {val}.")
-
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return val
@@ -136,9 +130,13 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
     case ParseType.SET:
       return {parse_value(v, typ["items"]) for v in val}
     case ParseType.MAP:
+      if type(val) != list or len(val) != 2 or len(val[0]) != len(val[1]):
+        raise ValueError("Maps must be represented as two lists of equal length.")
+      keys, values = val
+      n = len(keys)
       return {
-        parse_value(k, typ["keys"]): parse_value(v, typ["values"])
-        for k, v in val.items()
+        parse_value(keys[i], typ["keys"]): parse_value(values[i], typ["values"])
+        for i in range(n)
       }
     case _:
       assert_never(curr_type)
