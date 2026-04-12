@@ -8,11 +8,15 @@ This document explains the core concepts and components of the project. It is in
   - [Table of Contents](#table-of-contents)
   - [Test Runners](#test-runners)
     - [Command-Line Arguments](#command-line-arguments)
+    - [General Structure](#general-structure)
   - [Info Files (`info.json`)](#info-files-infojson)
   - [Test Files (`test.json`)](#test-files-testjson)
-    - [Mapping language‑agnostic types to JSON](#mapping-languageagnostic-types-to-json)
   - [Language‑Agnostic Types](#languageagnostic-types)
     - [Basic structure](#basic-structure)
+  - [Language-Agnostic Types to Language Types](#language-agnostic-types-to-language-types)
+    - [JSON](#json)
+    - [Python](#python)
+    - [Java](#java)
   - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
     - [Motivation](#motivation)
     - [Steps](#steps)
@@ -39,7 +43,7 @@ Given a user's algorithm implementation, written in the target language, the tes
 
 ### Command-Line Arguments
 
-Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one CLI). However, some arguments should usually or pretty much always be include. They are shared below.
+Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one argument). However, some arguments should usually or pretty much always be include. They are shared below.
 
 | Variable | Description |
 |----------|-------------|
@@ -50,7 +54,14 @@ Test-runners must be passed the necessary command-line arguments to fulfill thei
 | `<debug>` | String that is either `"True"` or `"False"` indicating whether to print stacktraces/detailed error messages. |
 | `<required_class_name>` | The name the class containing the algorithm implementation must have. |
 | `<required_method_name>` | The name the method implementing the algorithm must have. |
-| `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings (e.g. `["int", "long", ...]`), serialized as a JSON string. This enables runners to check that their handled types are not outdated. |
+| `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings in order (e.g. `["int", "long", ...]`), serialized as a JSON string. This enables runners to check that their handled types are not outdated.
+
+### General Structure
+- Validates command-line arguments match the expected form.
+- Has own version of `ParseType` enum for static type safety.
+- Checks `ParseType` enum matches `<parse_types_list>` argument for runtime safety.
+- Has recursive function for parsing a value from JSON into a value in the target language by using a language-agnostic type.
+  - Statically typed languages 
 
 > **Tip:** Look at existing test runners (e.g., `test_runners/python/runner.py`) for a concrete example.
 
@@ -97,16 +108,6 @@ The file is a JSON **array** of test case objects. Each test case object has two
 
 The JSON representation of each input and the expected output must match the corresponding [language‑agnostic type](#languageagnostic-types) from the info file.
 
-### Mapping language‑agnostic types to JSON
-
-| language-agnostic type                   | JSON type  |
-|------------------------------------------|------------|
-| `int`, `long`, `float`                   | number     |
-| `boolean`                                | boolean    |
-| `string`                                 | string     |
-| `array`, `list`, `immutable_list`, `set` | Array      |
-| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values) |
-
 ---
 
 ## Language‑Agnostic Types
@@ -124,9 +125,55 @@ Let `<T>` represent a nested language‑agnostic type.
 | Map        | `{ "type": "map", "keys": <T>, "values": <T> }` |
 
 **Allowed primitives:** `int`, `long`, `float`, `boolean`, `string`  
-**Allowed collection kinds:** `array`, `list`, `immutable_list`, `set`
+**Allowed collections:** `array`, `list`, `immutable_list`, `set`
 
 > The distinction between `array`, `list`, and `immutable_list` is only relevant for languages that differentiate them (e.g., Python’s `list` vs `tuple`). Test runners should map them to the most natural mutable/immutable sequence type.
+
+---
+
+## Language-Agnostic Types to Language Types
+
+### JSON
+
+| Language-Agnostic Type                   | Language Type  |
+|------------------------------------------|------------|
+| `int`, `long`, `float`                   | number     |
+| `boolean`                                | boolean    |
+| `string`                                 | string     |
+| `array`, `list`, `immutable_list`, `set` | Array      |
+| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values) |
+
+### Python
+
+| Language-Agnostic Type                   | Language Type|
+|------------------------------------------|------------|
+| `int`, `long`                            | int        |
+| `float`                                  | float      |
+| `boolean`                                | bool       |
+| `string`                                 | str        |
+| `array`, `list`                          | list       |
+| `immutable_list`                         | tuple      |
+| `set`                                    | set        |
+| `map`                                    | dict       |
+
+### Java
+
+| Language-Agnostic Type                   | Language Type  |
+|------------------------------------------|------------|
+| `int`                                    | int        |
+| `long`                                   | long       |
+| `float`                                  | double     |
+| `boolean`                                | boolean    |
+| `string`                                 | string     |
+| `array`, `immutable_list`                | Array      |
+| `list`                                   | List       |
+| `set`                                    | Set        |
+| `map`                                    | Map        |
+
+>Note: If a primitive appears in a non-array language-agnostic collection type, then its Java type will be boxed to an object. For example, below, the language-agnostic `"int"` corresponds to Java `Integer`.
+```
+{ "type": "list", "items": { "type": "int" } } <-> List<Integer>
+```
 
 ---
 
@@ -153,6 +200,6 @@ Pick a supported language. Let `<extension>` be the file extension for that lang
   Path: `problems/<specific_name>/solution.<extension>`  
   Example: `problems/binary_search/solution.py`
 
-Write the solution in the file specified by the above path, creating any files or directories necessary. Make sure to follow the [implementation requirements](USER_IMPLEMENTATION.md#TODO), and note that the solution method signature types must match the description in the corresponding `info.json` file.
+Write the solution in the file specified by the above path, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](USER_IMPLEMENTATION.md#TODO), and note that the solution method signature types must match the description in the corresponding `info.json` file.
 
 Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to validate your solution. They will fail if your solution does not pass the generated tests.
