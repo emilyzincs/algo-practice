@@ -2,13 +2,12 @@
 
 This document explains the core concepts and components of the project. It is intended for contributors who need to understand the architecture before adding algorithms, languages, or tests.
 
-> **Note**  
-> Placeholder links marked `#TODO` will be replaced with actual anchors once the full documentation is assembled.
 
 ## Table of Contents
 - [Developer Documentation](#developer-documentation)
   - [Table of Contents](#table-of-contents)
   - [Test Runners](#test-runners)
+    - [Command-Line Arguments](#command-line-arguments)
   - [Info Files (`info.json`)](#info-files-infojson)
   - [Test Files (`test.json`)](#test-files-testjson)
     - [Mapping language‑agnostic types to JSON](#mapping-languageagnostic-types-to-json)
@@ -16,24 +15,44 @@ This document explains the core concepts and components of the project. It is in
     - [Basic structure](#basic-structure)
   - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
     - [Motivation](#motivation)
-    - [Before you start](#before-you-start)
     - [Steps](#steps)
 
 ---
 
 ## Test Runners
 
-A **test runner** is the core of a language implementation. Each supported language has exactly one test runner – an executable script (or compiled program) that:
+A **test-runner** is the core of a language implementation. It is an executable that runs algorithm tests for a language, placed in `test_runners/<language>/`. 
 
-1. Reads a **test file** (`test.json`) and its corresponding **info file** (`info.json`).
-2. Parses each test case from the JSON into concrete values of the target language (using the language‑agnostic type definitions).
-3. Calls the user’s implementation of the algorithm with those concrete inputs.
-4. Compares the actual output to the expected output.
-5. Prints a message and exits with:
+The runner should typically be written in the target language itself, but under certain circumstances, it may be advantageous in to write it in a scripting language (e.g., Python) that invokes the target language’s toolchain.
+
+**Required behavior:**
+
+Given a user's algorithm implementation, written in the target language, the test-runner:
+1. Reads the algorithm's [test file](#TODO) and [info file](#todo).
+2. Parses each test case in the test file from JSON into **concrete** values of the target language (using the [type definitions](#TODO) in the info file).
+3. Calls the user’s algorithm implementation with those concrete inputs.
+4. Compares the **actual** output to the **expected** output.
+5. Raises an **error** if any previous step fails.
+6. Prints a message and exits with:
    - **Exit code 0** if all tests pass.
    - **Non‑zero exit code** if any test fails (along with an error message).
 
-The test runner is invoked by the main testing framework. To add a new language, you must implement its test runner (see [Adding a Language](language-addition.md#TODO)).
+### Command-Line Arguments
+
+Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one CLI). However, some arguments should usually or pretty much always be include. They are shared below.
+
+| Variable | Description |
+|----------|-------------|
+| `<practice_file>` | Path to the user’s implementation file for the current algorithm in the current language. |
+| `<info_file>` | Path to the `info.json` file for the current algorithm. |
+| `<test_file>` | Path to the `test.json` file for the current algorithm. |
+| `<PROJECT_ROOT>` | Path to the project root. |
+| `<debug>` | String that is either `"True"` or `"False"` indicating whether to print stacktraces/detailed error messages. |
+| `<required_class_name>` | The name the class containing the algorithm implementation must have. |
+| `<required_method_name>` | The name the method implementing the algorithm must have. |
+| `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings (e.g. `["int", "long", ...]`), serialized as a JSON string. This enables runners to check that their handled types are not outdated. |
+
+> **Tip:** Look at existing test runners (e.g., `test_runners/python/runner.py`) for a concrete example.
 
 ---
 
@@ -119,9 +138,8 @@ This section explains how to create a solution file for a specific algorithm in 
 
 Solution files enable the `solution` command. When a user practices an algorithm, they can load the official solution into their working file. Additionally, app‑level tests verify that every solution passes its generated tests, ensuring correctness across language implementations.
 
-### Before you start
-
-Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
+>**Before you start**
+>Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
 
 ### Steps
 

@@ -77,6 +77,6 @@ The program will automatically use this generator to create exhaustive test case
 
 ### 4. Write solution files (optional but recommended)
 
-Once the algorithm is registered and tests exist, you can add a solution for any supported language. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+Once the algorithm is registered and tests exist, you can add a solution for the algorithm in any supported language. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
 After adding at least one solution, run the app tests to verify correctness.
