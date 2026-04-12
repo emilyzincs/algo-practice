@@ -20,6 +20,10 @@ This document explains the core concepts and components of the project. It is in
   - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
     - [Motivation](#motivation)
     - [Steps](#steps)
+  - [App Tests](#app-tests)
+    - [Running the tests](#running-the-tests)
+      - [Additional arguments](#additional-arguments)
+    - [Auxiliary Files](#auxiliary-files)
 
 ---
 
@@ -203,3 +207,32 @@ Pick a supported language. Let `<extension>` be the file extension for that lang
 Write the solution in the file specified by the above path, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](USER_IMPLEMENTATION.md#TODO), and note that the solution method signature types must match the description in the corresponding `info.json` file.
 
 Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to validate your solution. They will fail if your solution does not pass the generated tests.
+
+---
+
+## App Tests
+
+The app tests are the files at the top level of the `app_tests` folder whose names start with `test_`. 
+
+### Running the tests
+The script used to run the app tests is `test.py`, located in the project root. To run all the tests, navigate to the project root in the terminal and enter
+```
+python test.py
+```
+
+#### Additional arguments
+| Argument  | Description                                                                                          |
+|------------|------------------------------------------------------------------------------------------------------|
+| `test`     | A specific test to run. This is the name of a test file, but without the `test_` prefix or the language extension.  E.g., `boilerplate` instead of `test_boilerplate.py`. |
+| `language` | The language to test, for tests that depend on language. If not specified, all languages are tested. |
+| `alg`      | The algorithm to test, for tests that run specific algorithms. If not specified, all algorithms are tested. |
+| `num`      | The `num`th set of files to test, for tests that use the files in `app_tests/json_files`. See [TODO]() for more details. If not specified, all files are tested.                                                                            |
+| `debug`    | String that is `"true"` or `"false"` indicating whether stacktraces and detailed error messages should be printed. |
+
+For example, to test the Java boilerplate generation for the 14th pair of JSON files, run
+```
+python test.py --test boilerplate --num 14  --language Java
+```
+from the project root. Note the order of the additional arguments does not matter.
+
+### Auxiliary Files
