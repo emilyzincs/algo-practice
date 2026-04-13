@@ -75,6 +75,8 @@ class TestBoilerplate(parent):
       info["input_types"],
       info["expected_type"],
       " " * settings["tab_size"]["value"],
+      language.comment_symbol,
+      "Test",
       (
         SOLUTION_CLASS_NAME if not required_class_name_prefix 
         else f"{required_class_name_prefix}{test_number}"

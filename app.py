@@ -22,7 +22,8 @@ from util.enums import (
   SpecificAlgorithm,
   GeneralAlgorithm,
   member_from_string,
-  SPECIFIC_ALG_TO_GENERAL
+  SPECIFIC_ALG_TO_GENERAL,
+  specific_alg_to_string
 )
 
 
@@ -122,11 +123,12 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_file_path = fp.specific_alg_to_test_path(alg)
   if os.path.exists(test_file_path):
     return
-  print(f"Generating {member_to_string(alg)} tests...")
+  alg_name = specific_alg_to_string(alg)
+  print(f"Generating {alg_name} tests...")
   test_generator_path = fp.get_test_generator_path(alg)
   if not os.path.exists(test_generator_path):
-    raise RuntimeError(f"Tests for {member_to_string(alg)} do not exist (path: {test_file_path})" +
-                       f" and test_generator for {member_to_string(alg)} does not exist" +
+    raise RuntimeError(f"Tests for {alg_name} do not exist (path: {test_file_path})" +
+                       f" and test_generator for {alg_name} does not exist" +
                        f" (path: {test_generator_path})")
   try:
     module: ModuleType = load_module_from_path("generate", test_generator_path)
@@ -139,7 +141,7 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   try:
     generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
   except AttributeError:
-    raise AttributeError(f"Test generator class for {member_to_string(alg)} must" +
+    raise AttributeError(f"Test generator class for {alg_name} must" +
                          f" be named {generator_class_name} in {test_generator_path}.")
   
   generator_class().generate_tests()
@@ -150,8 +152,9 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
   info_file = fp.specific_alg_to_info_path(alg)
+  alg_name = specific_alg_to_string(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
-    f.write(get_starting_practice_text(info_file))
+    f.write(get_starting_practice_text(alg_name, info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
 
@@ -162,7 +165,7 @@ def reset_practice_file(alg: SpecificAlgorithm) -> None:
 # - RuntimeError if the given path does not correspond to a file.
 # - Exception if the given path does not end in '.json'.
 # - json.JSONDecodeError if the corresponding file does not hold valid JSON.
-def get_starting_practice_text(info_file_path: str) -> str:
+def get_starting_practice_text(alg_name: str, info_file_path: str) -> str:
   if not os.path.exists(info_file_path):
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
   data = read_json(info_file_path)
@@ -171,7 +174,7 @@ def get_starting_practice_text(info_file_path: str) -> str:
     parameter_info_line = LANGUAGE.comment_symbol + " Parameters: " + ", ".join(parameter_names) + "."
     return (LANGUAGE.comment_symbol + 
           f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
-          + parameter_info_line)
+          + f"{LANGUAGE.comment_symbol} Algorithm: {alg_name}.\n" + parameter_info_line)
   else:
     input_types = data["input_types"]
     expected_type = data["expected_type"]
@@ -182,6 +185,8 @@ def get_starting_practice_text(info_file_path: str) -> str:
       input_types, 
       expected_type, 
       one_indent,
+      LANGUAGE.comment_symbol,
+      alg_name,
       SOLUTION_CLASS_NAME,
       SOLUTION_FUNCTION_NAME,
       LANGUAGE

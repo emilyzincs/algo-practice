@@ -11,7 +11,6 @@ class PythonBp(BpInterface):
   def get_start(self) -> str:
     return ""
   
-
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
     return ""

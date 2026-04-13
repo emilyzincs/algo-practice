@@ -12,7 +12,7 @@ class JavaBp(BpInterface):
 
   @override
   def get_start(self) -> str:
-    return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
+    return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n"
   
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
@@ -20,8 +20,6 @@ class JavaBp(BpInterface):
     for t in [ParseType.LIST, ParseType.SET, ParseType.MAP]:
       if t in included_types:
         imports += f"import java.util.{member_to_string(t).capitalize()};\n"
-    if imports:
-      imports += "\n"
     return imports 
 
   @override

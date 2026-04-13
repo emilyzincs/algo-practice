@@ -97,6 +97,7 @@ def handle_commands(
           case _:
             raise UnhandledCaseError(user_input[0], "setting")          
       dump_json(settings_path, settings)
+      refresh_settings_func()
       print(f"Successfully set {setting} to {settings[setting]["value"]}.")
     elif is_info:
       print(f"{user_input[1]}: {settings[user_input[1]]["info"]}")

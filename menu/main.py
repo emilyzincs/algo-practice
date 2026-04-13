@@ -15,7 +15,8 @@ from util.enums import (
   Language,
   member_name_list,
   member_from_string,
-  member_to_string
+  member_to_string,
+  specific_alg_to_string
 )
 
 
@@ -92,18 +93,20 @@ def handle_commands(
     elif input_is_input_alg or input_is_alg_id:
       alg: SpecificAlgorithm = (
         INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-      else list(SpecificAlgorithm)[int(user_input)]
+        else list(SpecificAlgorithm)[int(user_input)]
       )
-      print(f"Starting {member_to_string(alg)} practice.")
+      alg_name = specific_alg_to_string(alg)
+
+      print(f"Starting {alg_name} practice.")
       seconds_spent = handle_practice_func(alg)
       if seconds_spent is not None:
         minutes = round(seconds_spent // 60)
         seconds = seconds_spent % 60
         if minutes == 0:
-          print(f"Successfully completed {member_to_string(alg)} in {seconds_spent:.2f} seconds!")
+          print(f"Successfully completed {alg_name} in {seconds_spent:.2f} seconds!")
         else:
           seconds = int(seconds)
-          print(f"Successfully completed {member_to_string(alg)} in {minutes}m" +
+          print(f"Successfully completed {alg_name} in {minutes}m" +
                 f" {seconds}s!")
     else:
       raise UnhandledCaseError(user_input, "input")

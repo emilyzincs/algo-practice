@@ -1,5 +1,6 @@
 package app_tests.language.java.boilerplate_files;
 
+// Algorithm: Test.
 public class Bp6 {
   public static String solve(String s, long l) {
     
