@@ -10,6 +10,11 @@ def member_to_string(member: E) -> str:
   return member.name.lower()
 
 
+# E.g. SpecificAlgorithm.BINARY_SEARCH -> "Binary Search".
+def member_to_capitalized_words(member: E) -> str:
+  return " ".join([word.capitalize() for word in member.name.split("_")])
+
+
 # Returns a list of all enum member names in order in lowercase 
 # for the given enum.
 def member_name_list(enum: Type[E]) -> list[str]:

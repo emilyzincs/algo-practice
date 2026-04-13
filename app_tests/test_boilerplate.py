@@ -7,7 +7,7 @@ from app import settings
 from boilerplate.boilerplate import get_boilerplate_text
 from util.file_paths import PROJECT_ROOT, to_language_file_case
 from util.file_io import read_json
-from util.enums import Language, member_to_string
+from util.enums import Language, member_to_string, member_to_capitalized_words
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
 
 
@@ -68,13 +68,15 @@ class TestBoilerplate(parent):
     if res is None:
       return False
     info_path, boilerplate_file_path = res
-    print(f"\nRunning {member_to_string(language)} boilerplate test {test_number}:")
+    print(f"\nRunning {member_to_capitalized_words(language)} boilerplate test {test_number}:")
     info = read_json(info_path)
     boilerplate = get_boilerplate_text(
       info["parameter_names"],
       info["input_types"],
       info["expected_type"],
       " " * settings["tab_size"]["value"],
+      language.comment_symbol,
+      "Test",
       (
         SOLUTION_CLASS_NAME if not required_class_name_prefix 
         else f"{required_class_name_prefix}{test_number}"
@@ -113,7 +115,7 @@ class TestBoilerplate(parent):
         if not res:
           raise RuntimeError(f"Invalid test number: {self.num}.")
       else:
-        print("\n\nRUNNING " + member_to_string(language).upper() + " boilerplate TESTS.")
+        print("\n\nRUNNING " + member_to_capitalized_words(language) + " boilerplate TESTS.")
         i = 1
         while True:
           res = self.specific_test_boilerplate(

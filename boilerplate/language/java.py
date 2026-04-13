@@ -2,7 +2,7 @@ from typing import assert_never, Any, override
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
 
-from util.enums import ParseType, member_from_string, member_to_string
+from util.enums import ParseType, member_from_string, member_to_capitalized_words
 from util.file_paths import get_practice_file_dir, PROJECT_ROOT
 from user_testing.test_commands.java import path_to_package
 
@@ -12,16 +12,14 @@ class JavaBp(BpInterface):
 
   @override
   def get_start(self) -> str:
-    return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n\n"
+    return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n"
   
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
     imports = ""
     for t in [ParseType.LIST, ParseType.SET, ParseType.MAP]:
       if t in included_types:
-        imports += f"import java.util.{member_to_string(t).capitalize()};\n"
-    if imports:
-      imports += "\n"
+        imports += f"import java.util.{member_to_capitalized_words(t).capitalize()};\n"
     return imports 
 
   @override

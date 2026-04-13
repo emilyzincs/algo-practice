@@ -16,20 +16,6 @@ def load_module_from_path(module_name, file_path) -> ModuleType:
   return module
 
 
-# Converts a snake_case string to PascalCase.
-# Assumes the input is valid snake_case (lowercase letters, digits, and underscores only;
-# no leading/trailing underscores, no double underscores). Minimal validation ensures
-# no uppercase letters; otherwise trusts the caller.
-#
-# Parameters:
-# - string: The snake_case string to convert. Leading/trailing whitespace is stripped.
-def snake_to_pascal_case(string: str) -> str:
-  string = string.strip()
-  if string != string.lower():
-    raise ValueError(f"Not snake case: {string}.")
-  return "".join(word.capitalize() for word in string.split("_"))
-
-
 # Placeholder function that performs no operation and returns None.
 def no_op() -> None:
   pass

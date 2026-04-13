@@ -1,5 +1,6 @@
 package app_tests.language.java.boilerplate_files;
 
+// Algorithm: Test.
 public class Bp8 {
   public static String solve() {
     

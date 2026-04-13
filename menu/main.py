@@ -15,7 +15,7 @@ from util.enums import (
   Language,
   member_name_list,
   member_from_string,
-  member_to_string
+  member_to_capitalized_words
 )
 
 
@@ -72,7 +72,7 @@ def handle_commands(
       local_cmd: MainMenuCommand = member_from_string(MainMenuCommand, user_input)
       match local_cmd:
         case MainMenuCommand.LANG | MainMenuCommand.LANGUAGE:
-          print(f"The current language is {member_to_string(get_language_func())}.")
+          print(f"The current language is {member_to_capitalized_words(get_language_func())}.")
           input_message = responses[1]
         case MainMenuCommand.LANGS | MainMenuCommand.LANGUAGES:
           print_languages(member_name_list(Language))
@@ -92,18 +92,20 @@ def handle_commands(
     elif input_is_input_alg or input_is_alg_id:
       alg: SpecificAlgorithm = (
         INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-      else list(SpecificAlgorithm)[int(user_input)]
+        else list(SpecificAlgorithm)[int(user_input)]
       )
-      print(f"Starting {member_to_string(alg)} practice.")
+      alg_name = member_to_capitalized_words(alg)
+
+      print(f"Starting {alg_name} practice.")
       seconds_spent = handle_practice_func(alg)
       if seconds_spent is not None:
         minutes = round(seconds_spent // 60)
         seconds = seconds_spent % 60
         if minutes == 0:
-          print(f"Successfully completed {member_to_string(alg)} in {seconds_spent:.2f} seconds!")
+          print(f"Successfully completed {alg_name} in {seconds_spent:.2f} seconds!")
         else:
           seconds = int(seconds)
-          print(f"Successfully completed {member_to_string(alg)} in {minutes}m" +
+          print(f"Successfully completed {alg_name} in {minutes}m" +
                 f" {seconds}s!")
     else:
       raise UnhandledCaseError(user_input, "input")

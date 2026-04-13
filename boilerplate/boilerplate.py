@@ -1,6 +1,6 @@
 from util.file_paths import get_boilerplate_language_file_path
 from typing import assert_never, Any
-from util.enums import Language, ParseType, member_from_string, member_to_string
+from util.enums import Language, ParseType, member_from_string, member_to_capitalized_words
 from util.general import load_module_from_path
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
@@ -19,6 +19,9 @@ BP_LANG_INSTANCE: BpInterface
 # - input_types: Recursive language-agnostic representations of the types of
 #                the paremeters, in order
 # - expected_type: Recursive language-agnostic representation of the return type
+# - one_indent: The string to use as one indent (e.g. "  ")
+# - alg_name: The name of the algorithm this is boilerplate for
+# - comment_symbol: The line-level comment symbol for the current language (e.g. '#' for Python)
 # - solution_class_name: Name to use for the class
 # - solution_function_name: Name to use for the method that tests call
 # - language: The current program language
@@ -27,6 +30,8 @@ def get_boilerplate_text(
   input_types: list[dict[str, Any]],
   expected_type: dict[str, Any],
   one_indent: str,
+  comment_symbol: str,
+  alg_name: str,
   solution_class_name: str,
   solution_function_name: str,
   language: Language
@@ -40,7 +45,10 @@ def get_boilerplate_text(
   start = BP_LANG_INSTANCE.get_start()
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
-  class_declaration = BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent)
+  class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n"
+  class_declaration = (class_prefix + 
+          BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent))
+  
   method_declaration = BP_LANG_INSTANCE.get_method_declaration(
     solution_function_name,
     parameter_names, 
@@ -50,6 +58,11 @@ def get_boilerplate_text(
   )
 
   end = BP_LANG_INSTANCE.get_end(one_indent)
+
+  if start:
+    start += "\n"
+  if imports:
+    imports += "\n"
 
   ret = "".join([
     start,
@@ -67,7 +80,7 @@ def get_boilerplate_text(
 # - ImportError if loading the module containing the class fails
 # - TypeError if the class does not inherit from BpInterface
 def _set_bp_lang_class(lang: Language) -> None:
-  lang_class_name = member_to_string(lang).capitalize() + "Bp"
+  lang_class_name = member_to_capitalized_words(lang).replace(" ", "") + "Bp"
   path = get_boilerplate_language_file_path(lang)
 
   global BP_LANG_INSTANCE

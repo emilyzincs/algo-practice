@@ -10,7 +10,8 @@ from app_tests.base_test import BaseTest as parent
 from util.enums import (
   Language,
   member_to_string,
-  SpecificAlgorithm
+  SpecificAlgorithm,
+  member_to_capitalized_words
 )
 
 
@@ -69,7 +70,7 @@ class TestRunTests(parent):
       total_tests,
       required_class_name_prefix: Optional[str] = None,
   ) -> None:
-      print(f"\nRunning {member_to_string(language)} run_test test {test_number}:")
+      print(f"\nRunning {member_to_capitalized_words(language)} run_test test {test_number}:")
       info_path, test_path, practice_file_path = self.get_paths(
         info_path_prefix, 
         test_path_prefix, 
@@ -130,7 +131,7 @@ class TestRunTests(parent):
       elif self.alg is not None:
         return
       else: 
-        print("\n\nRUNNING " + member_to_string(language).upper() + " run_test TESTS.")
+        print("\n\nRUNNING " + member_to_capitalized_words(language) + " run_test TESTS.")
         for i in range(1, len(expected_values) + 1):
           self.specific_test_run_test(
             i,
@@ -173,7 +174,7 @@ class TestRunTests(parent):
     return info_path, test_path, practice_file_path
 
   def specific_test_solution(self, alg: SpecificAlgorithm, language: Language) -> None:
-    print(f"\nTesting {member_to_string(language)} solution for {member_to_string(alg)}.")
+    print(f"\nTesting {member_to_capitalized_words(language)} solution for {member_to_capitalized_words(alg)}.")
     solution_file_dir = get_solution_file_dir(alg)
     solution_file = get_solution_file_path(alg, language)
     self.assertEqual(True, os.path.exists(solution_file_dir), f"Path {solution_file_dir} does not exist.")
@@ -186,7 +187,7 @@ class TestRunTests(parent):
           patch(self.fp_base + "get_practice_file_path", 
                 return_value=solution_file)):
       result = run_tests(alg, language, self.do_debug)
-      error_msg = f"Solution for {member_to_string(alg)} in {member_to_string(language)} failed."
+      error_msg = f"Solution for {member_to_capitalized_words(alg)} in {member_to_capitalized_words(language)} failed."
       self.assertEqual(True, result, error_msg)
       print("Solution correct.")
 
@@ -202,7 +203,7 @@ class TestRunTests(parent):
     elif self.num is not None:
       return
     else:
-      print("\n\nRUNNING " + member_to_string(language).upper() + " ALGORITHM SOLUTION TESTS.")
+      print("\n\nRUNNING " + member_to_capitalized_words(language) + " ALGORITHM SOLUTION TESTS.")
       for alg in SpecificAlgorithm:
         self.specific_test_solution(alg, language)
       print("Done.")

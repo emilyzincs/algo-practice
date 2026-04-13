@@ -3,6 +3,7 @@ package app_tests.language.java.boilerplate_files;
 import java.util.List;
 import java.util.Set;
 
+// Algorithm: Test.
 public class Bp18 {
   public static List<Set<Boolean>[][][][]> solve(List<Set<Boolean>[][][][]> input) {
     
