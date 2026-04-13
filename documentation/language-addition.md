@@ -10,12 +10,12 @@ Let `<Language>` be the same name capitalized (e.g., `Java`).
 
 ### 1. Create a Test Runner
 
-The first and most important step in adding a new language is to create a test-runner for it. Details about test-runners can be found [here](#TODO), including implementation advice.
+The first and most important step in adding a new language is to create a test runner for it. Details about test runners can be found [here](#TODO), including implementation advice.
 
 
 ### 2. Update `run_tests` Function in `user_testing/test.py`
 
-This is how your new test-runner will be invoked. In the function's match statement, add a branch for `<language>` that constructs the appropriate command-line.
+This is how your new test runner will be invoked. In the function's match statement, add a branch for `<language>` that constructs the appropriate command-line.
 
 Example for Python:
 ```python
@@ -24,12 +24,12 @@ case Language.PYTHON:
            info_file, test_file, fp.PROJECT_ROOT, debug]
 ```
 
-You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command. Recall, some staple command-line arguments for test-runners are given [here](DEVELOPER.md#command-line-arguments).
+You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command. Recall, some staple command-line arguments for test runners are given [here](DEVELOPER.md#command-line-arguments).
 
 
-### 3. Update `boilerplate/<language>`
+### 3. Update `boilerplate/<language>/`
 
-Create a file named `<language>.py` inside the `boilerplate/language` directory. In it, define a class named `<Language>Bp` that extends `BpInterface` from `boilerplate/interface.py`. It must implement all abstract methods of `BpInterface`.
+Create a file named `<language>.py` inside the `boilerplate/language/` directory. In it, define a class named `<Language>Bp` (e.g. PythonBp) that extends `BpInterface` from `boilerplate/interface.py`. It must implement all abstract methods of `BpInterface`.
 
 This class is responsible for generating the initial boilerplate code when a user starts practicing an algorithm in the new language (if they have the `prepopulate_boilerplate` setting enabled, which is true by default).
 
@@ -47,22 +47,18 @@ public class Solution {
 }
 
 ```
-
-
-
-See existing implementations (e.g., `boilerplate/language/python.py`) for guidance.
+>**Tip**: See existing implementations for a concrete example of what to do.
 
 ### 4. Update App Tests
 
-The app tests ensure that boilerplate generation and test-runners work correctly. In the `app_tests/language/` directory, create a folder named `<language>`. Inside it, create two subdirectories:
+The app tests ensure that boilerplate generation and test runners work correctly. In the `app_tests/language/` directory, create a folder named `<language>`. Inside it, create two subdirectories:
 
 - `boilerplate_files/`
 - `solution_files/`
 
 Then fill them with the appropriate files, as specified by [here](#todo). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
 
->Note: The new tests will not run until after step five.
-
+>**Note**: The new tests will not run until after the next step.
 
 ### 5. Update `match` Statements in the Codebase
 
@@ -78,19 +74,16 @@ Replace `.<extension>` with the file extension (e.g., `.py` for Python) and `<co
 
 After adding the enum member, **use mypy (or your IDE’s type checker)** to find all `match` (or `switch`) statements that switch on `Language`. The type checker will complain about non‑exhaustive patterns. Update each one to handle your new language.
 
-#### Verification
-Once finished, you should be able to run the app tests to verify you did everything correctly. From the project root, run
-
-You should see that all tests pass. If not address the issues before continuing to the next step.
+>**Verification**: Once finished, you should be able to run the app tests to check you did everything correctly. You should see that all tests pass. If not address the issues before continuing to the next step.
 
 ### 6. Add Algorithm Solutions for the New Language
 
-This step is optional but recommended.
+This step is *optional* but **recommended**.
 
-Once the new language is fully integrated, you can add a solution in the language for any supported algorithm. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+At this point, you may add solutions in the language for any supported algorithms. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
-When you are done adding solutions, run the app tests to verify correctness.
+When you are done, run the app tests to verify correctness.
 
 ### 7. Update documentation
 
-As the last step, update all documentation to reflect that the new language was added.
+As the last step, update all documentation (the `README` and files in the `documentation/` directory) to reflect that the new language was added.

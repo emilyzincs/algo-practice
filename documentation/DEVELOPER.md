@@ -35,13 +35,13 @@ This document explains the core concepts and components of the project. It is in
 
 ## Test Runners
 
-A **test-runner** is the core of a language implementation. It is what runs the algorithm tests for a language.
+A **test runner** is the core of a language implementation. It is what runs the algorithm tests for a language.
 
-The test-runner for a language is placed in `test_runners/<language>/`, where `<language>` is the name of the language in snake-case. The runner should typically be written in the target language itself, but under certain circumstances, it may be advantageous to write it in a scripting language.
+The test runner for a language is placed in `test_runners/<language>/`, where `<language>` is the name of the language in snake-case. The runner should typically be written in the target language itself, but under certain circumstances, it may be advantageous to write it in a scripting language.
 
 **Required behavior:**
 
-Given a user's algorithm implementation, written in the target language, the test-runner:
+Given a user's algorithm implementation, written in the target language, the test runner:
 1. Reads the algorithm's [test file](#TODO) and [info file](#todo).
 2. Parses each test case in the test file from JSON into **concrete** values of the target language (using the [type definitions](#TODO) in the info file).
 3. Calls the user’s algorithm implementation with those concrete inputs.
@@ -53,7 +53,7 @@ Given a user's algorithm implementation, written in the target language, the tes
 
 ### Command-Line Arguments
 
-Test-runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test-runner requires class-paths as one argument). However, some arguments should usually or pretty much always be included. They are shared below.
+Test runners must be passed the necessary command-line arguments to fulfill their duty. These arguments vary by language (for example, the Java test runner requires class-paths as one argument). However, some arguments should usually or pretty much always be included. They are shared below.
 
 | Variable | Description |
 |----------|-------------|
