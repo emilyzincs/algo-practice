@@ -226,7 +226,7 @@ python test.py
 | Argument  | Description                                                                                          |
 |------------|------------------------------------------------------------------------------------------------------|
 | `test`     | A specific test to run. This is the name of a test file, but without the `test_` prefix or the language extension.  E.g., `boilerplate` instead of `test_boilerplate.py`. |
-| `language` | The language to test, for tests that depend on language. If not specified, all languages are tested. |
+| `lang` | The language to test, for tests that depend on language. If not specified, all languages are tested. |
 | `alg`      | The algorithm to test, for tests that run specific algorithms. If not specified, all algorithms are tested. |
 | `num`      | The `num`th set of files to test, for tests that use the files in `app_tests/json_files`. See [TODO]() for more details. If not specified, all files are tested.                                                                            |
 | `debug`    | String that is `"true"` or `"false"` indicating whether stacktraces and detailed error messages should be printed. |

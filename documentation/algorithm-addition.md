@@ -75,8 +75,13 @@ Inside it, create an `info.json` file. See [Info File Format](DEVELOPER.md#info-
 
 The program will automatically use this generator to create exhaustive test cases. Because these tests will be used to validate every implementation of the algorithm, **ensure the tests are as thorough as possible** (include edge cases, random inputs, and property‑based tests where applicable).
 
-### 4. Write solution files (optional but recommended)
+### 4. Write solution files
+This step is optional but recommended.
 
-Once the algorithm is registered and tests exist, you can add a solution for the algorithm in any supported language. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+Once the algorithm is fully integrated, you can add a solution for the algorithm in any supported language. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
-After adding at least one solution, run the app tests to verify correctness.
+When you are done adding solutions, run the app tests to verify correctness.
+
+### 5. Update documentation
+
+As the last step, update all documentation to reflect that the new algorithm was added.

@@ -59,7 +59,7 @@ The app tests ensure that boilerplate generation and test-runners work correctly
 - `boilerplate_files/`
 - `solution_files/`
 
-Then fill them with the appropriate files, as specified by [Auxiliary Files](#todo). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
+Then fill them with the appropriate files, as specified by [here](#todo). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
 
 >Note: The new tests will not run until after step five.
 
@@ -79,12 +79,18 @@ Replace `.<extension>` with the file extension (e.g., `.py` for Python) and `<co
 After adding the enum member, **use mypy (or your IDE’s type checker)** to find all `match` (or `switch`) statements that switch on `Language`. The type checker will complain about non‑exhaustive patterns. Update each one to handle your new language.
 
 #### Verification
-TODO
+Once finished, you should be able to run the app tests to verify you did everything correctly. From the project root, run
+
+You should see that all tests pass. If not address the issues before continuing to the next step.
 
 ### 6. Add Algorithm Solutions for the New Language
 
-After the language is fully integrated, you are encouraged to add solution files for existing algorithms. For each algorithm, create a solution file in the appropriate path:
+This step is optional but recommended.
 
-Once the language is registered and tests exist, you can add a solution in the language for any supported algorithm. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+Once the new language is fully integrated, you can add a solution in the language for any supported algorithm. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
-After adding at least one solution, run the app tests to verify correctness.
+When you are done adding solutions, run the app tests to verify correctness.
+
+### 7. Update documentation
+
+As the last step, update all documentation to reflect that the new language was added.
