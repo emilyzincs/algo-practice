@@ -10,7 +10,7 @@ Let `<Language>` be the same name capitalized (e.g., `Java`).
 
 ### 1. Create a Test Runner
 
-The first and most important step in adding a new language is to create a test runner for it. Details about test runners can be found [here](DEVELOPER.md#test-runners), including implementation advice.
+The first and most important step in adding a new language is to create a test runner for it. Details about test runners can be found in [Test Runners](DEVELOPER.md#test-runners), including implementation advice.
 
 
 ### 2. Update `run_tests` Function in `user_testing/test.py`
@@ -24,7 +24,7 @@ case Language.PYTHON:
            info_file, test_file, fp.PROJECT_ROOT, debug]
 ```
 
-You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command (this function is responsible for such compilations). Recall, some staple command-line arguments for test runners are given [here](DEVELOPER.md#command-line-arguments).
+You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command (this function is responsible for such compilations). Recall, some staple command-line arguments for test runners are given in [Command-Line Arguments](DEVELOPER.md#command-line-arguments).
 
 
 ### 3. Update `boilerplate/language/`
@@ -56,7 +56,7 @@ The app tests ensure that boilerplate generation and test runners work correctly
 - `boilerplate_files/`
 - `solution_files/`
 
-Then fill them with the appropriate files, as specified by [here](DEVELOPER.md#auxiliary-files). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
+Then fill them with the appropriate files, as specified in [Auxiliary Files](DEVELOPER.md#auxiliary-files). The exact cases can be copied and adapted from an existing language folder, once you understand their format and purpose.
 
 >**Note**: The new tests will not run until after the next step.
 

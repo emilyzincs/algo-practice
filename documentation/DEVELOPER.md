@@ -1,35 +1,32 @@
-# Developer Documentation
+# Developer Documentation <!-- omit from toc -->
 
-This document explains the core concepts and components of the project. It is intended for contributors who need to understand the architecture before adding algorithms, languages, or tests.
+This document explains the core concepts and components of the project.
 
-
-## Table of Contents
-- [Developer Documentation](#developer-documentation)
-  - [Table of Contents](#table-of-contents)
-  - [Test Runners](#test-runners)
-    - [Command-Line Arguments](#command-line-arguments)
-    - [Implementation Advice](#implementation-advice)
-  - [Info Files (`info.json`)](#info-files-infojson)
-  - [Test Files (`test.json`)](#test-files-testjson)
-  - [Language‑Agnostic Types](#languageagnostic-types)
-    - [Basic Structure](#basic-structure)
-  - [Language-Agnostic Types to Language Types](#language-agnostic-types-to-language-types)
-    - [JSON](#json)
-    - [Python](#python)
-    - [Java](#java)
-  - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
-    - [Motivation](#motivation)
-    - [Steps](#steps)
-      - [1. Choose Algorithm and Language](#1-choose-algorithm-and-language)
-      - [2. Get Path for Solution](#2-get-path-for-solution)
-      - [3. Write the Solution](#3-write-the-solution)
-      - [4. Validate the Solution](#4-validate-the-solution)
-  - [App Tests](#app-tests)
-    - [Running the Tests](#running-the-tests)
-      - [Additional Arguments](#additional-arguments)
-    - [Auxiliary Files](#auxiliary-files)
-      - [The `test_run_tests` Test](#the-test_run_tests-test)
-      - [The `test_boilerplate` Test](#the-test_boilerplate-test)
+## Table of Contents <!-- omit from toc -->
+- [Test Runners](#test-runners)
+  - [Command-Line Arguments](#command-line-arguments)
+  - [Implementation Advice](#implementation-advice)
+- [Info Files (`info.json`)](#info-files-infojson)
+- [Test Files (`test.json`)](#test-files-testjson)
+- [Language‑Agnostic Types](#languageagnostic-types)
+  - [Basic Structure](#basic-structure)
+- [Language-Agnostic Types to Language Types](#language-agnostic-types-to-language-types)
+  - [JSON](#json)
+  - [Python](#python)
+  - [Java](#java)
+- [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
+  - [Motivation](#motivation)
+  - [Steps](#steps)
+    - [1. Choose Algorithm and Language](#1-choose-algorithm-and-language)
+    - [2. Get Path for Solution](#2-get-path-for-solution)
+    - [3. Write the Solution](#3-write-the-solution)
+    - [4. Validate the Solution](#4-validate-the-solution)
+- [App Tests](#app-tests)
+  - [Running the Tests](#running-the-tests)
+    - [Additional Arguments](#additional-arguments)
+  - [Auxiliary Files](#auxiliary-files)
+    - [The `test_run_tests` Test](#the-test_run_tests-test)
+    - [The `test_boilerplate` Test](#the-test_boilerplate-test)
 
 ---
 
@@ -112,7 +109,7 @@ Each **general algorithm** also has exactly one `test.json` file, stored in the 
 The file is a JSON **array** of test case objects. Each test case object has two fields:
 
 - `"inputs"`: an array of input values (in the same order as `parameter_names` in the info file).
-- `"expected"`: the expected output value.
+- `"expected"`: the expected output value if `"unique_anser"` (above) is true, otherwise an array of all valid outputs.
 
 The JSON representation of each input and the expected output must match the corresponding [language‑agnostic type](#languageagnostic-types) from the info file.
 
@@ -133,7 +130,7 @@ Example mini `test.json` for binary search:
   }
 ]
 ```
->**Note**: Although the expected type is an `"int"`, recall from the `info.json` file that `"unique_answer"` is false. So, in `test.json` each `"expected"` value must hold the **list** of correct solutions.
+
 ---
 
 ## Language‑Agnostic Types
@@ -269,7 +266,11 @@ python test.py --test boilerplate --num 14 --lang java
 from the project root. Note the order of the additional arguments does not matter.
 
 ### Auxiliary Files
-The `app_tests/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
+The `app_tests/json_files` contains a number (let's say `N`) of test-info file pairs, named 
+- `test1.json, info1.json`, 
+- `test2.json, info2.json`, 
+- ⋮ 
+- `testN.json, infoN.json`.
 
 As hinted above, some tests make use of these files.
 

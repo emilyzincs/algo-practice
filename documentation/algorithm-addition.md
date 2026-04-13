@@ -59,7 +59,7 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
   }
   ```
 
->**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-write-solution-files). Otherwise, continue to step two.
+>**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-add-solutions-for-the-new-algorithm). Otherwise, continue to step two.
 
 ### 2. Create the General Algorithm Folder (if the General Algorithm is New)
 
