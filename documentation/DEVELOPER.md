@@ -42,8 +42,8 @@ The test runner for a language is placed in `test_runners/<language>/`, where `<
 **Required behavior:**
 
 Given a user's algorithm implementation, written in the target language, the test runner:
-1. Reads the algorithm's [test file](#TODO) and [info file](#todo).
-2. Parses each test case in the test file from JSON into **concrete** values of the target language (using the [type definitions](#TODO) in the info file).
+1. Reads the algorithm's [test file](#test-files-testjson) and [info file](#info-files-infojson).
+2. Parses each test case in the test file from JSON into **concrete** values of the target language (using the [type definitions](#languageagnostic-types) in the info file).
 3. Calls the user’s algorithm implementation with those concrete inputs.
 4. Compares the **actual** output to the **expected** output.
 5. Raises an **error** if any previous step fails.
@@ -85,7 +85,7 @@ The file is a JSON object with the following keys:
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `"unique_answer"` | boolean | Does this algorithm have exactly one correct solution per problem instance? (Used for certain test generation strategies.) |
+| `"unique_answer"` | boolean | Does this algorithm have exactly one correct solution per problem instance? When true, the algorithm must return the unique correct solution. When false, the algorithm may return any of the correct solutions. |
 | `"parameter_names"` | array of strings | Human‑readable names for the algorithm’s parameters, in order (e.g., `["graph", "start"]`). |
 | `"input_types"` | array of [language‑agnostic types](#languageagnostic-types) | The expected type of each parameter, in the same order. |
 | `"expected_type"` | [language‑agnostic type](#languageagnostic-types) | The return type of the algorithm. |
@@ -133,7 +133,7 @@ Example mini `test.json` for binary search:
   }
 ]
 ```
-
+>**Note**: Although the expected type is an `"int"`, recall from the `info.json` file that `"unique_answer"` is false. So, in `test.json` each `"expected"` value must hold the **list** of correct solutions.
 ---
 
 ## Language‑Agnostic Types
@@ -239,13 +239,13 @@ Write the solution in the file specified by the path from the previous step, (cr
 
 #### 4. Validate the solution
 
-Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to check your solution. They will fail if your solution does not pass the generated tests.
+Once test generation is implemented for that algorithm, you can run the [app tests](#app-tests) to check your solution. They will fail if your solution does not pass the generated tests.
 
 ---
 
 ## App Tests
 
-The app tests are the files at the top level of the `app_test/` directory with names that start with `test_`. 
+The app tests are the files at the top level of the `app_tests/` directory with names that start with `test_`. 
 
 ### Running the tests
 The script used to run the app tests is `test.py`, located in the project root. To run all the tests, navigate to the project root in the terminal and enter
@@ -264,12 +264,12 @@ python test.py
 
 For example, to test the Java boilerplate generation for the 14th pair of JSON files, run
 ```
-python test.py --test boilerplate --num 14 --lang Java
+python test.py --test boilerplate --num 14 --lang java
 ```
 from the project root. Note the order of the additional arguments does not matter.
 
 ### Auxiliary Files
-The `app_test/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
+The `app_tests/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
 
 As hinted above, some tests make use of these files.
 
@@ -279,20 +279,20 @@ This test checks that the `run_tests` function in `user_testing/test.py` accurat
 
 In addition to using the auxiliary files, it requires that for each language there is a directory 
 ```
-app_test/language/<language>/solution_files/
+app_tests/language/<language>/solution_files/
 ```
 containing the files `<sol>1.<extension>`, `<sol>2.<extension>`, ..., `<sol>N.<extension>`, where `<language>` is the language name in lowercase, `<sol>` is "sol" in the language's file-name-case (e.g., "Sol" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
 
 The `k`-th solution file should correctly implement the `k`-th pair of auxiliary files if the `k`-th entry of the `expected_values` list (one-indexed) in the `language_test_run_tests` function is `True`, otherwise it should not.
 
->**Implementation Tip**: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](TODO) for the language, and write the implementations starting from there.
+>**Implementation Tip**: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](#the-test_boilerplate-test) for the language, and write the implementations starting from there.
 
 #### The `test_boilerplate` test
 This test checks that the starting boilerplate text generation for practice files works correctly.
 
 In addition to using the auxiliary files, it requires that for each language there is a directory 
 ```
-app_test/language/<language>/boilerplate_files/
+app_tests/language/<language>/boilerplate_files/
 ```
 containing files `<bp>1.<extension>`, `<bp>2.<extension>`, ..., `<bp>N.<extension>`, where `<language>` is the language name in lowercase, `<bp>` is "bp" in the language's file-name-case (e.g., "Bp" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
 

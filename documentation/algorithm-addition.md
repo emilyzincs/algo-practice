@@ -1,5 +1,7 @@
 # Adding an Algorithm
 
+This guide explains how to add support for a new algorithm to the system. After completing these steps, users will be able to practice the algorithm in all supported languages.
+
 > **Before you start**  
 > Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](#concepts)).
 
@@ -57,7 +59,7 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
   }
   ```
 
->**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-write-solution-files-optional-but-recommended). Otherwise, continue to step two.
+>**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-write-solution-files). Otherwise, continue to step two.
 
 ### 2. Create the general algorithm folder (if the general algorithm is new)
 
