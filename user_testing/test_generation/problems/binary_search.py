@@ -154,5 +154,5 @@ class BinarySearchGenerator(BaseGenerator):
   def remove_redundant_cases(self, test_cases: list[tuple[tuple[int, ...], int]]
                              ) -> list[tuple[tuple[int, ...], int]]:
     test_cases = list(set(test_cases))
-    test_cases.sort(key=lambda x: len(x))
+    test_cases.sort(key=lambda x: len(x[0]))
     return test_cases

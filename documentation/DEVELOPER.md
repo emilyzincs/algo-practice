@@ -31,9 +31,9 @@ This document explains the core concepts and components of the project. It is in
 
 ## Test Runners
 
-A **test-runner** is the core of a language implementation. It is an executable that runs algorithm tests for a language, placed in `test_runners/<language>/`. 
+A **test-runner** is the core of a language implementation. It is what runs the algorithm tests for a language.
 
-The runner should typically be written in the target language itself, but under certain circumstances, it may be advantageous in to write it in a scripting language (e.g., Python) that invokes the target language’s toolchain.
+The test-runner for a language is placed in `test_runners/<language>/`, where `<language>` is the name of the language in snake-case. The runner should typically be written in the target language itself, but under certain circumstances, it may be advantageous to write it in a scripting language.
 
 **Required behavior:**
 
@@ -60,16 +60,16 @@ Test-runners must be passed the necessary command-line arguments to fulfill thei
 | `<debug>` | String that is either `"True"` or `"False"` indicating whether to print stacktraces/detailed error messages. |
 | `<required_class_name>` | The name the class containing the algorithm implementation must have. |
 | `<required_method_name>` | The name the method implementing the algorithm must have. |
-| `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings in order (e.g. `["int", "long", ...]`), serialized as a JSON string. This enables runners to check that their handled types are not outdated.
+| `<parse_types_list>` | The list of current language‑agnostic types the program supports as strings (e.g. `["int", "long", ...]`), serialized as a JSON string. The types must appear in the same order as in the `ParseType` enum. This enables runners to check that their handled types are not outdated.
 
 ### Implementation Advice
 - Use a JSON library to initially load the JSON files into concrete types.
 - Validate command-line arguments match the expected form.
-- Use a custom version of the `ParseType` enum for static type safety, and check that the `ParseType` enum matches `<parse_types_list>` argument for runtime safety.
+- Use a local version of the `ParseType` enum for static type safety, and check that this enum matches `<parse_types_list>` argument for runtime safety.
 - Create a recursive function for parsing the (initially loaded) test JSON items into values in the target language that match their language-agnostic type.
-- Potentially, add a function for parsing a language-agnostic type into a type in the target language. 
+- Potentially, add a function for parsing a language-agnostic type into a type in the target language. This is useful for reflection or generating the expected implementation method signature.
 
-> **Tip:** Look at existing test runners (e.g., `runner.py`) for concrete examples.
+> **Tip:** Look at existing test runners for concrete examples.
 
 ---
 
@@ -92,15 +92,13 @@ Example `info.json` for binary search:
   "unique_answer": false,
   "parameter_names": ["nums", "target"],
   "input_types": [
-    { "type": "array",
-      "items": { "type": "int" }
-    },
+    { "type": "array", "items": { "type": "int" } },
     { "type": "int" }
   ],
   "expected_type": { "type": "int" }
 }
 ```
-
+>**Note**: `"unique_answer"` is false for binary search due to possible duplicate target values.
 ---
 
 ## Test Files (`test.json`)
@@ -113,6 +111,11 @@ The file is a JSON **array** of test case objects. Each test case object has two
 - `"expected"`: the expected output value.
 
 The JSON representation of each input and the expected output must match the corresponding [language‑agnostic type](#languageagnostic-types) from the info file.
+
+Example mini `test.json` for binary search:
+```json
+
+```
 
 ---
 

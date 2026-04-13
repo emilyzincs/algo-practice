@@ -97,5 +97,5 @@ class SortGenerator(BaseGenerator):
   # Removes duplicate test cases and sorts them by array length.
   def remove_redundant_cases(self, test_cases):
     test_cases = list(set(test_cases))
-    test_cases.sort(key=lambda x: len(x))
+    test_cases.sort(key=lambda x: len(x[0]))
     return test_cases
