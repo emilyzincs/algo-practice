@@ -20,6 +20,10 @@ This document explains the core concepts and components of the project. It is in
   - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
     - [Motivation](#motivation)
     - [Steps](#steps)
+      - [1. Choose algorithm and language](#1-choose-algorithm-and-language)
+      - [2. Get path for solution](#2-get-path-for-solution)
+      - [3. Write the solution](#3-write-the-solution)
+      - [4. Validate the solution](#4-validate-the-solution)
   - [App Tests](#app-tests)
     - [Running the tests](#running-the-tests)
       - [Additional arguments](#additional-arguments)
@@ -114,7 +118,20 @@ The JSON representation of each input and the expected output must match the cor
 
 Example mini `test.json` for binary search:
 ```json
-
+[
+  {
+    "inputs": [[1], 1],
+    "expected": [0]
+  },
+  {
+    "inputs": [[-1,5], -2],
+    "expected": [-1]
+  },
+  {
+    "inputs": [[1,3,3], 3],
+    "expected": [1,2]
+  }
+]
 ```
 
 ---
@@ -129,7 +146,7 @@ Let `<T>` represent a nested language‑agnostic type.
 
 | Category   | Example                                         |
 |------------|-------------------------------------------------|
-| Primitive  | `{ "type": "int" }`, `{ "type": "string" }`     |
+| Primitive  | `{ "type": "int" }`                             |
 | Collection | `{ "type": "array", "items": <T> }`             |
 | Map        | `{ "type": "map", "keys": <T>, "values": <T> }` |
 
@@ -150,7 +167,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
 | `array`, `list`, `immutable_list`, `set` | Array      |
-| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values) |
+| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values). This is done to allow arbitrary hashable types as keys (not just strings) |
 
 ### Python
 
@@ -179,7 +196,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | `set`                                    | Set        |
 | `map`                                    | Map        |
 
->Note: If a primitive appears in a non-array language-agnostic collection type, then its Java type will be boxed to an object. For example, below, the language-agnostic `"int"` corresponds to Java `Integer`.
+>**Note**: If a primitive appears in a non-array language-agnostic collection type, then its Java type will be boxed to an object. For example, below, the language-agnostic type `"int"` maps to the Java object `Integer`, since "int" is in "list".
 ```
 { "type": "list", "items": { "type": "int" } } <-> List<Integer>
 ```
@@ -199,25 +216,36 @@ Solution files enable the `solution` command. When a user practices an algorithm
 
 ### Steps
 
-Pick a supported language. Let `<extension>` be the file extension for that language (e.g., `.py` for Python).
+#### 1. Choose algorithm and language 
+Pick a specific algorithm to write the solution for, and a supported language to write the solution in.
+
+#### 2. Get path for solution
+
+Let `<extension>` be the file extension for the language (e.g., `.py` for Python).
+Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution` for Java),
 
 - **If the algorithm is specific** (i.e., it implements a more general algorithm, like DFS for `reachable`):  
-  Path: `problems/<general_name>/<specific_name>/solution.<extension>`  
+  Path: `problems/<general_name>/<specific_name>/<solution>.<extension>`  
   Example: `problems/reachable/depth_first_search/solution.py`
 
 - **If the algorithm is not specific** (i.e., it stands alone, like binary search):  
-  Path: `problems/<specific_name>/solution.<extension>`  
-  Example: `problems/binary_search/solution.py`
+  Path: `problems/<specific_name>/<solution>.<extension>`  
+  Example: `problems/binary_search/Solution.java`
 
-Write the solution in the file specified by the above path, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](USER_IMPLEMENTATION.md#TODO), and note that the solution method signature types must match the description in the corresponding `info.json` file.
+#### 3. Write the solution
 
-Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to validate your solution. They will fail if your solution does not pass the generated tests.
+Write the solution in the file specified by the path from the previous step, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](user-implementation.md), and note that the solution method signature types must match the description in the corresponding `info.json` file.
+
+
+#### 4. Validate the solution
+
+Once test generation is implemented for that algorithm, you can run the [app tests](#TODO) to check your solution. They will fail if your solution does not pass the generated tests.
 
 ---
 
 ## App Tests
 
-The app tests are the files at the top level of the `app_tests` folder whose names start with `test_`. 
+The app tests are the files at the top level of the `app_test/` directory with names that start with `test_`. 
 
 ### Running the tests
 The script used to run the app tests is `test.py`, located in the project root. To run all the tests, navigate to the project root in the terminal and enter
@@ -228,20 +256,20 @@ python test.py
 #### Additional arguments
 | Argument  | Description                                                                                          |
 |------------|------------------------------------------------------------------------------------------------------|
-| `test`     | A specific test to run. This is the name of a test file, but without the `test_` prefix or the language extension.  E.g., `boilerplate` instead of `test_boilerplate.py`. |
+| `test`     | A specific test to run. This is the name of a test file, but without the `test_` prefix or the file extension.  E.g., `boilerplate` instead of `test_boilerplate.py`. |
 | `lang` | The language to test, for tests that depend on language. If not specified, all languages are tested. |
 | `alg`      | The algorithm to test, for tests that run specific algorithms. If not specified, all algorithms are tested. |
-| `num`      | The `num`th set of files to test, for tests that use the files in `app_tests/json_files`. See [TODO]() for more details. If not specified, all files are tested.                                                                            |
+| `num`      | The `num`-th set of [auxiliary files](#auxiliary-files), for tests that use the auxiliary files. If not specified, all files are tested.                                                                            |
 | `debug`    | String that is `"true"` or `"false"` indicating whether stacktraces and detailed error messages should be printed. |
 
 For example, to test the Java boilerplate generation for the 14th pair of JSON files, run
 ```
-python test.py --test boilerplate --num 14 --language Java
+python test.py --test boilerplate --num 14 --lang Java
 ```
 from the project root. Note the order of the additional arguments does not matter.
 
 ### Auxiliary Files
-The `app_tests/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
+The `app_test/json_files` contains a number (lets say `N`) of test-info file pairs, named `test1.json, info1.json`, `test2.json, info2.json`, ..., `testN.json, infoN.json`.
 
 As hinted above, some tests make use of these files.
 
@@ -253,14 +281,14 @@ In addition to using the auxiliary files, it requires that for each language the
 ```
 app_test/language/<language>/solution_files/
 ```
-containing files `<sol>1.<extension>`, `<sol>2.<extension>`, ..., `<sol>N.<extension>`, where `<language>` is the language name in lowercase, `<sol>` is "sol" in the language's file-name-case (e.g., "Sol" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
+containing the files `<sol>1.<extension>`, `<sol>2.<extension>`, ..., `<sol>N.<extension>`, where `<language>` is the language name in lowercase, `<sol>` is "sol" in the language's file-name-case (e.g., "Sol" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
 
-The `k`th solution file should correctly implement the `k`th pair of auxiliary files if the `k`th entry of the `expected_values` list (one-indexed) in the `language_test_run_tests` function is `True`, otherwise it should not.
+The `k`-th solution file should correctly implement the `k`-th pair of auxiliary files if the `k`-th entry of the `expected_values` list (one-indexed) in the `language_test_run_tests` function is `True`, otherwise it should not.
 
->Implementation Tip: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](TODO) for the language, and write the implementations for there.
+>**Implementation Tip**: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](TODO) for the language, and write the implementations starting from there.
 
 #### The `test_boilerplate` test
-This test checks that the starting boilerplate text generation for practice files works correctly
+This test checks that the starting boilerplate text generation for practice files works correctly.
 
 In addition to using the auxiliary files, it requires that for each language there is a directory 
 ```
@@ -268,4 +296,4 @@ app_test/language/<language>/boilerplate_files/
 ```
 containing files `<bp>1.<extension>`, `<bp>2.<extension>`, ..., `<bp>N.<extension>`, where `<language>` is the language name in lowercase, `<bp>` is "bp" in the language's file-name-case (e.g., "Bp" in Java), and `<extension>` is the language's file extension (e.g., ".py" in Python).
 
-The `k`th boilerplate file must contain a character-perfect copy of the expected boilerplate for the `k`th pair of auxiliary files in the target language.
+The `k`-th boilerplate file must contain an exact copy of the expected boilerplate for the `k`-th pair of auxiliary files in the target language.

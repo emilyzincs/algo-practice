@@ -26,7 +26,7 @@ Currently, the project operates through a command-line interface with three menu
 | settings | For settings adjustment.                                 |
 
 **Main Loop**
-- Entering an algorithm ```<name>``` or  ```<ID>``` at the main menu begins practice for that algorithm, with a path to the practice file printed to the terminal (openable via cmd/ctrl+click in most editors). See [implementation requirements](/documentation/USER_IMPLEMENTATION.md) to see the specific form an implementation must match.
+- Entering an algorithm ```<name>``` or  ```<ID>``` at the main menu begins practice for that algorithm, with a path to the practice file printed to the terminal (openable via cmd/ctrl+click in most editors). See [implementation requirements](/documentation/user-implementation.md) to see the specific form an implementation must match.
 - Entering ```done``` then runs tests for the current implementation, which returns to the main menu and prints the time spent if all tests pass.
 - Entering ```quit``` from any menu at any time gracefully exits the program.  
 
