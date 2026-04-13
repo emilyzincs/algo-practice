@@ -84,6 +84,6 @@ At this point, you may add solutions in the language for any supported algorithm
 
 When you are done, run the app tests to verify correctness.
 
-### 7. Update documentation
+### 7. Update Documentation
 
 As the last step, update all documentation (the `README` and files in the `documentation/` directory) to reflect that the new language was added.

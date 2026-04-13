@@ -12,7 +12,7 @@ This document explains the core concepts and components of the project. It is in
   - [Info Files (`info.json`)](#info-files-infojson)
   - [Test Files (`test.json`)](#test-files-testjson)
   - [Language‑Agnostic Types](#languageagnostic-types)
-    - [Basic structure](#basic-structure)
+    - [Basic Structure](#basic-structure)
   - [Language-Agnostic Types to Language Types](#language-agnostic-types-to-language-types)
     - [JSON](#json)
     - [Python](#python)
@@ -20,16 +20,16 @@ This document explains the core concepts and components of the project. It is in
   - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
     - [Motivation](#motivation)
     - [Steps](#steps)
-      - [1. Choose algorithm and language](#1-choose-algorithm-and-language)
-      - [2. Get path for solution](#2-get-path-for-solution)
-      - [3. Write the solution](#3-write-the-solution)
-      - [4. Validate the solution](#4-validate-the-solution)
+      - [1. Choose Algorithm and Language](#1-choose-algorithm-and-language)
+      - [2. Get Path for Solution](#2-get-path-for-solution)
+      - [3. Write the Solution](#3-write-the-solution)
+      - [4. Validate the Solution](#4-validate-the-solution)
   - [App Tests](#app-tests)
-    - [Running the tests](#running-the-tests)
-      - [Additional arguments](#additional-arguments)
+    - [Running the Tests](#running-the-tests)
+      - [Additional Arguments](#additional-arguments)
     - [Auxiliary Files](#auxiliary-files)
-      - [The `test_run_tests` test](#the-test_run_tests-test)
-      - [The `test_boilerplate` test](#the-test_boilerplate-test)
+      - [The `test_run_tests` Test](#the-test_run_tests-test)
+      - [The `test_boilerplate` Test](#the-test_boilerplate-test)
 
 ---
 
@@ -140,7 +140,7 @@ Example mini `test.json` for binary search:
 
 These types are used in `info.json` files to describe algorithm interfaces irrespective of programming language. Each type is a JSON object with a `"type"` key. The allowed values correspond to the `ParseType` enum in `enums.py`.
 
-### Basic structure
+### Basic Structure
 
 Let `<T>` represent a nested language‑agnostic type.
 
@@ -216,10 +216,10 @@ Solution files enable the `solution` command. When a user practices an algorithm
 
 ### Steps
 
-#### 1. Choose algorithm and language 
+#### 1. Choose Algorithm and Language 
 Pick a specific algorithm to write the solution for, and a supported language to write the solution in.
 
-#### 2. Get path for solution
+#### 2. Get Path for Solution
 
 Let `<extension>` be the file extension for the language (e.g., `.py` for Python).
 Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution` for Java),
@@ -232,12 +232,12 @@ Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution
   Path: `problems/<specific_name>/<solution>.<extension>`  
   Example: `problems/binary_search/Solution.java`
 
-#### 3. Write the solution
+#### 3. Write the Solution
 
 Write the solution in the file specified by the path from the previous step, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](user-implementation.md), and note that the solution method signature types must match the description in the corresponding `info.json` file.
 
 
-#### 4. Validate the solution
+#### 4. Validate the Solution
 
 Once test generation is implemented for that algorithm, you can run the [app tests](#app-tests) to check your solution. They will fail if your solution does not pass the generated tests.
 
@@ -247,13 +247,13 @@ Once test generation is implemented for that algorithm, you can run the [app tes
 
 The app tests are the files at the top level of the `app_tests/` directory with names that start with `test_`. 
 
-### Running the tests
+### Running the Tests
 The script used to run the app tests is `test.py`, located in the project root. To run all the tests, navigate to the project root in the terminal and enter
 ```
 python test.py
 ```
 
-#### Additional arguments
+#### Additional Arguments
 | Argument  | Description                                                                                          |
 |------------|------------------------------------------------------------------------------------------------------|
 | `test`     | A specific test to run. This is the name of a test file, but without the `test_` prefix or the file extension.  E.g., `boilerplate` instead of `test_boilerplate.py`. |
@@ -273,7 +273,7 @@ The `app_tests/json_files` contains a number (lets say `N`) of test-info file pa
 
 As hinted above, some tests make use of these files.
 
-#### The `test_run_tests` test
+#### The `test_run_tests` Test
 
 This test checks that the `run_tests` function in `user_testing/test.py` accurately reports the correctness of implementations for the auxiliary files.
 
@@ -287,7 +287,7 @@ The `k`-th solution file should correctly implement the `k`-th pair of auxiliary
 
 >**Implementation Tip**: If you are adding a new language, copy and paste the `solution_files` folder of an already implemented language, and translate it into the new language. Alternatively, it may be faster to start with the [boilerplate files](#the-test_boilerplate-test) for the language, and write the implementations starting from there.
 
-#### The `test_boilerplate` test
+#### The `test_boilerplate` Test
 This test checks that the starting boilerplate text generation for practice files works correctly.
 
 In addition to using the auxiliary files, it requires that for each language there is a directory 

@@ -61,14 +61,14 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
 
 >**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-write-solution-files). Otherwise, continue to step two.
 
-### 2. Create the general algorithm folder (if the general algorithm is new)
+### 2. Create the General Algorithm Folder (if the General Algorithm is New)
 
 Inside the `problems/` directory, create a folder named `<general_name>` (e.g., `problems/reachable/`).  
 Inside it, create an `info.json` file. See [Info File](DEVELOPER.md#info-files-infojson) for the required structure.
 
 Do **not** create a `test.json` file. The next step will set up the ability to generate it, but the automatic generation will fail if the file already exists.
 
-### 3. Generate tests (if the general algorithm is new)
+### 3. Generate Tests (if the General Algorithm is New)
 
 - Go to `test_generation/problems/` and create a Python file named `<general_name>.py` (e.g., `reachable.py`).
 - Define a class named `<GeneralName>Generator` (PascalCase, e.g. ReachableGenerator) that extends `BaseGenerator` (imported from `base_generator`).
@@ -79,13 +79,13 @@ Do **not** create a `test.json` file. The next step will set up the ability to g
 
 The program will automatically use this generator to create exhaustive test cases. Because these tests will be used to validate every implementation of the algorithm, ensure the tests are **as thorough as possible** (include edge cases, random inputs, and property‑based tests where applicable).
 
-### 4. Write solution files
+### 4. Add Solutions for the New Algorithm
 This step is *optional* but **recommended**.
 
 At this point you may add solutions for the algorithm in any of the supported languages. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
 When you are done, run the app tests to verify correctness.
 
-### 5. Update documentation
+### 5. Update Documentation
 
 As the last step, update all documentation (the `README` and files in the `documentation/` directory) to reflect that the new algorithm was added.
