@@ -1,7 +1,0 @@
-package app_tests.java.boilerplate_files;
-
-public class Bp3 {
-  public static int solve(boolean b1, int i, boolean b2) {
-    
-  }
-}

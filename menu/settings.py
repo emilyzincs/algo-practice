@@ -31,7 +31,7 @@ def handle_commands(
   default_settings = read_json(default_settings_path)
   settings = read_json(settings_path)
   if not isinstance(default_settings, dict) or not isinstance(settings, dict):
-    raise ValueError("Settings and default settings must be represented as json dicts")
+    raise ValueError("Settings and default settings must be represented as json objects")
 
   while True:
     user_input = input("\nEnter a setting and new corresponding value" + 

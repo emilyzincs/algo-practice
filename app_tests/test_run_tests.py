@@ -35,7 +35,7 @@ class TestRunTests(parent):
   def run_language_tests(self, language: Language):
     practice_file_name_prefix = to_language_file_case("sol", language)
     required_class_name_prefix = None
-    practice_file_dir = os.path.join(get_abstract_test_dir(), 
+    practice_file_dir = os.path.join(get_abstract_test_dir(), "language",
                                      member_to_string(language), "solution_files")
     match language:
       case Language.PYTHON:
@@ -79,8 +79,8 @@ class TestRunTests(parent):
         total_tests
       )
       with (
-        patch(self.fp_base + "get_test_file_path", return_value=test_path),
-        patch(self.fp_base + "get_info_file_path", return_value=info_path),
+        patch(self.fp_base + "specific_alg_to_test_path", return_value=test_path),
+        patch(self.fp_base + "specific_alg_to_info_path", return_value=info_path),
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
@@ -108,9 +108,8 @@ class TestRunTests(parent):
       True, False, True, True, True, # 5
       True, True, False, True, False, # 10
       False, True, True, True,  True, # 15
-      False, True, True, True, True, # 20
-      True, True, True, False, True, # 25
-      False,
+      False, True, True, False, False, # 20
+      True
     ]
     total_tests = len(expected_values)
     info_path_prefix = self.get_info_path_prefix()

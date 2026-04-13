@@ -1,14 +1,39 @@
 [
   {
     "inputs": [
-      [1, 2, 3, null, null, 4]
+      [
+        [
+          [
+            [
+              [
+                [
+                  false, true
+                ],
+                [
+                  false
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
     ],
-    "expected": [3, 4]
-  },
-  {
-    "inputs": [
-      []
-    ],
-    "expected": []
+    "expected":  
+    [
+      [
+        [
+          [
+            [
+              [
+                false, true
+              ],
+              [
+                false
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
   }
 ]

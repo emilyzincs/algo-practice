@@ -1,0 +1,7 @@
+package app_tests.language.java.boilerplate_files;
+
+public class Bp12 {
+  public static long solve(double f, double[] a) {
+    
+  }
+}

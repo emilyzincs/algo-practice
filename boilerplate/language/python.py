@@ -14,9 +14,7 @@ class PythonBp(BpInterface):
 
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
-    return ("from __future__ import annotations\n" + "from typing import Optional\n\n"
-              if ParseType.LISTNODE in included_types or ParseType.TREENODE in included_types
-              else "")
+    return ""
 
   @override
   def get_class_declaration(self, class_name, one_indent) -> str:
@@ -60,38 +58,8 @@ class PythonBp(BpInterface):
       case ParseType.MAP:
         return (f"dict[{self.parse_type_string(typ["keys"])}," + 
               f" {self.parse_type_string(typ["values"])}]")
-      case ParseType.LISTNODE:
-        return "Optional[ListNode]"
-      case ParseType.TREENODE:
-        return "Optional[TreeNode]"
       case _:
         assert_never(curr_type)
-
-  @override
-  def list_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    base_indent = ""
-    return (
-      "\n\n" +
-      f"{base_indent}class ListNode:\n" +
-      f"{base_indent}{one_indent}def __init__(self, val: {val_type_string}," + 
-                                " next: Optional[ListNode]) -> None:\n" +
-      f"{base_indent}{one_indent * 2}self.val = val\n" +
-      f"{base_indent}{one_indent * 2}self.next = next\n"
-    )
-
-  @override
-  def tree_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    base_indent = ""
-    return (
-      "\n\n" +
-      f"{base_indent}class TreeNode:\n" +
-      f"{base_indent}{one_indent}def __init__(self, val: {val_type_string}," + 
-                                " left: Optional[TreeNode]," + 
-                                " right: Optional[TreeNode]) -> None:\n" +
-      f"{base_indent}{one_indent * 2}self.val = val\n" +
-      f"{base_indent}{one_indent * 2}self.left = left\n" + 
-      f"{base_indent}{one_indent * 2}self.right = right\n"
-    )
 
   @override
   def get_end(self, one_indent: str) -> str:

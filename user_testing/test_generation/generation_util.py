@@ -24,6 +24,20 @@ def rand_array(n: int, lo: int, hi: int) -> tuple[int, ...]:
   return tuple([random.randint(lo, hi) for _ in range(n)])
 
 
+# Creates a large array with duplicates, ranging from -10^4 to 10^4.
+#
+# Returns:
+#   A tuple of integers (unsorted).
+def rand_big_arr() -> tuple[int, ...]:
+  ret = []
+  for i in range(-(10**4), 10**4):
+    if rand_bool():
+      ret.append(i)
+      while rand_bool(0.2):
+        ret.append(i)
+  return tuple(ret)
+
+
 # Returns a random element from 'arr'.
 def rand_choice(arr):
   return random.choice(arr)
@@ -109,6 +123,22 @@ def rand_vertex(graph: list[list[int]]) -> int:
   return random.randint(0, n-1)
 
 
+# Generates a random graph and a random root vertex.
+#
+# Parameters:
+# - n: Number of vertices.
+# - directed: Whether the graph is directed.
+# - edge_prob: Probability of an edge existing between two vertices.
+#
+# Returns:
+#   A tuple (adjacency list, root vertex).
+def rand_graph_and_root(n: int, directed: bool, 
+                    edge_prob: float) -> tuple[list[list[int]], int]: 
+  graph = rand_graph(n, directed, edge_prob)
+  root = rand_vertex(graph)
+  return graph, root
+
+
 # Modifies the given 'graph' to ensure it is connected by 
 # adding edges between consecutive vertices.
 def connect_graph(graph: list[list[int]]) -> None:
@@ -121,33 +151,3 @@ def connect_graph(graph: list[list[int]]) -> None:
   if 0 not in graph[n-1]:
     graph[n-1].append(0)
 
-
-# Creates a test dictionary from inputs and expected output.
-#
-# Parameters:
-# - inputs: The test case inputs (any type).
-# - expected: The expected output.
-#
-# Returns:
-#   A dictionary with keys "inputs" and "expected".
-def make_test(inputs, expected):
-  return {
-      "inputs": inputs,
-      "expected": expected
-  }
-
-
-# Builds a list of tests by applying the oracle to each input case.
-#
-# Parameters:
-# - cases: A list of test case inputs.
-# - oracle: A function that takes the inputs and returns the expected output.
-#
-# Returns:
-#   A list of test dictionaries (as created by make_test).
-def make_tests(cases, oracle):
-  tests = []
-  for inputs in cases:
-    expected = oracle(*inputs)
-    tests.append(make_test(inputs, expected))
-  return tests

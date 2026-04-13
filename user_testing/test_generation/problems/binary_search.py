@@ -1,121 +1,11 @@
 import user_testing.test_generation.generation_util as util
-from user_testing.test_generation.base_generator import BaseGenerator as parent
-from util.enums import SpecificAlgorithm
+from user_testing.test_generation.base_generator import BaseGenerator
+from util.enums import GeneralAlgorithm
 from typing import override
 
 
-# Returns the list of indices where target appears in arr, or [-1] if not found.
-#
-# Parameters:
-# - arr: List of integers to search.
-# - target: Integer to find.
-#
-# Returns:
-#   List of indices (sorted) or [-1].
-def oracle(arr: tuple[int, ...], target: int) -> list[int]:
-  inds = [i for i, num in enumerate(arr) if num == target]
-  if not inds:
-    inds.append(-1)
-  return inds
-
-
-# Returns a list of edge case test inputs for binary search.
-#
-# Returns:
-#   List of (array, target) tuples covering empty array, single element,
-#   missing values, and boundaries.
-def get_edge_cases() -> list[tuple[tuple[int, ...], int]]:
-  return [
-    ((1,), 0),
-    ((1,), 1),
-    ((1,), 2),
-    ((1,3), 1),
-    ((1,3), 3),
-    ((1,3), 2),
-    ((-1,5), -2),
-    ((-1,5), 6),
-    (tuple(), -1),
-    (tuple(), 5)
-  ]
-
-
-# Generates a random sorted array and a target that may or may not be present.
-#
-# Parameters:
-# - n: Length of the array.
-# - lo: Minimum value for array elements.
-# - hi: Maximum value for array elements.
-#
-# Returns:
-#   A tuple (sorted list, target).
-def get_random_case(n: int, lo: int, hi: int) -> tuple[tuple[int, ...], int]:
-  arr = sorted(util.rand_array(n, lo, hi))
-  target = util.pick_target(arr)
-  return tuple(arr), target
-
-
-# Appends a specified number of random test cases to the given list.
-#
-# Parameters:
-# - test_cases: List to extend.
-# - n: Length of each random array.
-# - lo: Minimum value for array elements.
-# - hi: Maximum value for array elements.
-# - num_cases: Number of test cases to add.
-def add_random_cases(test_cases, n: int, lo: int, hi: int, num_cases: int) -> None:
-  for _ in range(num_cases):
-    test_cases.append(get_random_case(n, lo, hi))
-
-
-# Adds boundary test cases for a given sorted array (min, min-1, max, max+1).
-#
-# Parameters:
-# - test_cases: List to extend.
-# - arr: Sorted list of integers.
-def add_boundary_cases(test_cases, arr) -> None:
-  arr = tuple(arr)
-  target = min(arr)
-  test_cases.append((arr, target))
-
-  target = min(arr) - 1
-  test_cases.append((arr, target))
-
-  target = max(arr)
-  test_cases.append((arr, target))
-
-  target = max(arr) + 1
-  test_cases.append((arr, target))
-
-
-# Creates a large array with duplicates, ranging from -10^4 to 10^4.
-#
-# Returns:
-#   A list of integers (unsorted).
-def get_big_arr() -> tuple[int, ...]:
-  ret = []
-  for i in range(-(10**4), 10**4):
-    if util.rand_bool():
-      ret.append(i)
-      while util.rand_bool(0.2):
-        ret.append(i)
-  return tuple(ret)
-
-
-# Removes duplicate test cases and sorts them by array length.
-#
-# Parameters:
-# - test_cases: List of (array, target) tuples with possible duplicates.
-#
-# Returns:
-#   A new list with duplicates removed, sorted by the length of the array.
-def remove_redundant_cases(test_cases: list[tuple[tuple[int, ...], int]]) -> list[tuple[tuple[int, ...], int]]:
-  test_cases = list(set(test_cases))
-  test_cases.sort(key=lambda x: len(x))
-  return test_cases
-
-
 # Generator for binary search algorithm tests.
-class BinarySearchGenerator(parent):
+class BinarySearchGenerator(BaseGenerator):
 
   # Builds the complete list of test cases for binary search.
   #
@@ -124,59 +14,145 @@ class BinarySearchGenerator(parent):
   #   boundary conditions, and large arrays.
   @override
   def get_all_test_cases(self) -> list[tuple[tuple[int, ...], int]]:
-    test_cases = get_edge_cases()
-    add_random_cases(test_cases, 3, -100, 100, 4)
-    add_random_cases(test_cases, 4, -100, 100, 4)
-    add_random_cases(test_cases, 5, -100, 100, 4)
-    add_random_cases(test_cases, 7, -100, 100, 3)
-    add_random_cases(test_cases, 8, -100, 100, 3)
-    add_random_cases(test_cases, 9, -100, 100, 3)
-    add_random_cases(test_cases, 15, -100, 100, 2)
-    add_random_cases(test_cases, 16, -100, 100, 2)
-    add_random_cases(test_cases, 17, -100, 100, 2)
-    add_random_cases(test_cases, 30, -100, 100, 2)
-    add_random_cases(test_cases, 31, -100, 100, 2)
-    add_random_cases(test_cases, 31, -100, -100, 1) 
-    add_random_cases(test_cases, 32, -100, 100, 2)
-    add_random_cases(test_cases, 32, -100, -100, 1)
-    add_random_cases(test_cases, 33, -100, 100, 2)
-    add_random_cases(test_cases, 33, -100, -100, 1)
-    add_random_cases(test_cases, 34, -100, 100, 2)
-    add_random_cases(test_cases, 250, -10, 10, 2)
-    add_random_cases(test_cases, 255, -100, 100, 2)
-    add_random_cases(test_cases, 256, -100, 100, 2)
-    add_random_cases(test_cases, 257, -100, 100, 2)
-    add_random_cases(test_cases, 255, -1000, 1000, 2)
-    add_random_cases(test_cases, 256, -1000, 1000, 2)
-    add_random_cases(test_cases, 257, -1000, 1000, 2)
+    test_cases = self.get_edge_cases()
+    self.add_random_cases(test_cases, 3, -100, 100, 4)
+    self.add_random_cases(test_cases, 4, -100, 100, 4)
+    self.add_random_cases(test_cases, 5, -100, 100, 4)
+    self.add_random_cases(test_cases, 7, -100, 100, 3)
+    self.add_random_cases(test_cases, 8, -100, 100, 3)
+    self.add_random_cases(test_cases, 9, -100, 100, 3)
+    self.add_random_cases(test_cases, 15, -100, 100, 2)
+    self.add_random_cases(test_cases, 16, -100, 100, 2)
+    self.add_random_cases(test_cases, 17, -100, 100, 2)
+    self.add_random_cases(test_cases, 30, -100, 100, 2)
+    self.add_random_cases(test_cases, 31, -100, 100, 2)
+    self.add_random_cases(test_cases, 31, -100, -100, 1) 
+    self.add_random_cases(test_cases, 32, -100, 100, 2)
+    self.add_random_cases(test_cases, 32, -100, -100, 1)
+    self.add_random_cases(test_cases, 33, -100, 100, 2)
+    self.add_random_cases(test_cases, 33, -100, -100, 1)
+    self.add_random_cases(test_cases, 34, -100, 100, 2)
+    self.add_random_cases(test_cases, 250, -10, 10, 2)
+    self.add_random_cases(test_cases, 255, -100, 100, 2)
+    self.add_random_cases(test_cases, 256, -100, 100, 2)
+    self.add_random_cases(test_cases, 257, -100, 100, 2)
+    self.add_random_cases(test_cases, 255, -1000, 1000, 2)
+    self.add_random_cases(test_cases, 256, -1000, 1000, 2)
+    self.add_random_cases(test_cases, 257, -1000, 1000, 2)
 
     arr = tuple(sorted(util.rand_array(255, -1000, 1000)))
-    add_boundary_cases(test_cases, arr)
+    self.add_boundary_cases(test_cases, arr)
 
     arr = tuple(sorted(util.rand_array(256, -1000, 1000)))
-    add_boundary_cases(test_cases, arr)
+    self.add_boundary_cases(test_cases, arr)
 
     arr = tuple(sorted(util.rand_array(257, -1000, 1000)))
-    add_boundary_cases(test_cases, arr)
+    self.add_boundary_cases(test_cases, arr)
 
     for _ in range(4):
-      big_arr = get_big_arr()
+      big_arr = util.rand_big_arr()
       target = util.pick_target(big_arr)
       test_cases.append((big_arr, target))
 
-    arr = get_big_arr()
-    add_boundary_cases(test_cases, arr)
+    arr = util.rand_big_arr()
+    self.add_boundary_cases(test_cases, arr)
 
-    test_cases = remove_redundant_cases(test_cases)
+    test_cases = self.remove_redundant_cases(test_cases)
     return test_cases
 
+  # Returns the list of indices where target appears in arr, or [-1] if not found.
+  #
+  # Parameters:
+  # - arr: List of integers to search.
+  # - target: Integer to find.
+  #
+  # Returns:
+  #   List of indices (sorted) or [-1].
+  @override
+  def oracle(self, arr: tuple[int, ...], target: int) -> list[int]:
+    inds = [i for i, num in enumerate(arr) if num == target]
+    if not inds:
+      inds.append(-1)
+    return inds
+  
+  @override
+  def get_algorithm(self) -> GeneralAlgorithm:
+    return GeneralAlgorithm.BINARY_SEARCH
 
-# Generates test files for the binary search algorithm using this generator.
-# Calls the parent method to write tests based on the oracle.
-def generate():
-  BinarySearchGenerator().generate_tests(SpecificAlgorithm.BINARY_SEARCH, oracle)
+  # Returns a list of edge case test inputs for binary search.
+  #
+  # Returns:
+  #   List of (array, target) tuples covering empty array, single element,
+  #   missing values, and boundaries.
+  def get_edge_cases(self) -> list[tuple[tuple[int, ...], int]]:
+    return [
+      ((1,), 0),
+      ((1,), 1),
+      ((1,), 2),
+      ((1,3), 1),
+      ((1,3), 3),
+      ((1,3), 2),
+      ((-1,5), -2),
+      ((-1,5), 6),
+      (tuple(), -1),
+      (tuple(), 5)
+    ]
 
+  # Generates a random sorted array and a target that may or may not be present.
+  #
+  # Parameters:
+  # - n: Length of the array.
+  # - lo: Minimum value for array elements.
+  # - hi: Maximum value for array elements.
+  #
+  # Returns:
+  #   A tuple (sorted list, target).
+  def get_random_case(self, n: int, lo: int, 
+                      hi: int) -> tuple[tuple[int, ...], int]:
+    arr = sorted(util.rand_array(n, lo, hi))
+    target = util.pick_target(arr)
+    return tuple(arr), target
 
-# Runs test generation when the script is executed directly.
-if __name__ == "__main__":
-  generate()
+  # Appends a specified number of random test cases to the given list.
+  #
+  # Parameters:
+  # - test_cases: List to extend.
+  # - n: Length of each random array.
+  # - lo: Minimum value for array elements.
+  # - hi: Maximum value for array elements.
+  # - num_cases: Number of test cases to add.
+  def add_random_cases(self, test_cases, n: int, lo: int, hi: int, num_cases: int) -> None:
+    for _ in range(num_cases):
+      test_cases.append(self.get_random_case(n, lo, hi))
+
+  # Adds boundary test cases for a given sorted array (min, min-1, max, max+1).
+  #
+  # Parameters:
+  # - test_cases: List to extend.
+  # - arr: Sorted list of integers.
+  def add_boundary_cases(self, test_cases, arr) -> None:
+    arr = tuple(arr)
+    target = min(arr)
+    test_cases.append((arr, target))
+
+    target = min(arr) - 1
+    test_cases.append((arr, target))
+
+    target = max(arr)
+    test_cases.append((arr, target))
+
+    target = max(arr) + 1
+    test_cases.append((arr, target)) 
+
+  # Removes duplicate test cases and sorts them by array length.
+  #
+  # Parameters:
+  # - test_cases: List of (array, target) tuples with possible duplicates.
+  #
+  # Returns:
+  #   A new list with duplicates removed, sorted by the length of the array.
+  def remove_redundant_cases(self, test_cases: list[tuple[tuple[int, ...], int]]
+                             ) -> list[tuple[tuple[int, ...], int]]:
+    test_cases = list(set(test_cases))
+    test_cases.sort(key=lambda x: len(x[0]))
+    return test_cases

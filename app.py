@@ -9,8 +9,10 @@ from menu.practice import handle_commands as practice_handle_commands
 from menu.settings import handle_commands as settings_handle_commands
 from user_testing.test_commands.java import path_to_package
 
+from user_testing.test_generation.base_generator import BaseGenerator
 from typing import assert_never
-from util.general import no_op, load_module_from_path
+from types import ModuleType
+from util.general import no_op, load_module_from_path, snake_to_pascal_case
 from util.file_io import read_json, copy_file, match_json_keys
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
 from util.enums import (
@@ -18,7 +20,9 @@ from util.enums import (
   is_member, 
   member_to_string,
   SpecificAlgorithm,
+  GeneralAlgorithm,
   member_from_string,
+  SPECIFIC_ALG_TO_GENERAL
 )
 
 
@@ -115,7 +119,7 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
 # - ModuleNotFoundError if the test file does not exist and the test-generation
 #     file does, but the test-generation file has no generate() function.
 def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
-  test_file_path = fp.get_test_file_path(alg)
+  test_file_path = fp.specific_alg_to_test_path(alg)
   if os.path.exists(test_file_path):
     return
   print(f"Generating {member_to_string(alg)} tests...")
@@ -125,18 +129,27 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
                        f" and test_generator for {member_to_string(alg)} does not exist" +
                        f" (path: {test_generator_path})")
   try:
-    test_generator = load_module_from_path("generate", test_generator_path)
+    module: ModuleType = load_module_from_path("generate", test_generator_path)
   except ModuleNotFoundError:
-    raise ModuleNotFoundError(f"Test generator for {member_to_string(alg)} has no 'generate' method." + 
-                              f" Path: {test_generator}.")
-  test_generator.generate()
+    raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
+  
+  gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[alg]
+  generator_class_name = snake_to_pascal_case(member_to_string(gen_alg)) + "Generator"
+
+  try:
+    generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
+  except AttributeError:
+    raise AttributeError(f"Test generator class for {member_to_string(alg)} must" +
+                         f" be named {generator_class_name} in {test_generator_path}.")
+  
+  generator_class().generate_tests()
 
 
 # Resets the practice file for the current Language to hold the
 #   starting practice text for the given 'alg'.
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
-  info_file = fp.get_info_file_path(alg)
+  info_file = fp.specific_alg_to_info_path(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
@@ -161,7 +174,7 @@ def get_starting_practice_text(info_file_path: str) -> str:
           + parameter_info_line)
   else:
     input_types = data["input_types"]
-    expected_type = data["expected_type_wrapper"]
+    expected_type = data["expected_type"]
     user_tab_size = settings["tab_size"]["value"]
     one_indent = " " * user_tab_size
     return bp.get_boilerplate_text(

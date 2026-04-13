@@ -15,7 +15,7 @@
       "type": "int"
     }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "set",
     "items": {
       "type": "int"

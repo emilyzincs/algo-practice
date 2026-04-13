@@ -1,7 +1,0 @@
-package app_tests.java.boilerplate_files;
-
-public class Bp7 {
-  public static String solve() {
-    
-  }
-}

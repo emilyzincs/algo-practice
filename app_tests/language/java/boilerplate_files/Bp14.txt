@@ -1,0 +1,10 @@
+package app_tests.language.java.boilerplate_files;
+
+import java.util.Set;
+import java.util.Map;
+
+public class Bp14 {
+  public static Set<Double> solve(Map<Double, Boolean> m) {
+    
+  }
+}

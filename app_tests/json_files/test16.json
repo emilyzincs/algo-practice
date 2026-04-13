@@ -1,12 +1,10 @@
 [
   {
     "inputs": [
-      {
-        "12.7": false,
-        "-1.1": true,
-        "-0.0": true,
-        "132": true
-      }
+      [
+        [12.7, -1.1, -0.0, 132],
+        [false, true, true, false]
+      ]
     ],
     "expected": [-13, 5]
   }

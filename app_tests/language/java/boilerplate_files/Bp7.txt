@@ -1,0 +1,7 @@
+package app_tests.language.java.boilerplate_files;
+
+public class Bp7 {
+  public static String solve() {
+    
+  }
+}

@@ -2,7 +2,7 @@
   "unique_answer": true,
   "parameter_names": [],
   "input_types": [],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "array",
     "items": { "type": "string" }
   }

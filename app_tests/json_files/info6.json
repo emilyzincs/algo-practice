@@ -5,7 +5,7 @@
     { "type": "string" },
     { "type": "long" }
   ],
-  "expected_type_wrapper": {
+  "expected_type": {
     "type": "string"
   }
 }

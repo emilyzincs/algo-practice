@@ -31,7 +31,7 @@ class TestBoilerplate(parent):
   def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
-    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", 
+    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", "language", 
                                         member_to_string(language), "boilerplate_files")
     match language:
       case Language.PYTHON:
@@ -73,7 +73,7 @@ class TestBoilerplate(parent):
     boilerplate = get_boilerplate_text(
       info["parameter_names"],
       info["input_types"],
-      info["expected_type_wrapper"],
+      info["expected_type"],
       " " * settings["tab_size"]["value"],
       (
         SOLUTION_CLASS_NAME if not required_class_name_prefix 

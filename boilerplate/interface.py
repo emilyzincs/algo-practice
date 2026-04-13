@@ -37,20 +37,6 @@ class BpInterface(ABC):
   def parse_type_string(self, typ: dict[str, Any]) -> str:
     pass
   
-  # Returns the string representing a nested ListNode class with val type specified
-  # by 'val_type_string'.
-  # Uses appropriate indentation as specified by 'base_indent' and 'one_indent'.
-  @abstractmethod
-  def list_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    pass
-
-  # Returns the string representing a TreeNode class with val type specified
-  # by 'val_type_string'.
-  # Uses appropriate indentation as specified by 'base_indent' and 'one_indent'.
-  @abstractmethod
-  def tree_node(self, val_type_string: str, one_indent: str, base_indent: str) -> str:
-    pass
-  
   # Returns the end boilerplate as a string (e.g., closing curly brace).
   @abstractmethod
   def get_end(self, one_indent: str) -> str:
