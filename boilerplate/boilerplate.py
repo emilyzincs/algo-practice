@@ -1,7 +1,7 @@
 from util.file_paths import get_boilerplate_language_file_path
 from typing import assert_never, Any
-from util.enums import Language, ParseType, member_from_string, member_to_string
-from util.general import load_module_from_path, snake_to_pascal_case
+from util.enums import Language, ParseType, member_from_string, member_to_capitalized_words
+from util.general import load_module_from_path
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
 
@@ -80,7 +80,7 @@ def get_boilerplate_text(
 # - ImportError if loading the module containing the class fails
 # - TypeError if the class does not inherit from BpInterface
 def _set_bp_lang_class(lang: Language) -> None:
-  lang_class_name = snake_to_pascal_case(member_to_string(lang)) + "Bp"
+  lang_class_name = member_to_capitalized_words(lang).replace(" ", "") + "Bp"
   path = get_boilerplate_language_file_path(lang)
 
   global BP_LANG_INSTANCE

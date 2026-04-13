@@ -1,4 +1,3 @@
-from __future__ import annotations
 from enum import Enum, auto
 from typing import Type, TypeVar
 
@@ -11,10 +10,9 @@ def member_to_string(member: E) -> str:
   return member.name.lower()
 
 
-# Converts the given SpecificAlgorithm to its natural name.
 # E.g. SpecificAlgorithm.BINARY_SEARCH -> "Binary Search".
-def specific_alg_to_string(alg: SpecificAlgorithm) -> str:
-  return " ".join([word.capitalize() for word in alg.name.split("_")])
+def member_to_capitalized_words(member: E) -> str:
+  return " ".join([word.capitalize() for word in member.name.split("_")])
 
 
 # Returns a list of all enum member names in order in lowercase 

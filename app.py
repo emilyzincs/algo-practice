@@ -12,18 +12,17 @@ from user_testing.test_commands.java import path_to_package
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import assert_never
 from types import ModuleType
-from util.general import no_op, load_module_from_path, snake_to_pascal_case
+from util.general import no_op, load_module_from_path
 from util.file_io import read_json, copy_file, match_json_keys
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
 from util.enums import (
   Language, 
   is_member, 
-  member_to_string,
   SpecificAlgorithm,
   GeneralAlgorithm,
   member_from_string,
   SPECIFIC_ALG_TO_GENERAL,
-  specific_alg_to_string
+  member_to_capitalized_words
 )
 
 
@@ -44,13 +43,13 @@ LANGUAGE: Language = DEFAULT_LANGUAGE
 if __name__ == "__main__":
   if len(sys.argv) > 2:
     raise ValueError(f"Usage: python {sys.argv[0]} <language> (default language is" + 
-                     f" {member_to_string(DEFAULT_LANGUAGE)} if not specified).")
+                     f" {member_to_capitalized_words(DEFAULT_LANGUAGE)} if not specified).")
   elif len(sys.argv) == 2:
     lang_str = sys.argv[1]
     if is_member(Language, lang_str):
       LANGUAGE = member_from_string(Language, lang_str)
     else:
-        print(f"Unsupported language: {lang_str}. defaulting to {member_to_string(DEFAULT_LANGUAGE)}." + 
+        print(f"Unsupported language: {lang_str}. defaulting to {member_to_capitalized_words(DEFAULT_LANGUAGE)}." + 
               " Type 'languages' for supported languages or <language> to switch to that language.")
 
 
@@ -86,7 +85,7 @@ def get_language() -> Language:
 def set_language(lang: Language) -> None:
   global LANGUAGE
   LANGUAGE = lang
-  print(f"Successfully set language to {member_to_string(lang)}.")
+  print(f"Successfully set language to {member_to_capitalized_words(lang)}.")
 
 
 # Switches command-line to the practice menu, and handles all parts for the user practice
@@ -123,7 +122,7 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   test_file_path = fp.specific_alg_to_test_path(alg)
   if os.path.exists(test_file_path):
     return
-  alg_name = specific_alg_to_string(alg)
+  alg_name = member_to_capitalized_words(alg)
   print(f"Generating {alg_name} tests...")
   test_generator_path = fp.get_test_generator_path(alg)
   if not os.path.exists(test_generator_path):
@@ -136,7 +135,8 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
     raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
   
   gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[alg]
-  generator_class_name = snake_to_pascal_case(member_to_string(gen_alg)) + "Generator"
+  generator_class_name = (
+      member_to_capitalized_words(gen_alg).replace(" ", "") + "Generator")
 
   try:
     generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
@@ -152,7 +152,7 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
   info_file = fp.specific_alg_to_info_path(alg)
-  alg_name = specific_alg_to_string(alg)
+  alg_name = member_to_capitalized_words(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(alg_name, info_file))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
