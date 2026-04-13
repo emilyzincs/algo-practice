@@ -1,5 +1,5 @@
 # General Implementation Requirements
-- The implementation must be fully self-contained inside the practice file (whose path is printed upon starting practice of an algorithm).
+- The implementation must be fully self-contained inside the practice file (which has its path printed upon beginning practice of an algorithm).
 - The practice file must have a top-level (i.e., non-nested) ```Solution``` class containing a ```solve``` method which attempts to implement the current algorithm. For language-specifics clarifications, see [Language-Level Requirements](#language-level-requirements).
 
 ## Language-Level Requirements
