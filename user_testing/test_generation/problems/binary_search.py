@@ -50,12 +50,15 @@ class BinarySearchGenerator(BaseGenerator):
     self.add_boundary_cases(test_cases, arr)
 
     for _ in range(4):
-      big_arr = util.rand_big_arr()
+      big_arr = util.rand_sorted_big_arr()
       target = util.pick_target(big_arr)
       test_cases.append((big_arr, target))
 
-    arr = util.rand_big_arr()
+    arr = util.rand_sorted_big_arr()
     self.add_boundary_cases(test_cases, arr)
+
+    test_cases.append((util.all_same_big_arr(value=0), 0))
+    test_cases.append((util.all_same_big_arr(value=-100), -99))
 
     test_cases = self.remove_redundant_cases(test_cases)
     return test_cases

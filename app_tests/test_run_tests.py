@@ -186,7 +186,7 @@ class TestRunTests(parent):
                 return_value=solution_file_dir), 
           patch(self.fp_base + "get_practice_file_path", 
                 return_value=solution_file)):
-      result = run_tests(alg, language, self.do_debug)
+      result = run_tests(alg, language, self.do_debug, str(self.do_debug))
       error_msg = f"Solution for {member_to_capitalized_words(alg)} in {member_to_capitalized_words(language)} failed."
       self.assertEqual(True, result, error_msg)
       print("Solution correct.")

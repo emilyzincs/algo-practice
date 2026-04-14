@@ -43,6 +43,13 @@ class SortGenerator(BaseGenerator):
     for _ in range(4):
       big_arr = util.rand_big_arr()
       test_cases.append((big_arr,))
+    
+    sorted_big_arr = util.rand_sorted_big_arr()
+    test_cases.append((sorted_big_arr,))
+    reverse_sorted_big_arr = tuple(list(big_arr)[::-1])
+    test_cases.append((reverse_sorted_big_arr,))
+
+    test_cases.append((util.all_same_big_arr(0),))
 
     test_cases = self.remove_redundant_cases(test_cases)
     return test_cases

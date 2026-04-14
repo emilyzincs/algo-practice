@@ -65,6 +65,7 @@ class SpecificAlgorithm(Enum):
   BREADTH_FIRST_SEARCH = auto()
   DEPTH_FIRST_SEARCH = auto()
   MERGE_SORT = auto()
+  QUICK_SORT = auto()
 
 
 # Enum for general algorithm categories.
@@ -81,7 +82,8 @@ INPUT_ALG_TO_SPECIFIC = {
   "breadth first search": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
   "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-  "merge sort": SpecificAlgorithm.MERGE_SORT
+  "merge sort": SpecificAlgorithm.MERGE_SORT,
+  "quick sort": SpecificAlgorithm.QUICK_SORT
 }
 
 
@@ -90,7 +92,8 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BINARY_SEARCH: GeneralAlgorithm.BINARY_SEARCH,
   SpecificAlgorithm.BREADTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
   SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
-  SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT
+  SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT
 }
 
 

@@ -100,8 +100,9 @@ def main() -> bool:
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
+      print("what is debug", debug)
       if debug:
-        raise e
+        raise
       return False
 
   return True
@@ -145,8 +146,7 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
 # Runs the test runner. Exits with code 1 if any test fails,
 # otherwise prints "All tests passed." and exits with code 0.
 if __name__ == "__main__":
-  if not main():
-    print("Runner must be run directly.", file=sys.stderr)
-    sys.exit(1)
-  else:
+  if main():
     print("All tests passed.")
+  else:
+    sys.exit(1)
