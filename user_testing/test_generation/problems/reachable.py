@@ -18,7 +18,7 @@ class ReachableGenerator(BaseGenerator):
   #   A list of (graph, root) tuples covering edge cases, random graphs
   #   of various sizes and densities, and connectedness variations.
   @override
-  def get_all_test_cases(self):
+  def get_all_test_cases(self) -> list[tuple[list[list[int]], int]]:
     test_cases = self.get_edge_cases()
     for i in range(3, 8):
       self.add_random_variety(test_cases, i, 2)
@@ -41,7 +41,7 @@ class ReachableGenerator(BaseGenerator):
   # Returns:
   #   List of vertices reachable from root (order may vary).
   @override
-  def oracle(self, graph, root):
+  def oracle(self, graph: list[list[int]], root: int) -> list[int]:
     return list(sol.solve(graph, root))
   
   @override
@@ -52,7 +52,7 @@ class ReachableGenerator(BaseGenerator):
   #
   # Returns:
   #   List of (graph, root) tuples covering small graphs and edge cases.
-  def get_edge_cases(self):
+  def get_edge_cases(self) -> list[tuple[list[list[int]], int]]:
     return [
       ([[]], 0),
       ([[0]], 0),
@@ -73,7 +73,8 @@ class ReachableGenerator(BaseGenerator):
   # - directed: Whether the graph is directed.
   # - edge_prob: Probability of an edge.
   # - num_cases: Number of test cases to add.
-  def add_random_cases(self, test_cases, n: int, directed: bool, 
+  def add_random_cases(self, test_cases: list[tuple[list[list[int]], int]], 
+                       n: int, directed: bool, 
                        edge_prob: float, num_cases: int) -> None:
     for _ in range(num_cases):
       test_cases.append(util.rand_graph_and_root(n, directed, edge_prob))
@@ -85,7 +86,7 @@ class ReachableGenerator(BaseGenerator):
   # - test_cases: List to extend.
   # - n: Number of vertices.
   # - num_cases: Number of random cases per configuration.
-  def add_random_variety(self, test_cases, n: int, num_cases: int):
+  def add_random_variety(self, test_cases, n: int, num_cases: int) -> None:
     edge_probs = None
     if n < 20:
       edge_probs = [0, 0.3, 0.5, 0.7, 1]
@@ -109,7 +110,8 @@ class ReachableGenerator(BaseGenerator):
   #
   # Returns:
   #   A new list with duplicates removed, sorted by number of vertices.
-  def remove_redundant_test_cases(self, test_cases):
+  def remove_redundant_test_cases(self, test_cases: list[tuple[list[list[int]], int]]
+                                  ) -> list[tuple[list[list[int]], int]]:
       hashable_cases = []
       for graph, root in test_cases:
           graph_tuple = tuple(tuple(adj_list) for adj_list in graph)
@@ -117,4 +119,8 @@ class ReachableGenerator(BaseGenerator):
       
       unique_cases = list(set(hashable_cases))
       unique_cases.sort(key=lambda x: len(x[0]))
-      return unique_cases
+
+      return [
+        ([list(adj_list) for adj_list in g], r)
+        for g, r in unique_cases
+      ]

@@ -1,13 +1,13 @@
 import random
-
+from typing import Any
 
 # Returns None.
-def get_null():
+def get_null() -> None:
   return None
 
 
 # Returns an empty list.
-def get_empty_list():
+def get_empty_list() -> list[Any]:
   return []
 
 
@@ -53,12 +53,12 @@ def all_same_big_arr(value: int, size: int = 10**4) -> tuple[int, ...]:
 
 
 # Returns a random element from 'arr'.
-def rand_choice(arr):
+def rand_choice(arr: tuple[int, ...]):
   return random.choice(arr)
 
 
 # Returns True with probability p, False otherwise.
-def rand_bool(p=0.5):
+def rand_bool(p: float = 0.5):
   return random.random() < p
 
 
@@ -70,7 +70,7 @@ def rand_bool(p=0.5):
 # Returns:
 #   An integer that is either an element of arr (with 50% probability)
 #   or a random integer between min(arr)-1 and max(arr)+1.
-def pick_target(arr) -> int:
+def pick_target(arr: tuple[int, ...]) -> int:
   if len(arr) == 0:
     return 0
   if rand_bool():
@@ -87,11 +87,11 @@ def pick_target(arr) -> int:
 #
 # Returns:
 #   A list of length n containing integers or None.
-def rand_tree_array(n, null_prob=0.2):
+def rand_tree_array(n: int, null_prob: float = 0.2) -> list[int|None]:
   if n == 0:
     return []
 
-  arr = []
+  arr: list[int|None] = []
   for i in range(n):
     if i == 0 or not rand_bool(null_prob):
       arr.append(random.randint(-100, 100))
@@ -101,7 +101,7 @@ def rand_tree_array(n, null_prob=0.2):
 
 
 # Removes trailing None values from the given level‑order tree list 'arr'.
-def trim_tree(arr):
+def trim_tree(arr: list[int]) -> list[int]:
   while arr and arr[-1] is None:
     arr.pop()
   return arr

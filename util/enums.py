@@ -66,6 +66,7 @@ class SpecificAlgorithm(Enum):
   DEPTH_FIRST_SEARCH = auto()
   MERGE_SORT = auto()
   QUICK_SORT = auto()
+  DIJKSTRA = auto()
 
 
 # Enum for general algorithm categories.
@@ -73,6 +74,7 @@ class GeneralAlgorithm(Enum):
   BINARY_SEARCH = auto()
   REACHABLE = auto()
   SORT = auto()
+  DIJKSTRA = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -83,7 +85,9 @@ INPUT_ALG_TO_SPECIFIC = {
   "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "merge sort": SpecificAlgorithm.MERGE_SORT,
-  "quick sort": SpecificAlgorithm.QUICK_SORT
+  "quick sort": SpecificAlgorithm.QUICK_SORT,
+  "dijkstra": SpecificAlgorithm.DIJKSTRA,
+  "shortest path": SpecificAlgorithm.DIJKSTRA,
 }
 
 
@@ -93,7 +97,8 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BREADTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
   SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT
+  SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA
 }
 
 

@@ -112,7 +112,7 @@ class BinarySearchGenerator(BaseGenerator):
   #   A tuple (sorted list, target).
   def get_random_case(self, n: int, lo: int, 
                       hi: int) -> tuple[tuple[int, ...], int]:
-    arr = sorted(util.rand_array(n, lo, hi))
+    arr = tuple(sorted(util.rand_array(n, lo, hi)))
     target = util.pick_target(arr)
     return tuple(arr), target
 

@@ -13,7 +13,7 @@ class SortGenerator(BaseGenerator):
   #   A list of (array,) tuples covering edge cases, random inputs,
   #   and large arrays.
   @override
-  def get_all_test_cases(self):
+  def get_all_test_cases(self) -> list[tuple[tuple[int, ...], ...]]:
     test_cases = self.get_edge_cases()
     self.add_random_cases(test_cases, 3, -100, 100, 4)
     self.add_random_cases(test_cases, 4, -100, 100, 4)
@@ -56,7 +56,7 @@ class SortGenerator(BaseGenerator):
   
   # Returns the sorted version of the input array.
   @override
-  def oracle(self, arr):
+  def oracle(self, arr: list[int]) -> list[int]:
     return sorted(arr)
   
   @override
@@ -64,7 +64,7 @@ class SortGenerator(BaseGenerator):
     return GeneralAlgorithm.SORT
 
   # Returns a list of edge-case test inputs for sorting.
-  def get_edge_cases(self):
+  def get_edge_cases(self) -> list[tuple[tuple[int, ...], ...]]:
     return [
       (tuple([]),),
       (tuple([1]),),
@@ -102,7 +102,7 @@ class SortGenerator(BaseGenerator):
       test_cases.append(self.get_random_case(n, lo, hi))
 
   # Removes duplicate test cases and sorts them by array length.
-  def remove_redundant_cases(self, test_cases):
+  def remove_redundant_cases(self, test_cases) -> list[tuple[tuple[int, ...], ...]]:
     test_cases = list(set(test_cases))
     test_cases.sort(key=lambda x: len(x[0]))
     return test_cases
