@@ -231,7 +231,7 @@ Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution
 
 #### 3. Write the Solution
 
-Write the solution in the file specified by the path from the previous step, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](user-implementation.md), and note that the solution method signature types must match the description in the corresponding `info.json` file.
+Write the solution in the file specified by the path from the previous step, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](user-implementation.md) (other than writing the solution in a practice file), and note that the solution method signature types must match the description in the corresponding `info.json` file. Moreover, although not technically required, matching the parameter names to those in the `info.json` file is suggested, for the sake of consistency with users.
 
 
 #### 4. Validate the Solution
