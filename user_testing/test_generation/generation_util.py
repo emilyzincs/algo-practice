@@ -25,10 +25,19 @@ def rand_array(n: int, lo: int, hi: int) -> tuple[int, ...]:
 
 
 # Creates a large array with duplicates, ranging from -10^4 to 10^4.
-#
-# Returns:
-#   A tuple of integers (unsorted).
 def rand_big_arr() -> tuple[int, ...]:
+  ret = []
+  for i in range(-(10**4), 10**4):
+    if rand_bool():
+      ret.append(i)
+      while rand_bool(0.2):
+        ret.append(i)
+  random.shuffle(ret)
+  return tuple(ret)
+
+
+# Creates a large sorted array with duplicates, ranging from -10^4 to 10^4.
+def rand_sorted_big_arr() -> tuple[int, ...]:
   ret = []
   for i in range(-(10**4), 10**4):
     if rand_bool():

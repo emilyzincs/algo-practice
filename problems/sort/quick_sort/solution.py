@@ -11,7 +11,10 @@ class Solution:
     self.quick_sort(nums, pivot_idx + 1, hi)
 
   def partition(self, nums: list[int], lo: int, hi: int) -> int:
-    pivot = nums[hi]
+    pivot_idx = self.median_of_three(nums, lo, hi)
+    pivot = nums[pivot_idx]
+    nums[pivot_idx], nums[hi] = nums[hi], nums[pivot_idx]
+
     i = lo - 1
     for j in range(lo, hi):
       if nums[j] <= pivot:
@@ -20,3 +23,13 @@ class Solution:
     i += 1
     nums[i], nums[hi] = nums[hi], nums[i]
     return i
+  
+  def median_of_three(self, nums: list[int], lo: int, hi: int) -> int:
+    mid = (lo + hi) // 2
+    a, b, c = nums[lo], nums[mid], nums[hi]
+    if (a - b) * (c - a) >= 0:
+      return lo
+    elif (b - a) * (c - b) >= 0:
+      return mid
+    else:
+      return hi

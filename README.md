@@ -44,3 +44,4 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Breadth First Search
 - Depth First Search
 - Merge Sort
+- Quick Sort
