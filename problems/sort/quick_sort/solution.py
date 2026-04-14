@@ -4,9 +4,11 @@ class Solution:
     return nums
 
   def quick_sort(self, nums: list[int], lo: int, hi: int) -> None:
-    pivot = self.partition(nums, lo, hi)
-    self.quick_sort(nums, lo, pivot - 1)
-    self.quick_sort(nums, pivot + 1, hi)
+    if lo >= hi:
+      return
+    pivot_idx = self.partition(nums, lo, hi)
+    self.quick_sort(nums, lo, pivot_idx - 1)
+    self.quick_sort(nums, pivot_idx + 1, hi)
 
   def partition(self, nums: list[int], lo: int, hi: int) -> int:
     pivot = nums[hi]
