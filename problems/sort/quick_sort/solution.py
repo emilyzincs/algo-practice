@@ -6,23 +6,30 @@ class Solution:
   def quick_sort(self, nums: list[int], lo: int, hi: int) -> None:
     if lo >= hi:
       return
-    pivot_idx = self.partition(nums, lo, hi)
-    self.quick_sort(nums, lo, pivot_idx - 1)
-    self.quick_sort(nums, pivot_idx + 1, hi)
+    lt, gt = self.partition(nums, lo, hi)
+    self.quick_sort(nums, lo, lt - 1)
+    self.quick_sort(nums, gt + 1, hi)
 
-  def partition(self, nums: list[int], lo: int, hi: int) -> int:
+  def partition(self, nums: list[int], lo: int, hi: int) -> tuple[int, int]:
     pivot_idx = self.median_of_three(nums, lo, hi)
     pivot = nums[pivot_idx]
     nums[pivot_idx], nums[hi] = nums[hi], nums[pivot_idx]
 
-    i = lo - 1
-    for j in range(lo, hi):
-      if nums[j] <= pivot:
+    lt = lo
+    i = lo
+    gt = hi
+
+    while i <= gt:
+      if nums[i] < pivot:
+        nums[lt], nums[i] = nums[i], nums[lt]
+        lt += 1
         i += 1
-        nums[i], nums[j] = nums[j], nums[i]
-    i += 1
-    nums[i], nums[hi] = nums[hi], nums[i]
-    return i
+      elif nums[i] > pivot:
+        nums[gt], nums[i] = nums[i], nums[gt]
+        gt -= 1
+      else:
+        i += 1
+    return lt, gt
   
   def median_of_three(self, nums: list[int], lo: int, hi: int) -> int:
     mid = (lo + hi) // 2
