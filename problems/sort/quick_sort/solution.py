@@ -27,9 +27,9 @@ class Solution:
   def median_of_three(self, nums: list[int], lo: int, hi: int) -> int:
     mid = (lo + hi) // 2
     a, b, c = nums[lo], nums[mid], nums[hi]
-    if (a - b) * (c - a) >= 0:
-      return lo
-    elif (b - a) * (c - b) >= 0:
+    if (b - a) * (c - b) >= 0:
       return mid
+    elif (a - b) * (c - a) >= 0:
+      return lo
     else:
       return hi

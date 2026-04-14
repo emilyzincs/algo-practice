@@ -47,6 +47,11 @@ def rand_sorted_big_arr() -> tuple[int, ...]:
   return tuple(ret)
 
 
+# returns a tuple of 'value' repeated 'size' times
+def all_same_big_arr(value: int, size: int = 10**4) -> tuple[int, ...]:
+  return tuple([value for _ in range(size)])
+
+
 # Returns a random element from 'arr'.
 def rand_choice(arr):
   return random.choice(arr)
