@@ -67,6 +67,8 @@ class SpecificAlgorithm(Enum):
   MERGE_SORT = auto()
   QUICK_SORT = auto()
   DIJKSTRA = auto()
+  KRUSKAL = auto()
+  PRIM = auto()
 
 
 # Enum for general algorithm categories.
@@ -75,6 +77,7 @@ class GeneralAlgorithm(Enum):
   REACHABLE = auto()
   SORT = auto()
   DIJKSTRA = auto()
+  MINIMUM_SPANNING_TREE = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -87,7 +90,12 @@ INPUT_ALG_TO_SPECIFIC = {
   "merge sort": SpecificAlgorithm.MERGE_SORT,
   "quick sort": SpecificAlgorithm.QUICK_SORT,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
+  "dijkstra's": SpecificAlgorithm.DIJKSTRA,
   "shortest path": SpecificAlgorithm.DIJKSTRA,
+  "kruskal": SpecificAlgorithm.KRUSKAL,
+  "kruskal's": SpecificAlgorithm.KRUSKAL,
+  "prim": SpecificAlgorithm.PRIM,
+  "prim's": SpecificAlgorithm.PRIM
 }
 
 
@@ -98,7 +106,9 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA
+  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
+  SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
+  SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
 }
 
 
