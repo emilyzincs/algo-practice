@@ -51,7 +51,7 @@ class SortGenerator(BaseGenerator):
 
     test_cases.append((util.all_same_big_arr(0),))
 
-    test_cases = self.remove_redundant_cases(test_cases)
+    test_cases = self.remove_duplicate_cases(test_cases)
     return test_cases
   
   # Returns the sorted version of the input array.
@@ -101,8 +101,7 @@ class SortGenerator(BaseGenerator):
     for _ in range(num_cases):
       test_cases.append(self.get_random_case(n, lo, hi))
 
-  # Removes duplicate test cases and sorts them by array length.
-  def remove_redundant_cases(self, test_cases) -> list[tuple[tuple[int, ...], ...]]:
+  def remove_duplicate_cases(self, test_cases) -> list[tuple[tuple[int, ...], ...]]:
     test_cases = list(set(test_cases))
     test_cases.sort(key=lambda x: len(x[0]))
     return test_cases

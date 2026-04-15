@@ -12,6 +12,9 @@ sol = Solution()
 
 class DijkstraGenerator(BaseGenerator):
 
+  # TODO: factor out getting weighted/unweighted graph cases (at scale) to generation_util
+  # and use that instead
+  # weighted, unweighted, connected, directed
   @override
   def get_all_test_cases(self) -> list[tuple[list[list[tuple[int, float]]], int]]:
     test_cases: list[tuple[list[list[tuple[int, float]]], int]] = []

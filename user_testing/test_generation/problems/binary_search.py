@@ -60,7 +60,7 @@ class BinarySearchGenerator(BaseGenerator):
     test_cases.append((util.all_same_big_arr(value=0), 0))
     test_cases.append((util.all_same_big_arr(value=-100), -99))
 
-    test_cases = self.remove_redundant_cases(test_cases)
+    test_cases = self.remove_duplicate_cases(test_cases)
     return test_cases
 
   # Returns the list of indices where target appears in arr, or [-1] if not found.
@@ -147,14 +147,7 @@ class BinarySearchGenerator(BaseGenerator):
     target = max(arr) + 1
     test_cases.append((arr, target)) 
 
-  # Removes duplicate test cases and sorts them by array length.
-  #
-  # Parameters:
-  # - test_cases: List of (array, target) tuples with possible duplicates.
-  #
-  # Returns:
-  #   A new list with duplicates removed, sorted by the length of the array.
-  def remove_redundant_cases(self, test_cases: list[tuple[tuple[int, ...], int]]
+  def remove_duplicate_cases(self, test_cases: list[tuple[tuple[int, ...], int]]
                              ) -> list[tuple[tuple[int, ...], int]]:
     test_cases = list(set(test_cases))
     test_cases.sort(key=lambda x: len(x[0]))

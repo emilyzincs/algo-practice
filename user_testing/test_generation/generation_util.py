@@ -1,30 +1,19 @@
 import random
 from typing import Any
 
-# Returns None.
+
 def get_null() -> None:
   return None
 
 
-# Returns an empty list.
 def get_empty_list() -> list[Any]:
   return []
 
 
-# Generates a random tuple of integers.
-#
-# Parameters:
-# - n: Number of elements.
-# - lo: Minimum value (inclusive).
-# - hi: Maximum value (inclusive).
-#
-# Returns:
-#   A tuple of n random integers.
-def rand_array(n: int, lo: int, hi: int) -> tuple[int, ...]:
-  return tuple([random.randint(lo, hi) for _ in range(n)])
+def rand_array(size: int, lo: int, hi: int) -> tuple[int, ...]:
+  return tuple([random.randint(lo, hi) for _ in range(size)])
 
 
-# Creates a large array with duplicates, ranging from -10^4 to 10^4.
 def rand_big_arr() -> tuple[int, ...]:
   ret = []
   for i in range(-(10**4), 10**4):
@@ -36,7 +25,6 @@ def rand_big_arr() -> tuple[int, ...]:
   return tuple(ret)
 
 
-# Creates a large sorted array with duplicates, ranging from -10^4 to 10^4.
 def rand_sorted_big_arr() -> tuple[int, ...]:
   ret = []
   for i in range(-(10**4), 10**4):
@@ -47,29 +35,19 @@ def rand_sorted_big_arr() -> tuple[int, ...]:
   return tuple(ret)
 
 
-# returns a tuple of 'value' repeated 'size' times
 def all_same_big_arr(value: int, size: int = 10**4) -> tuple[int, ...]:
   return tuple([value for _ in range(size)])
 
 
-# Returns a random element from 'arr'.
 def rand_choice(arr: tuple[int, ...]):
   return random.choice(arr)
 
 
-# Returns True with probability p, False otherwise.
-def rand_bool(p: float = 0.5):
-  return random.random() < p
+def rand_bool(probability_true: float = 0.5):
+  return random.random() < probability_true
 
 
 # Picks a target value that may or may not be present in the array.
-#
-# Parameters:
-# - arr: A list of integers.
-#
-# Returns:
-#   An integer that is either an element of arr (with 50% probability)
-#   or a random integer between min(arr)-1 and max(arr)+1.
 def pick_target(arr: tuple[int, ...]) -> int:
   if len(arr) == 0:
     return 0
@@ -107,29 +85,32 @@ def trim_tree(arr: list[int]) -> list[int]:
   return arr
 
 
-# Generates a random graph as an adjacency list.
-#
-# Parameters:
-# - n: Number of vertices.
-# - directed: True for directed edges, False for undirected.
-# - edge_prob: Probability of an edge existing between two vertices (default 0.2).
-#
-# Returns:
-#   An adjacency list where graph[i] contains the neighbors of vertex i.
-def rand_graph(n: int, directed: bool, edge_prob: float = 0.2) -> list[list[int]]:
-  graph: list[list[int]] = [[] for _ in range(n)]
-  for i in range(n):
-    for j in range(i+1, n):
+def rand_graph(
+    num_vertices: int, 
+    directed: bool, 
+    connected: bool, 
+    edge_prob: float = 0.2
+) -> list[list[int]]:
+  
+  graph: list[list[int]] = [[] for _ in range(num_vertices)]
+  for i in range(num_vertices):
+    for j in range(i+1, num_vertices):
       if rand_bool(edge_prob):
         graph[i].append(j)
         if directed and rand_bool(edge_prob):
           graph[j].append(i)
         elif not directed:
           graph[j].append(i)
+  if connected:
+    connect_graph(graph, directed) 
+      
   return graph
 
 
-# Returns a random vertex index from the given 'graph' (adjacency list).
+def graph_list_to_tuple(graph: list[list[int]]) -> tuple[tuple[int, ...], ...]:
+  return tuple(tuple(adj_list) for adj_list in graph)
+
+
 def rand_vertex(graph: list[list[int]]) -> int:
   n = len(graph)
   if n == 0:
@@ -137,31 +118,35 @@ def rand_vertex(graph: list[list[int]]) -> int:
   return random.randint(0, n-1)
 
 
-# Generates a random graph and a random root vertex.
-#
-# Parameters:
-# - n: Number of vertices.
-# - directed: Whether the graph is directed.
-# - edge_prob: Probability of an edge existing between two vertices.
-#
-# Returns:
-#   A tuple (adjacency list, root vertex).
-def rand_graph_and_root(n: int, directed: bool, 
-                    edge_prob: float) -> tuple[list[list[int]], int]: 
-  graph = rand_graph(n, directed, edge_prob)
+def rand_graph_and_root(num_vertices: int, directed: bool, connected: bool, 
+                       edge_prob: float) -> tuple[list[list[int]], int]: 
+  graph = rand_graph(num_vertices, directed, connected,  edge_prob)
   root = rand_vertex(graph)
   return graph, root
 
 
-# Modifies the given 'graph' to ensure it is connected by 
-# adding edges between consecutive vertices.
-def connect_graph(graph: list[list[int]]) -> None:
+def connect_graph(graph: list[list[int]], directed: bool) -> None:
   n = len(graph)
   if n == 0:
     return
   for i in range(1, n):
     if i not in graph[i-1]:
       graph[i-1].append(i)
+    if not directed and i-1 not in graph[i]:
+      graph[i].append(i-1)
   if 0 not in graph[n-1]:
     graph[n-1].append(0)
+  if not directed and n-1 not in graph[0]:
+    graph[0].append(n-1)
+
+
+def weight_graph(unweighted_graph: list[list[int]], lo: int, hi: int
+                 ) -> list[list[tuple[int, float]]]:
+  weighted_graph: list[list[tuple[int, float]]] = []
+  for unweighted_neighbor_list in unweighted_graph:
+      weighted_neighbor_list = [(neighbor, random.uniform(lo, hi)) 
+                                  for neighbor in unweighted_neighbor_list]
+      weighted_graph.append(weighted_neighbor_list)
+  return weighted_graph
+      
 
