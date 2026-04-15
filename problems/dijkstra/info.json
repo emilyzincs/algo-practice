@@ -1,13 +1,14 @@
 {
   "unique_answer": true,
-  "parameter_names": ["graph", "start"],
+  "parameter_names": ["graph", "start", "target"],
   "input_types": [
     {
       "type": "list",
       "items": {
         "type": "list",
         "items": {
-          "type": "int"
+          "type": "immutable_list",
+          "items": { "type": "int" }
         }
       }
     },

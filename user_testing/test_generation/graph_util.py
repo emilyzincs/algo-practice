@@ -1,24 +1,27 @@
 from user_testing.test_generation import generation_util as util
-from typing import TypeVar, Callable, Any
+from typing import TypeVar, Callable, cast
 import random
 
-WeightedGraph = list[list[tuple[int, float]]]
+WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
 
 
-def get_graphs_with_rand_vertex(graphs: list[Graph]) -> list[tuple[Graph, int]]:
-  return [(graph, rand_vertex(graph)) for graph in graphs]
+def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
+  graphs_with_rand_vertices = []
+  for graph in graphs:
+    rand_vertices: list[int] = [rand_vertex(graph) for _ in range(num_rand_vertices)]
+    graph_with_rand_vertices = (graph, *rand_vertices)
+    graphs_with_rand_vertices.append(graph_with_rand_vertices)
+  return graphs_with_rand_vertices
 
 
-def get_weighted_graphs(directed: bool, connected: bool, lo: float, hi: float):
+def get_weighted_graphs(directed: bool, connected: bool, lo: int, hi: int):
   weighted_graphs: list[WeightedGraph]
 
   unweighted_graphs: list[UnweightedGraph] = (
     get_unweighted_graphs(directed, connected)
   )
-  lo = 0
-  hi = 100
 
   for unweighted_graph in unweighted_graphs:
     weighted_graph: WeightedGraph = (
@@ -138,13 +141,13 @@ def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
 def weight_graph_random(
     unweighted_graph: UnweightedGraph, 
     directed: bool, 
-    lo: float, 
-    hi: float
-) -> list[list[tuple[int, float]]]:
+    lo: int, 
+    hi: int
+) -> WeightedGraph:
   return weight_graph_custom(
     unweighted_graph,
     directed,
-    random.uniform,
+    random.randint,
     *[lo, hi]
   )
 
@@ -152,23 +155,23 @@ def weight_graph_random(
 def weight_graph_custom(
     unweighted_graph: UnweightedGraph, 
     directed: bool,
-    get_edge_func: Callable[..., float], 
-    *edge_func_args, 
-    **edge_func_kwargs
-) -> list[list[tuple[int, float]]]:
-  weighted_graph: list[list[tuple[int, float]]] = []
+    get_weight_func: Callable[..., int], 
+    *weight_func_args, 
+    **weight_func_kwargs
+) -> WeightedGraph:
+  weighted_graph: WeightedGraph = []
   for curr_vertex, unweighted_neighbor_list in enumerate(unweighted_graph):
-    weighted_neighbor_list: list[tuple[int, float]] = []
+    weighted_neighbor_list: list[tuple[int, int]] = []
 
     for neighbor in unweighted_neighbor_list:
-      weight: float = _get_weight(
+      weight: int = _get_weight(
         weighted_graph, 
         directed, 
         curr_vertex, 
         neighbor, 
-        get_edge_func, 
-        *edge_func_args, 
-        **edge_func_kwargs
+        get_weight_func, 
+        *weight_func_args, 
+        **weight_func_kwargs
       )
 
       weighted_neighbor_list.append((neighbor, weight))  
@@ -181,12 +184,12 @@ def _get_weight(
   directed: bool,
   curr_vertex: int,
   neighbor: int,
-  get_edge_func: Callable[..., float], 
-  *edge_func_args, 
-  **edge_func_kwargs 
-) -> float:
+  get_weight_func: Callable[..., int], 
+  *weight_func_args, 
+  **weight_func_kwargs 
+) -> int:
   if directed or curr_vertex <= neighbor:
-    return get_edge_func(*edge_func_args, **edge_func_kwargs)
+    return get_weight_func(*weight_func_args, **weight_func_kwargs)
   else:
     for vertex, other_weight in weighted_graph[neighbor]:
       if vertex == curr_vertex:
