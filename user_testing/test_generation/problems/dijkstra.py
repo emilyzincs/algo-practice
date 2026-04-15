@@ -19,7 +19,7 @@ class DijkstraGenerator(BaseGenerator):
     test_cases = self.get_edge_cases()
     lo, hi = 0, 100
     graphs: list[WeightedGraph] = get_weighted_graphs(
-      directed=True, connected=True, lo=lo, hi=hi)
+      directed=True, connected=False, lo=lo, hi=hi)
     test_cases.extend(get_graphs_with_rand_vertices(graphs, num_rand_vertices=2))
     return test_cases
   

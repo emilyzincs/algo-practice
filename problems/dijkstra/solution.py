@@ -19,4 +19,4 @@ class Solution:
           dists[neighbor] = potential_new_dist
           heapq.heappush(pq, (potential_new_dist, neighbor))
 
-    raise ValueError("No shortest path to target.")
+    return -1
