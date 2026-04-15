@@ -100,7 +100,6 @@ def main() -> bool:
 
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
-      print("what is debug", debug)
       if debug:
         raise
       return False

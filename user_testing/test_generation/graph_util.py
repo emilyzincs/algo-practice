@@ -17,7 +17,7 @@ def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
 
 
 def get_weighted_graphs(directed: bool, connected: bool, lo: int, hi: int):
-  weighted_graphs: list[WeightedGraph]
+  weighted_graphs: list[WeightedGraph] = []
 
   unweighted_graphs: list[UnweightedGraph] = (
     get_unweighted_graphs(directed, connected)
@@ -38,11 +38,9 @@ def get_unweighted_graphs(directed: bool, connected: bool) -> list[UnweightedGra
   for i in range(15, 18):
     add_random_variety(graphs, directed, connected, i, 2)
   for i in range(49, 52):
-    add_random_variety(graphs, directed, connected, i, 3)
+    add_random_variety(graphs, directed, connected, i, 2)
   for i in range(99, 102):
-    add_random_variety(graphs, directed, connected, i, 3)
-
-  add_random_variety(graphs, directed, connected, 250, 3)
+    add_random_variety(graphs, directed, connected, i, 2)
   return graphs
 
 

@@ -12,14 +12,8 @@
         }
       }
     },
-    {
-      "type": "int"
-    }
+    { "type": "int" },
+    { "type": "int" }
   ],
-  "expected_type": {
-    "type": "set",
-    "items": {
-      "type": "int"
-    }
-  }
+  "expected_type": { "type": "int" }
 }
