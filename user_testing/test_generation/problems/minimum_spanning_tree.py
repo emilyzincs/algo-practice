@@ -15,12 +15,15 @@ sol = Solution()
 class MinimumSpanningTreeGenerator(BaseGenerator):
  
   @override
-  def get_all_test_cases(self) -> list[WeightedGraph]:
-    test_cases = self.get_edge_cases()
-    lo, hi = 0, 100
+  def get_all_test_cases(self) -> list[tuple[WeightedGraph]]:
+    unboxed_test_cases = self.get_edge_cases()
+    lo, hi = -100, 100
     graphs: list[WeightedGraph] = get_weighted_graphs(
       directed=False, connected=False, lo=lo, hi=hi)
-    return test_cases
+    unboxed_test_cases.extend(graphs)
+    boxed_test_cases = (
+        get_graphs_with_rand_vertices(unboxed_test_cases, num_rand_vertices=0))
+    return boxed_test_cases
   
   @override
   def oracle(self, graph: WeightedGraph) -> int:
