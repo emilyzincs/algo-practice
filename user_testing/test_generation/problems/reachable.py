@@ -1,6 +1,10 @@
 from problems.reachable.breadth_first_search.solution import Solution
 
-from user_testing.test_generation.graph_util import *
+from user_testing.test_generation.graph_util import (
+  UnweightedGraph,
+  get_unweighted_graphs,
+  get_graphs_with_rand_vertex
+)
 from user_testing.test_generation.base_generator import BaseGenerator
 from util.enums import GeneralAlgorithm
 from typing import override
@@ -16,9 +20,9 @@ class ReachableGenerator(BaseGenerator):
   @override
   def get_all_test_cases(self) -> list[tuple[UnweightedGraph, int]]:
     test_cases = self.get_edge_cases()
-    unweighted_graphs: list[UnweightedGraph] = get_unweighted_graphs(
+    graphs: list[UnweightedGraph] = get_unweighted_graphs(
       directed=True, connected=False)
-    test_cases.extend(get_graphs_with_rand_vertex(unweighted_graphs))
+    test_cases.extend(get_graphs_with_rand_vertex(graphs))
     return self.remove_duplicate_test_cases(test_cases)
   
   @override
