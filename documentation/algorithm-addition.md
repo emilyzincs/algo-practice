@@ -59,7 +59,7 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
   }
   ```
 
->**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-add-solutions-for-the-new-algorithm). Otherwise, continue to step two.
+>**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-add-solutions-for-the-new-algorithm). Otherwise, continue to step two (even if the algorithm is not specific).
 
 ### 2. Create the General Algorithm Folder (if the General Algorithm is New)
 
@@ -74,6 +74,8 @@ Do **not** create a `test.json` file. The next step will set up the ability to g
 - Define a class named `<GeneralName>Generator` (PascalCase, e.g. ReachableGenerator) that extends `BaseGenerator` (imported from `base_generator`).
 - Override all `@abstractmethod` methods. Do **not** override any `@final` methods.
 - Use helper functions from `command_util` and write custom helpers as needed.
+
+>**Note**: Implementing an oracle may be difficult enough that you need to [write a solution](DEVELOPER.md#writing-an-algorithm-solution-file) first, then use that as the oracle. This is fine, but the generated tests will then provide **no** validation for that solution. If you go this route, it is recommended to start with some **hand-written tests** for basic validation, and to *very* careful in reviewing your code. Make sure to delete the `test.json` file after you are done, so that the generator can do its job.
 
 >**Tip**: It may be helpful to look at an already existing test-generator for a concrete example of what to implement.
 

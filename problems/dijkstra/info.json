@@ -1,0 +1,19 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["graph", "start", "target"],
+  "input_types": [
+    {
+      "type": "list",
+      "items": {
+        "type": "list",
+        "items": {
+          "type": "immutable_list",
+          "items": { "type": "int" }
+        }
+      }
+    },
+    { "type": "int" },
+    { "type": "int" }
+  ],
+  "expected_type": { "type": "int" }
+}
