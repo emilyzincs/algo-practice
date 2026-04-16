@@ -68,4 +68,6 @@ class Solution:
     ret = distance[target]
     if ret == float('inf'):
       return INF_SENTINAL
+    if type(ret) != int:
+      raise RuntimeError(f"Returned value must be an integer. Value: {ret}")
     return int(ret)
