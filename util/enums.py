@@ -69,6 +69,8 @@ class SpecificAlgorithm(Enum):
   DIJKSTRA = auto()
   KRUSKAL = auto()
   PRIM = auto()
+  IN_DEGREE = auto()
+  POSTORDER = auto()
 
 
 # Enum for general algorithm categories.
@@ -78,6 +80,7 @@ class GeneralAlgorithm(Enum):
   SORT = auto()
   DIJKSTRA = auto()
   MINIMUM_SPANNING_TREE = auto()
+  TOPOLOGICAL_SORT = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -95,7 +98,9 @@ INPUT_ALG_TO_SPECIFIC = {
   "kruskal": SpecificAlgorithm.KRUSKAL,
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
-  "prim's": SpecificAlgorithm.PRIM
+  "prim's": SpecificAlgorithm.PRIM,
+  "in degree": SpecificAlgorithm.IN_DEGREE,
+  "postorder": SpecificAlgorithm.POSTORDER,
 }
 
 
@@ -109,6 +114,8 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
+  SpecificAlgorithm.IN_DEGREE: GeneralAlgorithm.TOPOLOGICAL_SORT,
+  SpecificAlgorithm.POSTORDER: GeneralAlgorithm.TOPOLOGICAL_SORT,
 }
 
 

@@ -41,10 +41,13 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 
 ## Suppported Algorithms
 - Binary Search
-- Breadth First Search
-- Depth First Search
-- Merge Sort
-- Quick Sort
+- Reachable
+  - Breadth First Search
+  - Depth First Search
+- Sort
+  - Merge Sort
+  - Quick Sort
 - Dijkstra
-- Kruskal
-- Prim
+- Minimum Spanning Tree
+  - Kruskal
+  - Prim
