@@ -51,3 +51,4 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Minimum Spanning Tree
   - Kruskal
   - Prim
+- Bellman Ford
