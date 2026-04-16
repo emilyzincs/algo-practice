@@ -48,3 +48,4 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Dijkstra
 - Kruskal
 - Prim
+- Bellman Ford
