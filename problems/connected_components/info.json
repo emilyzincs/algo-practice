@@ -1,0 +1,20 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["graph"],
+  "input_types": [
+    {
+      "type": "list",
+      "items": {
+        "type": "list",
+        "items": { "type": "int" }
+      }
+    }
+  ],
+  "expected_type": { 
+    "type": "set", 
+    "items": { 
+      "type": "hashable_set", 
+      "items": { "type": "int"}
+    }
+  }
+}
