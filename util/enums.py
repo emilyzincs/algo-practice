@@ -67,6 +67,7 @@ class SpecificAlgorithm(Enum):
   MERGE_SORT = auto()
   QUICK_SORT = auto()
   HEAP_SORT = auto()
+  RADIX_SORT = auto()
   BUCKET_SORT = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
@@ -99,6 +100,7 @@ INPUT_ALG_TO_SPECIFIC = {
   "merge sort": SpecificAlgorithm.MERGE_SORT,
   "quick sort": SpecificAlgorithm.QUICK_SORT,
   "heap sort": SpecificAlgorithm.HEAP_SORT,
+  "radix sort": SpecificAlgorithm.RADIX_SORT,
   "bucket sort": SpecificAlgorithm.BUCKET_SORT,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
@@ -122,6 +124,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
