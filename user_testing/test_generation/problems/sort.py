@@ -41,10 +41,10 @@ class SortGenerator(BaseGenerator):
     self.add_random_cases(test_cases, 257, -1000, 1000, 2)
 
     for _ in range(4):
-      big_arr = util.rand_big_arr()
+      big_arr = self.rand_big_arr()
       test_cases.append((big_arr,))
     
-    sorted_big_arr = util.rand_sorted_big_arr()
+    sorted_big_arr = self.rand_sorted_big_arr()
     test_cases.append((sorted_big_arr,))
     reverse_sorted_big_arr = tuple(list(big_arr)[::-1])
     test_cases.append((reverse_sorted_big_arr,))
@@ -80,9 +80,6 @@ class SortGenerator(BaseGenerator):
   # - n: Length of the array.
   # - lo: Minimum value for array elements.
   # - hi: Maximum value for array elements.
-  #
-  # Returns:
-  #   A tuple containing a single tuple (the random array).
   def get_random_case(self, n: int, lo: int, hi: int
                       ) -> tuple[tuple[int, ...], ...]:
     arr = util.rand_array(n, lo, hi)
@@ -105,3 +102,9 @@ class SortGenerator(BaseGenerator):
     test_cases = list(set(test_cases))
     test_cases.sort(key=lambda x: len(x[0]))
     return test_cases
+  
+  def rand_big_arr(self) -> tuple[int, ...]:
+    return util.rand_big_arr()
+
+  def rand_sorted_big_arr(self) -> tuple[int, ...]:
+    return tuple(sorted(list((self.rand_big_arr()))))
