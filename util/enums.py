@@ -122,6 +122,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
