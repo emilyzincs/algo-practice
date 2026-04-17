@@ -16,17 +16,18 @@ class FloydWarshallGenerator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[WeightedGraph, int, int]]:
+    test_cases: list[tuple[WeightedGraph, int, int]] = []
+
     graphs: list[WeightedGraph] = self.get_edge_cases()
+    los_and_his = self.get_los_and_his(graphs)
+    self.add_graphs_to_test_cases(graphs, test_cases, los_and_his)
+
     lo, hi = -100, 100
-    graphs.extend(get_weighted_graphs(
+    graphs = (get_weighted_graphs(
       directed=True, connected=False, lo=lo, hi=hi))
     
-    test_cases: list[tuple[WeightedGraph, int, int]] = []
-    for graph in graphs:
-      N = len(graph) + 1
-      NEG_INF_SENTINAL = lo * N - 1
-      INF_SENTINAL = hi * N + 1
-      test_cases.append((graph, NEG_INF_SENTINAL, INF_SENTINAL))
+    los_and_his = [(lo, hi) for _ in range(len(graphs))]
+    self.add_graphs_to_test_cases(graphs, test_cases, los_and_his)
     return test_cases
   
   @override
@@ -69,3 +70,29 @@ class FloydWarshallGenerator(BaseGenerator):
       [[(1, 5), (1, -2)], [(0, 5), (0, -2)]],
       [[(1, 10**9)], [(0, 10**9)]],
     ]
+  
+  def get_los_and_his(self, graphs: list[WeightedGraph]) -> list[tuple[int, int]]:
+    los_and_his: list[tuple[int, int]] = []
+    for graph in graphs:
+      N = len(graph) + 1
+      weights = [weight for adj in graph for neighbor, weight in adj]
+      if not weights:
+        los_and_his.append((-1, 1))
+      else:
+        los_and_his.append((min(weights), max(weights)))
+    return los_and_his
+
+  def add_graphs_to_test_cases(
+    self, 
+    graphs: list[WeightedGraph], 
+    test_cases: list[tuple[WeightedGraph, int, int]],
+    los_and_his: list[tuple[int, int]],
+  ) -> None:
+    for i in range(len(graphs)):
+      graph = graphs[i]
+      lo, hi = los_and_his[i]
+      N = len(graph) + 1
+
+      NEG_INF_SENTINAL = min(lo, 0) * N - 1
+      INF_SENTINAL = max(hi, 0) * N + 1
+      test_cases.append((graph, NEG_INF_SENTINAL, INF_SENTINAL))
