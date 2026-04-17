@@ -50,3 +50,4 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Kruskal
 - Prim
 - Tarjan
+- Ford Fulkerson
