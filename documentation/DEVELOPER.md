@@ -148,9 +148,9 @@ Let `<T>` represent a nested language‑agnostic type.
 | Map        | `{ "type": "map", "keys": <T>, "values": <T> }` |
 
 **Allowed primitives:** `int`, `long`, `float`, `boolean`, `string`  
-**Allowed collections:** `array`, `list`, `immutable_list`, `set`
+**Allowed collections:** `array`, `list`, `hashable_list`, `set`, `hashable_set`
 
-> The distinction between `array`, `list`, and `immutable_list` is only relevant for languages that differentiate them (e.g., Python’s `list` vs `tuple`). Test runners should map them to the most natural mutable/immutable sequence type.
+> The distinction between `array`, `list`, and `hashable_list` is only relevant for languages that differentiate them (e.g., Python’s `list` vs `tuple`). Test runners should map them to the most natural sequence type.
 
 ---
 
@@ -163,7 +163,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | `int`, `long`, `float`                   | number     |
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
-| `array`, `list`, `immutable_list`, `set` | Array      |
+| `array`, `list`, `hashable_list`, `set`, `hashable_set` | Array      |
 | `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values). This is done to allow arbitrary hashable types as keys (not just strings) |
 
 ### Python
@@ -175,8 +175,9 @@ Let `<T>` represent a nested language‑agnostic type.
 | `boolean`                                | bool       |
 | `string`                                 | str        |
 | `array`, `list`                          | list       |
-| `immutable_list`                         | tuple      |
+| `hashable_list`                          | tuple      |
 | `set`                                    | set        |
+| `hashable_set`                           | frozenset  |
 | `map`                                    | dict       |
 
 ### Java
@@ -188,9 +189,9 @@ Let `<T>` represent a nested language‑agnostic type.
 | `float`                                  | double     |
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
-| `array`, `immutable_list`                | Array      |
+| `array`, `hashable_list`                 | Array      |
 | `list`                                   | List       |
-| `set`                                    | Set        |
+| `set`, `hashable_set`                    | Set        |
 | `map`                                    | Map        |
 
 >**Note**: If a primitive appears in a non-array language-agnostic collection type, then its Java type will be boxed to an object. For example, below, the language-agnostic type `"int"` maps to the Java object `Integer`, since "int" is in "list".

@@ -1,0 +1,40 @@
+class Solution:
+  def solve(self, graph: list[list[int]]) -> set[frozenset[int]]:
+    n = len(graph)
+    index = 0
+    indices = [-1] * n
+    lowlink = [0] * n
+    on_stack = [False] * n
+    stack = []
+    sccs: set[frozenset[int]] = set()
+
+    def strongconnect(v: int) -> None:
+      nonlocal index
+      indices[v] = index
+      lowlink[v] = index
+      index += 1
+      stack.append(v)
+      on_stack[v] = True
+
+      for w in graph[v]:
+        if indices[w] == -1:
+          strongconnect(w)
+          lowlink[v] = min(lowlink[v], lowlink[w])
+        elif on_stack[w]:
+          lowlink[v] = min(lowlink[v], indices[w])
+
+      if lowlink[v] == indices[v]:
+        scc: set[int] = set()
+        while True:
+          w = stack.pop()
+          on_stack[w] = False
+          scc.add(w)
+          if w == v:
+            break
+        sccs.add(frozenset(scc))
+
+    for v in range(n):
+      if indices[v] == -1:
+        strongconnect(v)
+
+    return sccs

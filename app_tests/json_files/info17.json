@@ -4,7 +4,7 @@
   "input_types": [
     { 
       "type": "set",
-      "items": { "type": "immutable_list", "items": { "type": "string" } }
+      "items": { "type": "hashable_list", "items": { "type": "string" } }
     }
   ],
   "expected_type": {

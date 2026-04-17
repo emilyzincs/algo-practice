@@ -70,8 +70,9 @@ class SpecificAlgorithm(Enum):
   BELLMAN_FORD = auto()
   KRUSKAL = auto()
   PRIM = auto()
+  TARJAN = auto()
   FORD_FULKERSON = auto()
-
+  
 
 # Enum for general algorithm categories.
 class GeneralAlgorithm(Enum):
@@ -81,6 +82,7 @@ class GeneralAlgorithm(Enum):
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   MINIMUM_SPANNING_TREE = auto()
+  CONNECTED_COMPONENTS = auto()
   MAX_FLOW = auto()
 
 
@@ -101,7 +103,9 @@ INPUT_ALG_TO_SPECIFIC = {
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
   "prim's": SpecificAlgorithm.PRIM,
-  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON
+  "tarjan": SpecificAlgorithm.TARJAN,
+  "tarjan's": SpecificAlgorithm.TARJAN,
+  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
 }
 
 
@@ -116,7 +120,8 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
-  SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW
+  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
+  SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
 }
 
 
@@ -167,6 +172,7 @@ class ParseType(Enum):
   STRING = auto()
   ARRAY = auto()
   LIST = auto()
-  IMMUTABLE_LIST = auto()
+  HASHABLE_LIST = auto()
   SET = auto()
+  HASHABLE_SET = auto()
   MAP = auto()

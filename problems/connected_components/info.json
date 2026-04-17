@@ -6,12 +6,15 @@
       "type": "list",
       "items": {
         "type": "list",
-        "items": {
-          "type": "hashable_list",
-          "items": { "type": "int" }
-        }
+        "items": { "type": "int" }
       }
     }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { 
+    "type": "set", 
+    "items": { 
+      "type": "hashable_set", 
+      "items": { "type": "int"}
+    }
+  }
 }

@@ -138,19 +138,7 @@ def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
       for vertex in component:
         seen[vertex] = True
   else:
-    
-  n = len(graph)
-  if n == 0:
-    return
-  for i in range(1, n):
-    if i not in graph[i-1]:
-      graph[i-1].append(i)
-    if not directed and i-1 not in graph[i]:
-      graph[i].append(i-1)
-  if 0 not in graph[n-1]:
-    graph[n-1].append(0)
-  if not directed and n-1 not in graph[0]:
-    graph[0].append(n-1)
+    pass
 
 
 def weight_graph_random(
