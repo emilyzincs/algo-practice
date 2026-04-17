@@ -34,8 +34,9 @@ public class Runner {
     STRING,
     ARRAY,
     LIST,
-    IMMUTABLE_LIST,
+    HASHABLE_LIST,
     SET,
+    HASHABLE_SET,
     MAP,
   }
 
@@ -203,13 +204,13 @@ public class Runner {
       case FLOAT -> double.class;
       case BOOLEAN -> boolean.class;
       case STRING -> String.class;
-      case ARRAY, IMMUTABLE_LIST -> {
+      case ARRAY, HASHABLE_LIST -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         yield Array.newInstance(inner, 0).getClass();
       }
       case LIST -> List.class;
-      case SET -> Set.class;
+      case SET, HASHABLE_SET -> Set.class;
       case MAP -> Map.class;
     };
   }
@@ -256,7 +257,7 @@ public class Runner {
       case LONG -> ((Number) val).longValue();
       case FLOAT -> ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
       case BOOLEAN, STRING -> val;
-      case ARRAY, IMMUTABLE_LIST -> {
+      case ARRAY, HASHABLE_LIST -> {
         List<?> rawList = (List<?>) val;
         @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
@@ -277,7 +278,7 @@ public class Runner {
           list.add(parseValue(o, inner));
         yield list;
       }
-      case SET -> {
+      case SET, HASHABLE_SET -> {
         List<?> raw = (List<?>) val;
         Set<Object> set = new HashSet<>();
         @SuppressWarnings("unchecked")
