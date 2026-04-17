@@ -82,7 +82,9 @@ class SortGenerator(BaseGenerator):
   # - hi: Maximum value for array elements.
   def get_random_case(self, n: int, lo: int, hi: int
                       ) -> tuple[tuple[int, ...], ...]:
-    arr = util.rand_array(n, lo, hi)
+    arr = util.rand_int_array(n, lo, hi)
+    if type(arr) != tuple[int, ...]:
+      raise RuntimeError(f"Expected array of ints, but was {arr}.")
     return (tuple(arr),)
 
   # Appends a specified number of random test cases to the given list.

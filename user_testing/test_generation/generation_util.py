@@ -10,9 +10,14 @@ def get_empty_list() -> list[Any]:
   return []
 
 
-def rand_array(size: int, lo: int, hi: int) -> tuple[int, ...]:
-  return tuple([random.randint(lo, hi) for _ in range(size)])
+def rand_int_array(size: int, lo: int, hi: int) -> tuple[int, ...]:
+  return _rand_array(size, random.randint, lo, hi)
 
+def rand_float_array(size: int, lo: int, hi: int) -> tuple[float, ...]:
+  return _rand_array(size, random.uniform, lo, hi)
+
+def _rand_array(size: int, element_creator_func, *args, **kwargs):
+  return tuple([element_creator_func(*args, **kwargs) for _ in range(size)])
 
 def rand_big_arr() -> tuple[int, ...]:
   ret = []

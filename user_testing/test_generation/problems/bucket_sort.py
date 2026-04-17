@@ -12,8 +12,8 @@ class BucketSortGenerator(SortGenerator):
   
   @override
   def get_random_case(self, n: int, lo: int, hi: int
-                      ) -> tuple[tuple[int, ...], ...]:
-    arr = util.rand_array(n, lo, hi)
+                      ) -> tuple[tuple[float, ...], ...]:
+    arr = util.rand_float_array(n, lo, hi) 
     return (tuple(arr),)
 
   
