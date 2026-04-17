@@ -1,14 +1,17 @@
 from user_testing.test_generation import generation_util as util
 from typing import TypeVar, Callable
 import random
-from problems.reachable.depth_first_search.solution import Solution
+from problems.reachable.depth_first_search.solution import Solution as DfsSolution
+from problems.connected_components.tarjan.solution import Solution as TarjanSolution
+
 
 
 WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
 
-dfs = Solution()
+dfs = DfsSolution()
+tarjan = TarjanSolution()
 
 
 def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
@@ -126,19 +129,39 @@ def rand_graph_and_root(
 
 
 def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
-  components: list[tuple[int, set[int]]] = []
-  if not directed:
+  def get_directed_representatives() -> list[int]:
+    component_representatives = []
+    components: set[frozenset[int]] = tarjan.solve(graph)
+    for comp in components:
+      for vertex in comp:
+        component_representatives.append(vertex)
+        break
+    return component_representatives
+  
+  def get_undirected_representatives(graph: UnweightedGraph) -> list[int]:
+    component_representatives = []
     n = len(graph)
     seen = [False for _ in range(n)]
     for root in range(n):
       if seen[root]:
         continue
       component = dfs.solve(graph, root)
-      components.append((root, component))
+      component_representatives.append(root)
       for vertex in component:
         seen[vertex] = True
-  else:
-    pass
+    return component_representatives
+    
+  component_representatives = (
+    get_directed_representatives() if directed
+    else get_undirected_representatives(graph)
+  )
+  for i in range(len(component_representatives) - 1):
+    first = component_representatives[i]
+    second = component_representatives[i+1]
+    if second not in graph[first]:
+      graph[first].append(second)
+    if first not in graph[second]:
+      graph[second].append(first)
 
 
 def weight_graph_random(
