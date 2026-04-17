@@ -1,10 +1,14 @@
 from user_testing.test_generation import generation_util as util
-from typing import TypeVar, Callable, cast
+from typing import TypeVar, Callable
 import random
+from problems.reachable.depth_first_search.solution import Solution
+
 
 WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
+
+dfs = Solution()
 
 
 def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
@@ -122,6 +126,19 @@ def rand_graph_and_root(
 
 
 def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
+  components: list[tuple[int, set[int]]] = []
+  if not directed:
+    n = len(graph)
+    seen = [False for _ in range(n)]
+    for root in range(n):
+      if seen[root]:
+        continue
+      component = dfs.solve(graph, root)
+      components.append((root, component))
+      for vertex in component:
+        seen[vertex] = True
+  else:
+    
   n = len(graph)
   if n == 0:
     return

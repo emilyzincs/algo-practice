@@ -7,8 +7,6 @@ class Solution:
   
   def dfs(self, graph: list[list[int]], root: int, 
           reachable: set[int], seen: list[bool]) -> None:
-    if root < 0 or len(graph) <= root:
-      raise ValueError(f"Root is not a vertex: {root}")
     reachable.add(root)
     for neighbor in graph[root]:
       if not seen[neighbor]:

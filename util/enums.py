@@ -70,7 +70,7 @@ class SpecificAlgorithm(Enum):
   BELLMAN_FORD = auto()
   KRUSKAL = auto()
   PRIM = auto()
-  
+  FORD_FULKERSON = auto()
 
 
 # Enum for general algorithm categories.
@@ -81,6 +81,7 @@ class GeneralAlgorithm(Enum):
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   MINIMUM_SPANNING_TREE = auto()
+  MAX_FLOW = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -99,7 +100,8 @@ INPUT_ALG_TO_SPECIFIC = {
   "kruskal": SpecificAlgorithm.KRUSKAL,
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
-  "prim's": SpecificAlgorithm.PRIM
+  "prim's": SpecificAlgorithm.PRIM,
+  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON
 }
 
 
@@ -114,6 +116,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
+  SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW
 }
 
 
