@@ -128,7 +128,7 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
     case ParseType.IMMUTABLE_LIST:
       return tuple([parse_value(v, typ["items"]) for v in val])
     case ParseType.SET:
-      return {parse_value(v, typ["items"]) for v in val}
+      return frozenset(parse_value(v, typ["items"]) for v in val)
     case ParseType.MAP:
       if type(val) != list or len(val) != 2 or len(val[0]) != len(val[1]):
         raise ValueError("Maps must be represented as two lists of equal length.")

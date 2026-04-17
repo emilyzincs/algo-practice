@@ -13,5 +13,12 @@
       }
     }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { 
+    "type": "set", 
+    "items": { 
+      "type": "set", 
+      "items": { "type": "int"}
+     
+    }
+  }
 }

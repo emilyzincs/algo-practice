@@ -6,7 +6,7 @@ class Solution:
     lowlink = [0] * n
     on_stack = [False] * n
     stack = []
-    sccs: set[set[int]] = set()
+    sccs: set[frozenset[int]] = set()
 
     def strongconnect(v: int) -> None:
       nonlocal index
@@ -31,7 +31,7 @@ class Solution:
           scc.add(w)
           if w == v:
             break
-        sccs.add(scc)
+        sccs.add(frozenset(scc))
 
     for v in range(n):
       if indices[v] == -1:
