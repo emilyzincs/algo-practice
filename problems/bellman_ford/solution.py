@@ -1,10 +1,9 @@
 from collections import deque
-from typing import List, Tuple
 
 class Solution:
   def solve(
     self,
-    graph: List[List[Tuple[int, int]]],
+    graph: list[list[tuple[int, int]]],
     start: int,
     target: int,
     NEG_INF_SENTINAL: int,
@@ -50,8 +49,8 @@ class Solution:
 
     return self._finalize_distance(distance, target, INF_SENTINAL)
 
-  def _find_unbounded_vertices(self, graph: List[List[Tuple[int, int]]],
-                               start_from: int) -> List[bool]:
+  def _find_unbounded_vertices(self, graph: list[list[tuple[int, int]]],
+                               start_from: int) -> list[bool]:
     num_vertices = len(graph)
     unbounded = [False] * num_vertices
     q = deque([start_from])
@@ -64,7 +63,7 @@ class Solution:
           q.append(v)
     return unbounded
 
-  def _finalize_distance(self, distance: List[float], target: int, INF_SENTINAL: int) -> int:
+  def _finalize_distance(self, distance: list[float], target: int, INF_SENTINAL: int) -> int:
     ret = distance[target]
     if ret == float('inf'):
       return INF_SENTINAL

@@ -71,6 +71,7 @@ class SpecificAlgorithm(Enum):
   BUCKET_SORT = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
+  FLOYD_WARSHALL = auto()
   KRUSKAL = auto()
   PRIM = auto()
   TARJAN = auto()
@@ -85,6 +86,7 @@ class GeneralAlgorithm(Enum):
   BUCKET_SORT = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
+  FLOYD_WARSHALL = auto()
   MINIMUM_SPANNING_TREE = auto()
   CONNECTED_COMPONENTS = auto()
   MAX_FLOW = auto()
@@ -104,8 +106,8 @@ INPUT_ALG_TO_SPECIFIC = {
   "bucket sort": SpecificAlgorithm.BUCKET_SORT,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
-  "shortest path": SpecificAlgorithm.DIJKSTRA,
   "bellman ford": SpecificAlgorithm.BELLMAN_FORD,
+  "floyd warshall": SpecificAlgorithm.FLOYD_WARSHALL,
   "kruskal": SpecificAlgorithm.KRUSKAL,
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
@@ -128,6 +130,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
+  SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.FLOYD_WARSHALL,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
