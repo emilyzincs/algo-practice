@@ -45,6 +45,7 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Depth First Search
 - Merge Sort
 - Quick Sort
+- Heap Sort
 - Dijkstra
 - Bellman Ford
 - Kruskal
