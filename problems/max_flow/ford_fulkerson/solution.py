@@ -1,5 +1,8 @@
 class Solution:
   def solve(self, graph: list[list[tuple[int, int]]], source: int, sink: int) -> int:
+    if source == sink:
+      return 0
+    
     n: int = len(graph)
     
     adj: list[list[list[int]]] = [[] for _ in range(n)]
