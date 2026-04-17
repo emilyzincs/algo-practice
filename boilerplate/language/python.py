@@ -50,10 +50,12 @@ class PythonBp(BpInterface):
         return f"list[{self.parse_type_string(typ["items"])}]"
       case ParseType.LIST:
         return f"list[{self.parse_type_string(typ["items"])}]"
-      case ParseType.IMMUTABLE_LIST:
+      case ParseType.HASHABLE_LIST:
         return f"tuple[{self.parse_type_string(typ["items"])}, ...]"
       case ParseType.SET:
         return f"set[{self.parse_type_string(typ["items"])}]"
+      case ParseType.HASHABLE_SET:
+        return f"frozenset[{self.parse_type_string(typ["items"])}]"
       case ParseType.MAP:
         return (f"dict[{self.parse_type_string(typ["keys"])}," + 
               f" {self.parse_type_string(typ["values"])}]")

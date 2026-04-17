@@ -169,6 +169,7 @@ class ParseType(Enum):
   STRING = auto()
   ARRAY = auto()
   LIST = auto()
-  IMMUTABLE_LIST = auto()
+  HASHABLE_LIST = auto()
   SET = auto()
+  HASHABLE_SET = auto()
   MAP = auto()

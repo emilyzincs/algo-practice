@@ -125,9 +125,11 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
       return val
     case ParseType.ARRAY | ParseType.LIST:
       return [parse_value(v, typ["items"]) for v in val]
-    case ParseType.IMMUTABLE_LIST:
+    case ParseType.HASHABLE_LIST:
       return tuple([parse_value(v, typ["items"]) for v in val])
     case ParseType.SET:
+      return {parse_value(v, typ["items"]) for v in val}
+    case ParseType.HASHABLE_SET:
       return frozenset(parse_value(v, typ["items"]) for v in val)
     case ParseType.MAP:
       if type(val) != list or len(val) != 2 or len(val[0]) != len(val[1]):

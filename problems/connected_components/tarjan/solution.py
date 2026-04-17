@@ -1,5 +1,5 @@
 class Solution:
-  def solve(self, graph: list[list[int]]) -> set[set[int]]:
+  def solve(self, graph: list[list[int]]) -> set[frozenset[int]]:
     n = len(graph)
     index = 0
     indices = [-1] * n

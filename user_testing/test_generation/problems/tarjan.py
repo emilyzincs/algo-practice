@@ -26,7 +26,7 @@ class TarjanGenerator(BaseGenerator):
     return self.remove_duplicate_test_cases(test_cases)
   
   @override
-  def oracle(self, graph: list[list[int]]) -> set[set[int]]:
+  def oracle(self, graph: list[list[int]]) -> set[frozenset[int]]:
     return sol.solve(graph)
   
   @override
