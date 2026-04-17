@@ -1,6 +1,6 @@
 {
   "unique_answer": true,
-  "parameter_names": ["graph", "start", "target"],
+  "parameter_names": ["graph", "NEG_INF_SENTINEL", "INF_SENTINEL"],
   "input_types": [
     {
       "type": "list",
@@ -13,9 +13,13 @@
       }
     },
     { "type": "int" },
-    { "type": "int" },
-    { "type": "int" },
     { "type": "int" }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { 
+    "type": "list",
+    "items": {
+      "type": "list",
+      "items": { "type": "int" }
+    }
+  }
 }
