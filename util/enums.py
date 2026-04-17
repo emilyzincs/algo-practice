@@ -70,6 +70,7 @@ class SpecificAlgorithm(Enum):
   BELLMAN_FORD = auto()
   KRUSKAL = auto()
   PRIM = auto()
+  TARJAN = auto()
   
 
 
@@ -81,6 +82,7 @@ class GeneralAlgorithm(Enum):
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   MINIMUM_SPANNING_TREE = auto()
+  CONNECTED_COMPONENTS = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -99,7 +101,9 @@ INPUT_ALG_TO_SPECIFIC = {
   "kruskal": SpecificAlgorithm.KRUSKAL,
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
-  "prim's": SpecificAlgorithm.PRIM
+  "prim's": SpecificAlgorithm.PRIM,
+  "tarjan": SpecificAlgorithm.TARJAN,
+  "tarjan's": SpecificAlgorithm.TARJAN,
 }
 
 
@@ -114,6 +118,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
+  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS
 }
 
 
