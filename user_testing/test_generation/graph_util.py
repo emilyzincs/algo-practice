@@ -1,10 +1,17 @@
 from user_testing.test_generation import generation_util as util
-from typing import TypeVar, Callable, cast
+from typing import TypeVar, Callable
 import random
+from problems.reachable.depth_first_search.solution import Solution as DfsSolution
+from problems.connected_components.tarjan.solution import Solution as TarjanSolution
+
+
 
 WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
+
+dfs = DfsSolution()
+tarjan = TarjanSolution()
 
 
 def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
@@ -122,18 +129,39 @@ def rand_graph_and_root(
 
 
 def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
-  n = len(graph)
-  if n == 0:
-    return
-  for i in range(1, n):
-    if i not in graph[i-1]:
-      graph[i-1].append(i)
-    if not directed and i-1 not in graph[i]:
-      graph[i].append(i-1)
-  if 0 not in graph[n-1]:
-    graph[n-1].append(0)
-  if not directed and n-1 not in graph[0]:
-    graph[0].append(n-1)
+  def get_directed_representatives() -> list[int]:
+    component_representatives = []
+    components: set[frozenset[int]] = tarjan.solve(graph)
+    for comp in components:
+      for vertex in comp:
+        component_representatives.append(vertex)
+        break
+    return component_representatives
+  
+  def get_undirected_representatives(graph: UnweightedGraph) -> list[int]:
+    component_representatives = []
+    n = len(graph)
+    seen = [False for _ in range(n)]
+    for root in range(n):
+      if seen[root]:
+        continue
+      component = dfs.solve(graph, root)
+      component_representatives.append(root)
+      for vertex in component:
+        seen[vertex] = True
+    return component_representatives
+    
+  component_representatives = (
+    get_directed_representatives() if directed
+    else get_undirected_representatives(graph)
+  )
+  for i in range(len(component_representatives) - 1):
+    first = component_representatives[i]
+    second = component_representatives[i+1]
+    if second not in graph[first]:
+      graph[first].append(second)
+    if first not in graph[second]:
+      graph[second].append(first)
 
 
 def weight_graph_random(
