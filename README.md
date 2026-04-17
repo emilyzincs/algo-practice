@@ -46,6 +46,6 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Merge Sort
 - Quick Sort
 - Dijkstra
+- - Bellman Ford
 - Kruskal
 - Prim
-- Bellman Ford

@@ -7,7 +7,7 @@
       "items": {
         "type": "list",
         "items": {
-          "type": "immutable_list",
+          "type": "hashable_list",
           "items": { "type": "int" }
         }
       }
