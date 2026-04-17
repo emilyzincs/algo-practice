@@ -15,7 +15,7 @@ sol = Solution()
 
 
 # Generator for reachability algorithm tests.
-class TarjanGenerator(BaseGenerator):
+class ConnectedComponentsGenerator(BaseGenerator):
 
   @override
   def get_all_test_cases(self) -> list[tuple[UnweightedGraph]]:
@@ -26,12 +26,14 @@ class TarjanGenerator(BaseGenerator):
     return self.remove_duplicate_test_cases(test_cases)
   
   @override
-  def oracle(self, graph: list[list[int]]) -> set[frozenset[int]]:
-    return sol.solve(graph)
+  def oracle(self, graph: list[list[int]]) -> list[list[int]]:
+    components: set[frozenset[int]] = sol.solve(graph)
+    return [list(component) for component in components]
+
   
   @override
   def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.REACHABLE
+    return GeneralAlgorithm.CONNECTED_COMPONENTS
 
   def get_edge_cases(self) -> list[tuple[UnweightedGraph]]:
     return [

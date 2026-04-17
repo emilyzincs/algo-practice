@@ -6,19 +6,15 @@
       "type": "list",
       "items": {
         "type": "list",
-        "items": {
-          "type": "immutable_list",
-          "items": { "type": "int" }
-        }
+        "items": { "type": "int" }
       }
     }
   ],
   "expected_type": { 
     "type": "set", 
     "items": { 
-      "type": "set", 
+      "type": "hashable_set", 
       "items": { "type": "int"}
-     
     }
   }
 }
