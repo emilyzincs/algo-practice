@@ -4,14 +4,8 @@ from util.enums import GeneralAlgorithm
 from typing import override
 
 
-# Generator for sorting algorithm tests.
 class SortGenerator(BaseGenerator):
 
-  # Builds the complete list of test cases for sorting.
-  #
-  # Returns:
-  #   A list of (array,) tuples covering edge cases, random inputs,
-  #   and large arrays.
   @override
   def get_all_test_cases(self) -> list[tuple[tuple[int, ...], ...]]:
     test_cases = self.get_edge_cases()
@@ -83,8 +77,6 @@ class SortGenerator(BaseGenerator):
   def get_random_case(self, n: int, lo: int, hi: int
                       ) -> tuple[tuple[int, ...], ...]:
     arr = util.rand_int_array(n, lo, hi)
-    if type(arr) != tuple[int, ...]:
-      raise RuntimeError(f"Expected array of ints, but was {arr}.")
     return (tuple(arr),)
 
   # Appends a specified number of random test cases to the given list.
@@ -106,7 +98,7 @@ class SortGenerator(BaseGenerator):
     return test_cases
   
   def rand_big_arr(self) -> tuple[int, ...]:
-    return util.rand_big_arr()
+    return util.rand_int_big_arry()
 
   def rand_sorted_big_arr(self) -> tuple[int, ...]:
     return tuple(sorted(list((self.rand_big_arr()))))
