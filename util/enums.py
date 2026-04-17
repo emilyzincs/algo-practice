@@ -67,6 +67,7 @@ class SpecificAlgorithm(Enum):
   MERGE_SORT = auto()
   QUICK_SORT = auto()
   HEAP_SORT = auto()
+  BUCKET_SORT = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   KRUSKAL = auto()
@@ -80,6 +81,7 @@ class GeneralAlgorithm(Enum):
   BINARY_SEARCH = auto()
   REACHABLE = auto()
   SORT = auto()
+  BUCKET_SORT = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   MINIMUM_SPANNING_TREE = auto()
@@ -97,6 +99,7 @@ INPUT_ALG_TO_SPECIFIC = {
   "merge sort": SpecificAlgorithm.MERGE_SORT,
   "quick sort": SpecificAlgorithm.QUICK_SORT,
   "heap sort": SpecificAlgorithm.HEAP_SORT,
+  "bucket sort": SpecificAlgorithm.BUCKET_SORT,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
   "shortest path": SpecificAlgorithm.DIJKSTRA,
@@ -119,6 +122,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,

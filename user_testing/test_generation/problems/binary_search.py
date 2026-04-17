@@ -40,21 +40,21 @@ class BinarySearchGenerator(BaseGenerator):
     self.add_random_cases(test_cases, 256, -1000, 1000, 2)
     self.add_random_cases(test_cases, 257, -1000, 1000, 2)
 
-    arr = tuple(sorted(util.rand_array(255, -1000, 1000)))
+    arr = tuple(sorted(util.rand_int_array(255, -1000, 1000)))
     self.add_boundary_cases(test_cases, arr)
 
-    arr = tuple(sorted(util.rand_array(256, -1000, 1000)))
+    arr = tuple(sorted(util.rand_int_array(256, -1000, 1000)))
     self.add_boundary_cases(test_cases, arr)
 
-    arr = tuple(sorted(util.rand_array(257, -1000, 1000)))
+    arr = tuple(sorted(util.rand_int_array(257, -1000, 1000)))
     self.add_boundary_cases(test_cases, arr)
 
     for _ in range(4):
-      big_arr = util.rand_sorted_big_arr()
+      big_arr = tuple(sorted(list((util.rand_int_big_arry()))))
       target = util.pick_target(big_arr)
       test_cases.append((big_arr, target))
 
-    arr = util.rand_sorted_big_arr()
+    arr = tuple(sorted(list((util.rand_int_big_arry()))))
     self.add_boundary_cases(test_cases, arr)
 
     test_cases.append((util.all_same_big_arr(value=0), 0))
@@ -112,7 +112,7 @@ class BinarySearchGenerator(BaseGenerator):
   #   A tuple (sorted list, target).
   def get_random_case(self, n: int, lo: int, 
                       hi: int) -> tuple[tuple[int, ...], int]:
-    arr = tuple(sorted(util.rand_array(n, lo, hi)))
+    arr = tuple(sorted(util.rand_int_array(n, lo, hi)))
     target = util.pick_target(arr)
     return tuple(arr), target
 

@@ -10,28 +10,32 @@ def get_empty_list() -> list[Any]:
   return []
 
 
-def rand_array(size: int, lo: int, hi: int) -> tuple[int, ...]:
-  return tuple([random.randint(lo, hi) for _ in range(size)])
+def rand_int_array(size: int, lo: int, hi: int) -> tuple[int, ...]:
+  return _rand_array(size, random.randint, lo, hi)
 
 
-def rand_big_arr() -> tuple[int, ...]:
+def rand_float_array(size: int, lo: int, hi: int) -> tuple[float, ...]:
+  return _rand_array(size, random.uniform, lo, hi)
+
+
+def _rand_array(size: int, element_creator_func: Callable, *args, **kwargs):
+  return tuple([element_creator_func(*args, **kwargs) for _ in range(size)])
+
+
+def rand_int_big_arry(lo: int = 10**4, hi: int = 10**4) -> tuple[int, ...]:
+  return _rand_big_arr(random.randint, lo, hi)
+
+def rand_float_big_arry(lo: int = 10**4, hi: int = 10**4) -> tuple[float, ...]:
+  return _rand_big_arr(random.uniform, lo, hi)
+
+def _rand_big_arr(element_creator_func: Callable, *args, **kwargs):
   ret = []
-  for i in range(-(10**4), 10**4):
+  for _ in range(-(10**4), 10**4):
     if rand_bool():
-      ret.append(i)
+      element = element_creator_func(*args, **kwargs)
+      ret.append(element)
       while rand_bool(0.2):
-        ret.append(i)
-  random.shuffle(ret)
-  return tuple(ret)
-
-
-def rand_sorted_big_arr() -> tuple[int, ...]:
-  ret = []
-  for i in range(-(10**4), 10**4):
-    if rand_bool():
-      ret.append(i)
-      while rand_bool(0.2):
-        ret.append(i)
+        ret.append(element)
   return tuple(ret)
 
 
