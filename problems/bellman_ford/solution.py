@@ -1,4 +1,5 @@
 from collections import deque
+import math
 
 class Solution:
   def solve(
@@ -10,63 +11,65 @@ class Solution:
     INF_SENTINAL: int
   ) -> int:
     num_vertices = len(graph)
+    if num_vertices == 0: return INF_SENTINAL
 
-    INF = float('inf')
-    distance = [INF] * num_vertices
-    distance[start] = 0
+    # Use a large integer or infinity
+    dist = [float('inf')] * num_vertices
+    dist[start] = 0
 
     in_queue = [False] * num_vertices
     relaxation_count = [0] * num_vertices
+    has_negative_cycle_to_target = False
 
-    queue: deque[int] = deque()
-    queue.append(start)
+    queue: deque[int] = deque([start])
     in_queue[start] = True
-    relaxation_count[start] = 1
-
+    
     while queue:
-      current = queue.popleft()
-      in_queue[current] = False
+      u = queue.popleft()
+      in_queue[u] = False
 
-      for neighbor, weight in graph[current]:
-        if distance[current] != INF and distance[current] + weight < distance[neighbor]:
-          distance[neighbor] = distance[current] + weight
-
-          if not in_queue[neighbor]:
-            relaxation_count[neighbor] += 1
-            if relaxation_count[neighbor] >= num_vertices:
-
-              unbounded = self._find_unbounded_vertices(graph, neighbor)
-              if unbounded[target]:
+      for v, weight in graph[u]:
+        if dist[u] != float('inf') and dist[u] + weight < dist[v]:
+          dist[v] = dist[u] + weight
+          
+          if not in_queue[v]:
+            relaxation_count[v] += 1
+            
+            # Negative cycle detected
+            if relaxation_count[v] >= num_vertices:
+              # Check if this cycle can actually reach the target
+              if self._reaches_target(graph, v, target):
                 return NEG_INF_SENTINAL
-              
-              return self._finalize_distance(distance, target, INF_SENTINAL)
+              else:
+                # If it doesn't reach target, we continue but stop 
+                # exploring this specific path to avoid infinite loops
+                continue 
 
-            if queue and distance[neighbor] < distance[queue[0]]:
-              queue.appendleft(neighbor)
+            # Small SPFA optimization (SLF - Small Label First)
+            if queue and dist[v] < dist[queue[0]]:
+              queue.appendleft(v)
             else:
-              queue.append(neighbor)
-            in_queue[neighbor] = True
+              queue.append(v)
+            in_queue[v] = True
 
-    return self._finalize_distance(distance, target, INF_SENTINAL)
+    return self._finalize_distance(dist, target, INF_SENTINAL)
 
-  def _find_unbounded_vertices(self, graph: list[list[tuple[int, int]]],
-                               start_from: int) -> list[bool]:
-    num_vertices = len(graph)
-    unbounded = [False] * num_vertices
-    q = deque([start_from])
-    unbounded[start_from] = True
+  def _reaches_target(self, graph: list[list[tuple[int, int]]], start_node: int, target: int) -> bool:
+    """Standard BFS to see if target is reachable from the cycle node."""
+    q = deque([start_node])
+    visited = {start_node}
     while q:
       u = q.popleft()
+      if u == target: return True
       for v, _ in graph[u]:
-        if not unbounded[v]:
-          unbounded[v] = True
+        if v not in visited:
+          visited.add(v)
           q.append(v)
-    return unbounded
+    return False
 
   def _finalize_distance(self, distance: list[float], target: int, INF_SENTINAL: int) -> int:
-    ret = distance[target]
-    if ret == float('inf'):
+    d = distance[target]
+    if d == float('inf'):
       return INF_SENTINAL
-    if type(ret) != int:
-      raise RuntimeError(f"Returned value must be an integer. Value: {ret}")
-    return int(ret)
+    # Cast to int for the final return
+    return int(d)
