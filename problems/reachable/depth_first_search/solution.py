@@ -1,14 +1,11 @@
 class Solution:
   def solve(self, graph: list[list[int]], root: int) -> set[int]:
-    reachable: set[int] = set()
-    seen = [False for vertex in range(len(graph))]
-    self.dfs(graph, root, reachable, seen)
+    def dfs(graph: list[list[int]], root: int, reachable: set[int]):
+      for neighbor in graph[root]:
+        if neighbor not in reachable:
+          reachable.add(neighbor)
+          dfs(graph, neighbor, reachable)
+
+    reachable: set[int] = set([root])
+    dfs(graph, root, reachable)
     return reachable
-  
-  def dfs(self, graph: list[list[int]], root: int, 
-          reachable: set[int], seen: list[bool]) -> None:
-    reachable.add(root)
-    for neighbor in graph[root]:
-      if not seen[neighbor]:
-        seen[neighbor] = True
-        self.dfs(graph, neighbor, reachable, seen)
