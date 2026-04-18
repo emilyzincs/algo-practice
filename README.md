@@ -50,6 +50,7 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Bucket Sort
 - Dijkstra
 - Bellman Ford
+- Floyd Warshall
 - Kruskal
 - Prim
 - Tarjan

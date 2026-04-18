@@ -5,7 +5,6 @@ from problems.reachable.depth_first_search.solution import Solution as DfsSoluti
 from problems.connected_components.tarjan.solution import Solution as TarjanSolution
 
 
-
 WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
@@ -14,13 +13,13 @@ dfs = DfsSolution()
 tarjan = TarjanSolution()
 
 
-def get_graphs_with_rand_vertices(graphs: list[Graph], num_rand_vertices: int):
-  graphs_with_rand_vertices = []
+def get_rand_vertices(graphs: list[Graph], num_rand_vertices: int
+                      ) -> list[tuple[int, ...]]:
+  rand_vertices = []
   for graph in graphs:
-    rand_vertices: list[int] = [rand_vertex(graph) for _ in range(num_rand_vertices)]
-    graph_with_rand_vertices = (graph, *rand_vertices)
-    graphs_with_rand_vertices.append(graph_with_rand_vertices)
-  return graphs_with_rand_vertices
+    curr = tuple([rand_vertex(graph) for _ in range(num_rand_vertices)])
+    rand_vertices.append(curr)
+  return rand_vertices
 
 
 def get_weighted_graphs(directed: bool, connected: bool, lo: int, hi: int):
