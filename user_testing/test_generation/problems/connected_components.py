@@ -3,7 +3,6 @@ from problems.connected_components.tarjan.solution import Solution
 from user_testing.test_generation.graph_util import (
   UnweightedGraph,
   get_unweighted_graphs,
-  get_graphs_with_rand_vertices
 )
 from user_testing.test_generation.base_generator import BaseGenerator
 from util.enums import GeneralAlgorithm
@@ -22,7 +21,7 @@ class ConnectedComponentsGenerator(BaseGenerator):
     test_cases = self.get_edge_cases()
     graphs: list[UnweightedGraph] = get_unweighted_graphs(
       directed=True, connected=False)
-    test_cases.extend(get_graphs_with_rand_vertices(graphs, num_rand_vertices=0)) 
+    test_cases.extend((graph,) for graph in graphs) 
     return self.remove_duplicate_test_cases(test_cases)
   
   @override
