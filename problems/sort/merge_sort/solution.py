@@ -1,4 +1,3 @@
-# Algorithm: Merge Sort.
 class Solution:
   def solve(self, nums: list[int]) -> list[int]:
     def merge_sort(nums: list[int], aux: list[int], lo: int, hi: int) -> None:
