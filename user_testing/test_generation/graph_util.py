@@ -5,7 +5,6 @@ from problems.reachable.depth_first_search.solution import Solution as DfsSoluti
 from problems.connected_components.tarjan.solution import Solution as TarjanSolution
 
 
-
 WeightedGraph = list[list[tuple[int, int]]]
 UnweightedGraph = list[list[int]]
 Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)

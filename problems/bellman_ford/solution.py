@@ -1,5 +1,4 @@
 from collections import deque
-import math
 
 class Solution:
   def solve(

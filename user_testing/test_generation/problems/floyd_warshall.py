@@ -2,15 +2,13 @@ from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
 from util.enums import GeneralAlgorithm
 from problems.floyd_warshall.solution import Solution as FloydWarshallSolution
-from problems.bellman_ford.solution import Solution as BellmanFordSolution
+from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
 from user_testing.test_generation.graph_util import (
   WeightedGraph,
   get_weighted_graphs,
 )
 
 floyd_warshall_sol = FloydWarshallSolution()
-bellman_ford_sol = BellmanFordSolution()
-
 
 class FloydWarshallGenerator(BaseGenerator):
  
@@ -44,7 +42,7 @@ class FloydWarshallGenerator(BaseGenerator):
       for vertex in range(n):
         dists.append([])
         for other in range(n):
-          dists[vertex].append(bellman_ford_sol.solve(
+          dists[vertex].append(bellman_ford_oracle(
             graph, vertex, other, NEG_INF_SENTINAL, INF_SENTINAL
           ))
       return dists

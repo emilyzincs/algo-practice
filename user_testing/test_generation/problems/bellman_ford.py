@@ -1,15 +1,12 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override, cast
 from util.enums import GeneralAlgorithm
-from problems.bellman_ford.solution import Solution
+from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
 from user_testing.test_generation.graph_util import (
   WeightedGraph,
   get_weighted_graphs,
   get_rand_vertices
 )
-
-
-sol = Solution()
 
 
 class BellmanFordGenerator(BaseGenerator):
@@ -44,7 +41,7 @@ class BellmanFordGenerator(BaseGenerator):
   @override
   def oracle(self, graph: WeightedGraph, start: int, target: int, 
             NEG_INF_SENTINAL: int, INF_SENTINAL: int) -> int:
-    return sol.solve(graph, start, target, NEG_INF_SENTINAL, INF_SENTINAL)
+    return bellman_ford_oracle(graph, start, target, NEG_INF_SENTINAL, INF_SENTINAL)
 
   @override
   def get_algorithm(self) -> GeneralAlgorithm:
