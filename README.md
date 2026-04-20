@@ -40,7 +40,7 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Java 17+
 
 ## Suppported Algorithms
-- Search
+<!-- - Search
   - Binary Search
 - Reachable
   - Breadth First Search
@@ -66,4 +66,70 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Max Flow
   - Ford Fulkerson
 - String
-  - Knuth Morris Pratt 
+  - Knuth Morris Pratt  -->
+<!-- Array
+- Sort
+  - Merge Sort
+  - Quick Sort
+  - Heap Sort
+  - Radix Sort
+  - Bucket Sort
+- Search
+  - Binary Search
+- Max Subarray Sum
+  - Kadane
+  
+Graph
+- Reachable
+  - Breadth First Search
+  - Depth First Search
+- Shortest Path
+  - Dijkstra
+  - Bellman Ford
+  - Floyd Warshall
+- Minimum Spanning Tree
+  - Kruskal
+  - Prim
+- Topological Sort
+  - Kahn
+- Max Flow
+  - Ford Fulkerson
+- Connected Components
+  - Tarjan
+
+String
+  - Knuth Morris Pratt  -->
+### Arrays
+* **Search:** Binary Search
+* **Sort:** Merge Sort, Quick Sort, Heap Sort, Radix Sort, Bucket Sort
+* **Subarray:** Kadane
+
+---
+
+### Graphs
+* **Reachable:** Breadth First Search (BFS), Depth First Search (DFS)
+* **Shortest Path:** Dijkstra, Bellman-Ford, Floyd-Warshall
+* **Minimum Spanning Tree:** Kruskal, Prim
+* **Topological Sort:** Kahn
+* **Max Flow:** Ford-Fulkerson
+* **Connected Components:** Tarjan
+
+---
+
+### Strings
+* **Pattern Matching:** Knuth-Morris-Pratt (KMP)
+
+<!-- ## Supported Algorithms
+
+| Category | Type | Algorithms |
+| :--- | :--- | :--- |
+| **Arrays** | Search | Binary Search |
+| | Sort | Merge, Quick, Heap, Radix, Bucket |
+| | Subarray | Kadane |
+| **Graphs** | Reachable | BFS, DFS |
+| | Shortest Path | Dijkstra, Bellman-Ford, Floyd-Warshall |
+| | Spanning Tree | Kruskal, Prim |
+| | Ordering | Topological Sort (Kahn) |
+| | Flow | Ford-Fulkerson |
+| | Connectivity | Tarjan |
+| **Strings** | Matching | Knuth-Morris-Pratt (KMP) | -->
