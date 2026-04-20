@@ -1,4 +1,4 @@
-from problems.reachable.breadth_first_search.solution import Solution
+from problems.topological_sort.solution import Solution
 
 from user_testing.test_generation.graph_util import (
   UnweightedGraph,
@@ -27,8 +27,8 @@ class TopologicalSortGenerator(BaseGenerator):
     return self.remove_duplicate_test_cases(test_cases)
   
   @override
-  def oracle(self, graph: list[list[int]], root: int) -> list[int]:
-    return list(sol.solve(graph, root))
+  def oracle(self, graph: list[list[int]]) -> list[int]:
+    return list(sol.solve(graph))
   
   @override
   def get_algorithm(self) -> GeneralAlgorithm:
