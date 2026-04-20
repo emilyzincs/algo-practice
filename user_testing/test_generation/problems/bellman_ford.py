@@ -2,7 +2,7 @@ from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override, cast
 from util.enums import GeneralAlgorithm
 from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
-from user_testing.test_generation.graph_util import (
+from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
   get_weighted_graphs,
   get_rand_vertices

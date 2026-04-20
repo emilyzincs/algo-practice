@@ -1,4 +1,4 @@
-import user_testing.test_generation.generation_util as util
+import user_testing.test_generation.util.array_util as util
 from user_testing.test_generation.problems.sort import SortGenerator
 from util.enums import GeneralAlgorithm
 from typing import override
