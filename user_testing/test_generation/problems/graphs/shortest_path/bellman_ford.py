@@ -23,7 +23,7 @@ class Generator(BaseGenerator):
 
     lo, hi = -100, 100
     new_graphs = get_weighted_graphs(
-      directed=True, connected=False, lo=lo, hi=hi)
+      directed=True, connected=False, lo=lo, hi=hi, max_size=75)
     new_los_and_his = [(lo, hi) for _ in range(len(new_graphs))]
     new_inf_sentinels = self.get_inf_sentinels(new_graphs, new_los_and_his)
     new_starts_and_targets = get_rand_vertices(new_graphs, num_rand_vertices=2)

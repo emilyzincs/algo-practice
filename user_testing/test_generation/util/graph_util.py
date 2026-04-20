@@ -12,6 +12,8 @@ Graph = TypeVar('Graph', UnweightedGraph, WeightedGraph)
 dfs = DfsSolution()
 tarjan = TarjanSolution()
 
+INF = 10**18
+
 
 def get_rand_vertices(graphs: list[Graph], num_rand_vertices: int
                       ) -> list[tuple[int, ...]]:
@@ -22,11 +24,12 @@ def get_rand_vertices(graphs: list[Graph], num_rand_vertices: int
   return rand_vertices
 
 
-def get_weighted_graphs(directed: bool, connected: bool, lo: int, hi: int):
+def get_weighted_graphs(directed: bool, connected: bool, lo: int, 
+                        hi: int, max_size: int = INF):
   weighted_graphs: list[WeightedGraph] = []
 
   unweighted_graphs: list[UnweightedGraph] = (
-    get_unweighted_graphs(directed, connected)
+    get_unweighted_graphs(directed, connected, max_size)
   )
 
   for unweighted_graph in unweighted_graphs:
@@ -37,16 +40,24 @@ def get_weighted_graphs(directed: bool, connected: bool, lo: int, hi: int):
   return weighted_graphs
     
 
-def get_unweighted_graphs(directed: bool, connected: bool) -> list[UnweightedGraph]:
+def get_unweighted_graphs(directed: bool, connected: bool, max_size: int = INF) -> list[UnweightedGraph]:
   graphs: list[UnweightedGraph] = []
+  if max_size < 8:
+    raise ValueError("Max size must be at least 8")
   for i in range(3, 8):
     add_random_variety(graphs, directed, connected, i, 2)
-  for i in range(15, 18):
-    add_random_variety(graphs, directed, connected, i, 2)
-  for i in range(49, 52):
-    add_random_variety(graphs, directed, connected, i, 2)
-  for i in range(99, 102):
-    add_random_variety(graphs, directed, connected, i, 2)
+  if max_size >= 15:
+    add_random_variety(graphs, directed, connected, 15, 3)
+  if max_size >= 30:
+    add_random_variety(graphs, directed, connected, 30, 3)
+  if max_size >= 40:
+    add_random_variety(graphs, directed, connected, 30, 3)
+  if max_size >= 50:
+    add_random_variety(graphs, directed, connected, 50, 3)
+  if max_size >= 75:
+    add_random_variety(graphs, directed, connected, 75, 3)
+  if max_size >= 100:
+    add_random_variety(graphs, directed, connected, 100, 3)
   return graphs
 
 
