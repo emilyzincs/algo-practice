@@ -34,8 +34,28 @@ class TopologicalSortGenerator(BaseGenerator):
   def get_algorithm(self) -> GeneralAlgorithm:
     return GeneralAlgorithm.TOPOLOGICAL_SORT
 
-  def get_edge_cases(self) -> list[tuple[list[list[int]]]]:
-    raise NotImplementedError()
+  def get_edge_cases(self) -> list[tuple[UnweightedGraph]]:
+    return [
+      ([],),
+      ([[]],),
+      ([[], []],),
+      ([[1], []],),
+      ([[1], [2], []],),
+      ([[1, 2], [3], [3], []],),
+      ([[], [2], []],),
+      ([[1, 2], [3], [3], [4], []],),
+      ([[1], [2], [3], []],),
+      ([[1, 2, 3], [], [], []],),
+      ([[1], [2], [3], [4], []],),
+      ([[1, 2, 3, 4], [], [], [], []],),
+      ([[1], [2], [3], [4], [5], []],),
+      ([[1, 2, 3, 4, 5], [], [], [], [], []],),
+      ([[], [0], [0, 1]],),
+      ([[1, 2, 3], [4], [4], [4], []],),
+      ([[1], [2, 3], [4], [4], []],),
+      ([[1], [2], [3, 4], [5], [5], []],),
+      ([[1, 3], [2], [], [4], []],),
+    ]
 
   def remove_duplicate_test_cases(self, test_cases: list[tuple[UnweightedGraph]]
                                   ) -> list[tuple[UnweightedGraph]]:
