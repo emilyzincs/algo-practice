@@ -1,0 +1,14 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["text", "pattern"],
+  "input_types": [
+    { "type": "string" },
+    { "type": "string" }
+  ],
+  "expected_type": {
+    "type": "list",
+    "items": {
+      "type": "int"
+    }
+  }
+}
