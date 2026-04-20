@@ -7,17 +7,23 @@ This guide explains how to add support for a new algorithm to the system. After 
 
 ## Concepts
 
-Take **depth‑first search (DFS)**:
-- It is a *specific* algorithm – one way to implement the more general “reachable” algorithm. BFS is another. Notice how DFS and BFS have the same **input-output behavior** and one is not clearly better than the other.
-- **Binary search** is *not* specific. It is indisputably the best way to search arbitrary sorted data. It is not part of a more general "search" algorithm with something like linear search, since the input-output behavior is not the same *unless* the data is sorted, in which case it is **always better** to use binary search.
+Take **Dijkstra's Algorithm**:
+- It is a **specific** algorithm. How it finds shortest paths is **fully specified**. Generally, one might say it is a shortest path algorithm.
+- Shortest Path is a **general** algorithm. It does not specify **how** the path(s) should be found. The input-output space is also not fully specified. For example, one could say that Bellman-Ford is a specific implementation of Shortest Path, but Bellman-Ford and Dijkstra expect different inputs (Dijkstra required nonnegative weights).
+- Graph is a **category** of unrelated general algorithms. E.g., Shortest Path and Topological Sort are both in the Graph category of algorithms. For our purposes, category will be the main data structure or type used (E.g., Array, Graph, String).
 
-We use three naming conventions:
+As another example, consider **Depth-First Search** (DFS):
+- It is a specific instance of the general, Reachable algorithm, in the Graph category.
+- It has multiple aliases that refer to it.
+
+We use the following naming conventions, with Depth-First Search as the example:
 
 | Concept | Format | Example (DFS) |
 |---------|--------|----------------|
 | Alias | lowercase, spaces between words | `"dfs"`, `"depth first search"` |
 | Specific name | snake_case | `depth_first_search` |
-| General name | snake_case; if not specific, same as specific | `reachable` (for DFS) |
+| General name | snake_case | `reachable` |
+| Category | snake_case, plural | `graphs` |
 
 > The algorithm’s own name (in lowercase with spaces) is always an alias. So `"depth first search"` is an alias of itself.
 
@@ -28,54 +34,61 @@ Assume its specific name is `depth_first_search` and its general name is `reacha
 
 ### 1. Update `enums.py` (in the `util/` folder)
 
-- Add `<SPECIFIC_NAME>` (all caps, snake case) to `SpecificAlgorithm`:
+- Add `<CATEGORY>` (all caps, snake case, plural) to `AlgorithmCategory`:
   ```python
-  class SpecificAlgorithm(Enum):
+  class AlgorithmCategory(Enum):
       # ...
-      DEPTH_FIRST_SEARCH = auto()
+      GRAPHS = auto()
   ```
 
-- Add each alias to `INPUT_ALG_TO_SPECIFIC`:
-  ```python
-  INPUT_ALG_TO_SPECIFIC = {
-      # ...
-      "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-      "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-  }
-  ```
 
-- Add `<GENERAL_NAME>` to `GeneralAlgorithm` if it does not already exist:
+- Add `<GENERAL_NAME>` to `GeneralAlgorithm` if it does not already exist, including the corresponding `AlgorithmCategory` (from the previous step) in the value:
   ```python
   class GeneralAlgorithm(Enum):
       # ...
-      REACHABLE = auto()
+      REACHABLE = (AlgorithmCategory.GRAPHS, auto())
   ```
 
-- Add the mapping from specific → general in `SPECIFIC_ALG_TO_GENERAL`:
+
+- Add `<SPECIFIC_NAME>` (all caps, snake case) to `SpecificAlgorithm`, including the following (GeneralType, InfoDir, TestDir, GeneratorFileName, Aliases) in the value:
+  - **GeneralType**: The corresponding `GeneralAlgorithm` (from the previous step). E.g. `GeneralAlgorithm.REACHABLE`.
+  - **InfoDir**: The `DirectoryType` representing the directory that holds the `info.json` file. For DFS this is `DirectoryType.GENERAL` since the information regarding expected inputs and outputs is uniform across all specific implementations of the general Reachable algorithm.
+  - **TestDir**: The `DirectoryType` representing the directory that holds the `test.json` file. For DFS this is `DirectoryType.GENERAL` since the expected output given an input is uniform across all specific implementations of the general Reachable algorithm.
+  - **GeneratorFileName**: The name of the file used to generate tests for the algorithm. This is `None` if the name mathes `<specific_name>`.
+  - **Aliases**: The list of aliases for the algorithm. E.g. `[dfs, depth_first_search]`
+
+
   ```python
-  SPECIFIC_ALG_TO_GENERAL = {
+  class SpecificAlgorithm(Enum):
       # ...
-      SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
-  }
+      DEPTH_FIRST_SEARCH = (
+        GeneralAlgorithm.REACHABLE, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, "general", ["dfs", "depth first search"]
+      )
   ```
 
->**If `<GENERAL_NAME>` already existed**, skip to [step four](#4-add-solutions-for-the-new-algorithm). Otherwise, continue to step two (even if the algorithm is not specific).
+### 2. Create the Info File
 
-### 2. Create the General Algorithm Folder (if the General Algorithm is New)
+The path to create the info file depends on `InfoDir` from the previous step. 
+- If you put `DirectoryType.SPECIFIC`, the path is `problems/<category>/<general_name>/<specific_name>/info.json`. 
+- If you put `DirectoryType.GENERAL`, the path is `problems/<category>/<general_name/info.json`.
 
-Inside the `problems/` directory, create a folder named `<general_name>` (e.g., `problems/reachable/`).  
-Inside it, create an `info.json` file. See [Info File](DEVELOPER.md#info-files-infojson) for the required structure.
+Create any necessary files/directories in the path. If the `info.json` file already existed, you may continue to the next step
 
-Do **not** create a `test.json` file. The next step will set up the ability to generate it, but the automatic generation will fail if the file already exists.
+Otherwise, write the `info.json` file. See [Info File](DEVELOPER.md#info-files-infojson) for the required structure.
 
-### 3. Generate Tests (if the General Algorithm is New)
+### 3. Create the Test Generator
 
-- Go to `test_generation/problems/` and create a Python file named `<general_name>.py` (e.g., `reachable.py`).
-- Define a class named `<GeneralName>Generator` (PascalCase, e.g. ReachableGenerator) that extends `BaseGenerator` (imported from `base_generator`).
+The path to create the test generator file depends on `GeneratorFileName` from the first step. It is `user_testing/test_generation/problems/<category>/<general_name>/<GeneratorFileName>.py`.
+
+Create any necessary files/directories in the path. If the file already existed, you may continue to the next step.
+
+Otherwise, write the file by doing the following.
+- Define a class named `Generator` that extends `BaseGenerator` (imported from `base_generator`).
 - Override all `@abstractmethod` methods. Do **not** override any `@final` methods.
-- Use helper functions from `command_util` and write custom helpers as needed.
+- Use helper functions from the test generation `util` directory and write custom helpers as needed.
 
->**Note**: Implementing an oracle may be difficult enough that you need to [write a solution](DEVELOPER.md#writing-an-algorithm-solution-file) first, then use that as the oracle. This is fine, but the generated tests will then provide **no** validation for that solution. If you go this route, it is recommended to start with some **hand-written tests** for basic validation, and to *very* careful in reviewing your code. Make sure to delete the `test.json` file after you are done, so that the generator can do its job.
+>**Note**: Implementing an oracle may be difficult enough that you need to [write a solution](DEVELOPER.md#writing-an-algorithm-solution-file) first, then use that as the oracle. This is fine, but the generated tests will then provide **no** validation for that solution. If you go this route, it is recommended to start with some **hand-written tests** for basic validation, and to *very* careful in reviewing your code. Make sure to delete the `test.json` file after you are done, so that the generator can do its job. If time complexity is the issue (i.e., you have to use your own solution otherwise the tests would take too long) it is recommended to use a brute-force oracle for small inputs, with an input size threshold as reasonably high as possible to provide as much validation as possible.
 
 >**Tip**: It may be helpful to look at an already existing test-generator for a concrete example of what to implement.
 
