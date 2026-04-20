@@ -1,4 +1,4 @@
-package problems.sort.merge_sort;
+package problems.arrays.sort.merge_sort;
 import java.util.Arrays;
 
 public class Solution {

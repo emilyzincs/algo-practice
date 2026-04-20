@@ -1,7 +1,7 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
 from util.enums import GeneralAlgorithm
-from problems.max_flow.ford_fulkerson.solution import Solution
+from problems.graphs.max_flow.ford_fulkerson.solution import Solution
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
   get_weighted_graphs,

@@ -1,4 +1,4 @@
-package problems.binary_search;
+package problems.arrays.search.binary_search;
 
 public class Solution {
   public static int solve(int[] nums, int target) {

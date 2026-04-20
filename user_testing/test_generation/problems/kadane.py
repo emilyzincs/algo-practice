@@ -2,7 +2,7 @@ import user_testing.test_generation.util.array_util as util
 from user_testing.test_generation.base_generator import BaseGenerator
 from util.enums import GeneralAlgorithm
 from typing import override
-from problems.kadane.solution import Solution
+from problems.Arrays.Subarray.kadane.solution import Solution
 
 sol = Solution()
 

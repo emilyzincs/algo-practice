@@ -1,4 +1,4 @@
-from problems.reachable.breadth_first_search.solution import Solution
+from problems.Graphs.reachable.breadth_first_search.solution import Solution
 
 from user_testing.test_generation.util.graph_util import (
   UnweightedGraph,

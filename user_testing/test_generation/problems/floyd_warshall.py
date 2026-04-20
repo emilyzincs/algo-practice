@@ -1,7 +1,7 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
 from util.enums import GeneralAlgorithm
-from problems.floyd_warshall.solution import Solution as FloydWarshallSolution
+from problems.graphs.shortest_path.floyd_warshall.solution import Solution as FloydWarshallSolution
 from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,

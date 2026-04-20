@@ -1,4 +1,4 @@
-package problems.reachable.depth_first_search;
+package problems.graphs.reachable.depth_first_search;
 
 import java.util.List;
 import java.util.Set;

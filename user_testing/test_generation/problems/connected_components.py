@@ -1,4 +1,4 @@
-from problems.connected_components.tarjan.solution import Solution
+from problems.graphs.connected_components.tarjan.solution import Solution
 
 from user_testing.test_generation.util.graph_util import (
   UnweightedGraph,

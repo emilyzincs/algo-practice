@@ -1,4 +1,4 @@
-from problems.topological_sort.solution import Solution
+from problems.graphs.topological_sort.kahn.solution import Solution
 
 from user_testing.test_generation.util.graph_util import (
   UnweightedGraph,

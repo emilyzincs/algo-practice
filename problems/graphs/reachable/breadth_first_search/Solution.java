@@ -1,4 +1,4 @@
-package problems.reachable.breadth_first_search;
+package problems.graphs.reachable.breadth_first_search;
 
 import java.util.List;
 import java.util.Set;
