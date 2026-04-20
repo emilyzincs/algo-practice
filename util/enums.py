@@ -78,6 +78,7 @@ class SpecificAlgorithm(Enum):
   PRIM = auto()
   TARJAN = auto()
   FORD_FULKERSON = auto()
+  KNUTH_MORRIS_PRATT = auto()
   
 
 # Enum for general algorithm categories.
@@ -94,6 +95,7 @@ class GeneralAlgorithm(Enum):
   MINIMUM_SPANNING_TREE = auto()
   CONNECTED_COMPONENTS = auto()
   MAX_FLOW = auto()
+  KNUTH_MORRISS_PRATT = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -122,6 +124,8 @@ INPUT_ALG_TO_SPECIFIC = {
   "tarjan": SpecificAlgorithm.TARJAN,
   "tarjan's": SpecificAlgorithm.TARJAN,
   "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
+  "knuth morris pratt": SpecificAlgorithm.KNUTH_MORRIS_PRATT,
+  "kmp": SpecificAlgorithm.KNUTH_MORRIS_PRATT
 }
 
 
@@ -144,6 +148,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
   SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
+  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.KNUTH_MORRISS_PRATT
 }
 
 
