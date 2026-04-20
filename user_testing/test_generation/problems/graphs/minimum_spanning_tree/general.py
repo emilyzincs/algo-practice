@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from problems.graphs.minimum_spanning_tree.prim.solution import Solution
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
@@ -27,8 +27,8 @@ class MinimumSpanningTreeGenerator(BaseGenerator):
     return sol.solve(graph)
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.MINIMUM_SPANNING_TREE
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.KRUSKAL
   
   def get_edge_cases(self) -> list[WeightedGraph]:
     edge_cases: list[WeightedGraph] = []

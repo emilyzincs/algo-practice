@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from problems.graphs.shortest_path.floyd_warshall.solution import Solution as FloydWarshallSolution
 from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
 from user_testing.test_generation.util.graph_util import (
@@ -51,8 +51,8 @@ class FloydWarshallGenerator(BaseGenerator):
         graph, NEG_INF_SENTINAL, INF_SENTINAL)
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.FLOYD_WARSHALL
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.FLOYD_WARSHALL
   
   def get_edge_cases(self) -> list[WeightedGraph]:
     return [

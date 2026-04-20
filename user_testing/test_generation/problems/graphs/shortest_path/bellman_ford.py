@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override, cast
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from user_testing.test_generation.oracles.bellman_ford import bellman_ford_oracle
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
@@ -44,8 +44,8 @@ class BellmanFordGenerator(BaseGenerator):
     return bellman_ford_oracle(graph, start, target, NEG_INF_SENTINAL, INF_SENTINAL)
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.BELLMAN_FORD
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.BELLMAN_FORD
   
   def get_edge_cases(self) -> list[tuple[WeightedGraph, tuple[int, int]]]:
     return [

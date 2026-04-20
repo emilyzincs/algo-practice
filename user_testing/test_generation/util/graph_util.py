@@ -1,7 +1,7 @@
 from user_testing.test_generation.util import array_util as util
 from typing import TypeVar, Callable
 import random
-from problems.Graphs.reachable.depth_first_search.solution import Solution as DfsSolution
+from problems.graphs.reachable.depth_first_search.solution import Solution as DfsSolution
 from problems.graphs.connected_components.tarjan.solution import Solution as TarjanSolution
 
 

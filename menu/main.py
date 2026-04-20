@@ -8,7 +8,6 @@ from util.exceptions import UnhandledCaseError
 
 from util.enums import (
   MainMenuCommand, 
-  INPUT_ALG_TO_SPECIFIC, 
   SpecificAlgorithm, 
   is_member, 
   GlobalCommand, 

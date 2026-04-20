@@ -1,8 +1,8 @@
 import user_testing.test_generation.util.array_util as util
 from user_testing.test_generation.base_generator import BaseGenerator
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from typing import override
-from problems.Arrays.Subarray.kadane.solution import Solution
+from problems.arrays.subarray.kadane.solution import Solution
 
 sol = Solution()
 
@@ -69,8 +69,8 @@ class KadaneGenerator(BaseGenerator):
       return sol.solve(list(arr))
   
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.KADANE
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.KADANE
 
   def get_edge_cases(self) -> list[tuple[tuple[int, ...]]]:
     return [

@@ -1,6 +1,6 @@
 import unittest
 from util.enums import (
-  INPUT_ALG_TO_SPECIFIC, SPECIFIC_ALG_TO_GENERAL, SpecificAlgorithm, GeneralAlgorithm
+  SpecificAlgorithm, GeneralAlgorithm
 )
 
 

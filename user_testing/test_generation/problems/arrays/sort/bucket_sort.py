@@ -1,14 +1,14 @@
 import user_testing.test_generation.util.array_util as util
-from user_testing.test_generation.problems.sort import SortGenerator
-from util.enums import GeneralAlgorithm
+from user_testing.test_generation.problems.arrays.sort.general import SortGenerator
+from util.enums import SpecificAlgorithm
 from typing import override
 
 
 class BucketSortGenerator(SortGenerator):
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.BUCKET_SORT
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.BUCKET_SORT
 
   @override
   def get_edge_cases(self) -> list[tuple[tuple[float, ...], ...]]:  # type: ignore

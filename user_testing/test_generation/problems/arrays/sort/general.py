@@ -1,6 +1,6 @@
 import user_testing.test_generation.util.array_util as util
 from user_testing.test_generation.base_generator import BaseGenerator
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from typing import override
 
 
@@ -54,8 +54,8 @@ class SortGenerator(BaseGenerator):
     return sorted(arr)
   
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.SORT
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.MERGE_SORT  # multiple work here
 
   # Returns a list of edge-case test inputs for sorting.
   def get_edge_cases(self) -> list[tuple[tuple[int, ...], ...]]:

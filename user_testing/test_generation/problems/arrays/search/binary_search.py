@@ -1,6 +1,6 @@
 import user_testing.test_generation.util.array_util as util
 from user_testing.test_generation.base_generator import BaseGenerator
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from typing import override
 
 
@@ -79,8 +79,8 @@ class BinarySearchGenerator(BaseGenerator):
     return inds
   
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.BINARY_SEARCH
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.BINARY_SEARCH
 
   # Returns a list of edge case test inputs for binary search.
   #

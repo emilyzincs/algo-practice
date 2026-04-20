@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from user_testing.test_generation.util.string_util import get_random_string
 import random
 
@@ -27,8 +27,8 @@ class KnuthMorrisPrattGenerator(BaseGenerator):
     return indices
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.KNUTH_MORRIS_PRATT
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.KNUTH_MORRIS_PRATT
   
   def get_edge_cases(self) -> list[tuple[str, str]]:
     return [

@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from problems.graphs.shortest_path.dijkstra.solution import Solution
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
@@ -29,8 +29,8 @@ class DijkstraGenerator(BaseGenerator):
     return sol.solve(graph, start, target)
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.DIJKSTRA
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.DIJKSTRA
   
   def get_edge_cases(self) -> list[tuple[WeightedGraph, int, int]]:
     return [

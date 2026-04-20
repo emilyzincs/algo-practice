@@ -1,6 +1,6 @@
 from user_testing.test_generation.base_generator import BaseGenerator
 from typing import override
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from problems.graphs.max_flow.ford_fulkerson.solution import Solution
 from user_testing.test_generation.util.graph_util import (
   WeightedGraph,
@@ -46,8 +46,8 @@ class MaxFlowGenerator(BaseGenerator):
     return sol.solve(graph, start, target)
 
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.MAX_FLOW
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.FORD_FULKERSON
   
   def get_edge_cases(self) -> list[tuple[WeightedGraph, int, int]]:
     cases = []

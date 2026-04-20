@@ -21,7 +21,6 @@ from util.enums import (
   SpecificAlgorithm,
   GeneralAlgorithm,
   member_from_string,
-  SPECIFIC_ALG_TO_GENERAL,
   member_to_capitalized_words
 )
 

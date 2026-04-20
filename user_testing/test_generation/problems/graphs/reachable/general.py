@@ -1,4 +1,4 @@
-from problems.Graphs.reachable.breadth_first_search.solution import Solution
+from problems.graphs.reachable.breadth_first_search.solution import Solution
 
 from user_testing.test_generation.util.graph_util import (
   UnweightedGraph,
@@ -6,7 +6,7 @@ from user_testing.test_generation.util.graph_util import (
   get_rand_vertices
 )
 from user_testing.test_generation.base_generator import BaseGenerator
-from util.enums import GeneralAlgorithm
+from util.enums import SpecificAlgorithm
 from typing import override
 
 
@@ -31,8 +31,8 @@ class ReachableGenerator(BaseGenerator):
     return list(sol.solve(graph, root))
   
   @override
-  def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.REACHABLE
+  def get_algorithm(self) -> SpecificAlgorithm:
+    return SpecificAlgorithm.DEPTH_FIRST_SEARCH
 
   def get_edge_cases(self) -> list[tuple[list[list[int]], int]]:
     return [
