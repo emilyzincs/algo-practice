@@ -62,57 +62,58 @@ class Language(Enum):
 # Enum for specific algorithms that can be practiced.
 class SpecificAlgorithm(Enum):
   BINARY_SEARCH = auto()
-  BREADTH_FIRST_SEARCH = auto()
-  DEPTH_FIRST_SEARCH = auto()
   MERGE_SORT = auto()
   QUICK_SORT = auto()
   HEAP_SORT = auto()
   RADIX_SORT = auto()
   BUCKET_SORT = auto()
-  TOPOLOGICAL_SORT = auto()
   KADANE = auto()
+  BREADTH_FIRST_SEARCH = auto()
+  DEPTH_FIRST_SEARCH = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   FLOYD_WARSHALL = auto()
   KRUSKAL = auto()
   PRIM = auto()
-  TARJAN = auto()
+  KAHN = auto()
   FORD_FULKERSON = auto()
+  TARJAN = auto()
   KNUTH_MORRIS_PRATT = auto()
   
 
-# Enum for general algorithm categories.
 class GeneralAlgorithm(Enum):
-  BINARY_SEARCH = auto()
-  REACHABLE = auto()
+  SEARCH = auto()
   SORT = auto()
-  BUCKET_SORT = auto()
-  TOPOLOGICAL_SORT = auto()
-  DIJKSTRA = auto()
-  KADANE = auto()
-  BELLMAN_FORD = auto()
-  FLOYD_WARSHALL = auto()
+  SUBARRAY = auto()
+  REACHABLE = auto()
+  SHORTEST_PATH = auto()
   MINIMUM_SPANNING_TREE = auto()
-  CONNECTED_COMPONENTS = auto()
+  TOPOLOGICAL_SORT = auto()
   MAX_FLOW = auto()
-  KNUTH_MORRIS_PRATT = auto()
+  CONNECTED_COMPONENTS = auto()
+  PATTERN_MATCHING = auto()
+
+
+class AlgorithmCategory(Enum):
+  ARRAYS = auto()
+  GRAPHS = auto()
+  STRINGS = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
 INPUT_ALG_TO_SPECIFIC = {
   "binary search": SpecificAlgorithm.BINARY_SEARCH,
-  "bfs": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
-  "breadth first search": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
-  "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-  "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "merge sort": SpecificAlgorithm.MERGE_SORT,
   "quick sort": SpecificAlgorithm.QUICK_SORT,
   "heap sort": SpecificAlgorithm.HEAP_SORT,
   "radix sort": SpecificAlgorithm.RADIX_SORT,
   "bucket sort": SpecificAlgorithm.BUCKET_SORT,
-  "topological sort": SpecificAlgorithm.TOPOLOGICAL_SORT,
   "kadane": SpecificAlgorithm.KADANE,
   "kadane's": SpecificAlgorithm.KADANE,
+  "bfs": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
+  "breadth first search": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
+  "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
+  "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
   "bellman ford": SpecificAlgorithm.BELLMAN_FORD,
@@ -121,34 +122,49 @@ INPUT_ALG_TO_SPECIFIC = {
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
   "prim's": SpecificAlgorithm.PRIM,
+  "kahn": SpecificAlgorithm.KAHN,
+  "kahn's": SpecificAlgorithm.KAHN,
+  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
   "tarjan": SpecificAlgorithm.TARJAN,
   "tarjan's": SpecificAlgorithm.TARJAN,
-  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
+  "kmp": SpecificAlgorithm.KNUTH_MORRIS_PRATT,
   "knuth morris pratt": SpecificAlgorithm.KNUTH_MORRIS_PRATT,
-  "kmp": SpecificAlgorithm.KNUTH_MORRIS_PRATT
 }
 
 
-# Maps each specific algorithm to its corresponding general category.
 SPECIFIC_ALG_TO_GENERAL = {
-  SpecificAlgorithm.BINARY_SEARCH: GeneralAlgorithm.BINARY_SEARCH,
-  SpecificAlgorithm.BREADTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
-  SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
+  SpecificAlgorithm.BINARY_SEARCH: GeneralAlgorithm.SEARCH,
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
-  SpecificAlgorithm.TOPOLOGICAL_SORT: GeneralAlgorithm.TOPOLOGICAL_SORT,
-  SpecificAlgorithm.KADANE: GeneralAlgorithm.KADANE,
-  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
-  SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
-  SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.FLOYD_WARSHALL,
+  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.KADANE: GeneralAlgorithm.SUBARRAY,
+  SpecificAlgorithm.BREADTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
+  SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
+  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.SHORTEST_PATH,
+  SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.SHORTEST_PATH,
+  SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.SHORTEST_PATH,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
-  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
+  SpecificAlgorithm.KAHN: GeneralAlgorithm.TOPOLOGICAL_SORT,
   SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
-  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.KNUTH_MORRIS_PRATT
+  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
+  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.PATTERN_MATCHING,
+}
+
+
+GENERAL_ALG_TO_CATEGORY = {
+  GeneralAlgorithm.SEARCH: AlgorithmCategory.ARRAYS,
+  GeneralAlgorithm.SORT: AlgorithmCategory.ARRAYS,
+  GeneralAlgorithm.SUBARRAY: AlgorithmCategory.ARRAYS,
+  GeneralAlgorithm.REACHABLE: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.SHORTEST_PATH: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.MINIMUM_SPANNING_TREE: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.TOPOLOGICAL_SORT: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.MAX_FLOW: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.CONNECTED_COMPONENTS: AlgorithmCategory.GRAPHS,
+  GeneralAlgorithm.PATTERN_MATCHING: AlgorithmCategory.STRINGS,
 }
 
 
