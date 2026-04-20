@@ -69,6 +69,7 @@ class SpecificAlgorithm(Enum):
   HEAP_SORT = auto()
   RADIX_SORT = auto()
   BUCKET_SORT = auto()
+  TOPOLOGICAL_SORT = auto()
   KADANE = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
@@ -85,6 +86,7 @@ class GeneralAlgorithm(Enum):
   REACHABLE = auto()
   SORT = auto()
   BUCKET_SORT = auto()
+  TOPOLOGICAL_SORT = auto()
   DIJKSTRA = auto()
   KADANE = auto()
   BELLMAN_FORD = auto()
@@ -106,6 +108,7 @@ INPUT_ALG_TO_SPECIFIC = {
   "heap sort": SpecificAlgorithm.HEAP_SORT,
   "radix sort": SpecificAlgorithm.RADIX_SORT,
   "bucket sort": SpecificAlgorithm.BUCKET_SORT,
+  "topological sort": SpecificAlgorithm.TOPOLOGICAL_SORT,
   "kadane": SpecificAlgorithm.KADANE,
   "kadane's": SpecificAlgorithm.KADANE,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
@@ -132,6 +135,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
+  SpecificAlgorithm.TOPOLOGICAL_SORT: GeneralAlgorithm.TOPOLOGICAL_SORT,
   SpecificAlgorithm.KADANE: GeneralAlgorithm.KADANE,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
