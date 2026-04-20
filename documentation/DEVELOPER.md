@@ -76,7 +76,7 @@ Test runners must be passed the necessary command-line arguments to fulfill thei
 
 ## Info Files (`info.json`)
 
-Every **general algorithm** has exactly one `info.json` file, located in `problems/<general_name>/` (where `<general_name>` is the snake‑case name of the general algorithm).
+Every algorithm uses one (not necessarily distinct) `info.json` file,
 
 The file is a JSON object with the following keys:
 
@@ -104,7 +104,7 @@ Example `info.json` for binary search:
 
 ## Test Files (`test.json`)
 
-Each **general algorithm** also has exactly one `test.json` file, stored in the same folder as its `info.json` file (`problems/<general_name>/test.json`).
+Each algorithm also uses one (not necessarily distinct) `test.json` file.
 
 The file is a JSON **array** of test case objects. Each test case object has two fields:
 
@@ -210,7 +210,7 @@ This section explains how to create a solution file for a specific algorithm in 
 Solution files enable the `solution` command. When a user practices an algorithm, they can load the official solution into their working file. Additionally, app‑level tests verify that every solution passes its generated tests, ensuring correctness across language implementations.
 
 >**Before you start**
->Make sure you understand the difference between *specific* and *general* algorithms (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
+>Make sure you understand the difference between *specific* and *general* algorithms, and categories (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
 
 ### Steps
 
@@ -222,17 +222,12 @@ Pick a specific algorithm to write the solution for, and a supported language to
 Let `<extension>` be the file extension for the language (e.g., `.py` for Python).
 Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution` for Java),
 
-- **If the algorithm is specific** (i.e., it implements a more general algorithm, like DFS for `reachable`):  
-  Path: `problems/<general_name>/<specific_name>/<solution>.<extension>`  
-  Example: `problems/reachable/depth_first_search/solution.py`
-
-- **If the algorithm is not specific** (i.e., it stands alone, like binary search):  
-  Path: `problems/<specific_name>/<solution>.<extension>`  
-  Example: `problems/binary_search/Solution.java`
+The path is `problems/<category>/<general_name>/<specific_name>/<solution>.<extension>`.
+Example: `problems/Graphs>/reachable/depth_first_search/solution.py`
 
 #### 3. Write the Solution
 
-Write the solution in the file specified by the path from the previous step, (create any files or directories that do not exist). Make sure to follow the [implementation requirements](user-implementation.md) (other than writing the solution in a practice file), and note that the solution method signature types must match the description in the corresponding `info.json` file. Moreover, although not technically required, matching the parameter names to those in the `info.json` file is suggested, for the sake of consistency with users.
+Write the solution in the file specified by the path from the previous step, (create any necessary files/directories in the path). Make sure to follow the [implementation requirements](user-implementation.md) (other than writing the solution in a practice file), and note that the solution method signature types must match the description in the corresponding `info.json` file. Moreover, although not technically required, matching the parameter names to those in the `info.json` file is suggested, for the sake of consistency with users.
 
 
 #### 4. Validate the Solution

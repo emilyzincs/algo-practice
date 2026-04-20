@@ -3,7 +3,7 @@ import os
 from menu.practice import run_tests
 from util.file_paths import (PROJECT_ROOT, get_solution_file_dir, 
                                  get_solution_file_path, to_language_file_case,
-                                 get_abstract_test_dir)
+                                 get_abstract_test_dir, get_test_path)
 from typing import Optional, assert_never
 from app import generate_test_file_if_necessary
 from app_tests.base_test import BaseTest as parent
@@ -80,8 +80,8 @@ class TestRunTests(parent):
         total_tests
       )
       with (
-        patch(self.fp_base + "specific_alg_to_test_path", return_value=test_path),
-        patch(self.fp_base + "specific_alg_to_info_path", return_value=info_path),
+        patch(self.fp_base + "get_test_path", return_value=test_path),
+        patch(self.fp_base + "get_info_path", return_value=info_path),
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
@@ -181,14 +181,25 @@ class TestRunTests(parent):
     if not os.path.exists(solution_file):
       print(f"Path {solution_file} does not exist.\nContinuing.")
       return
+    
+    test_file_path = get_test_path(alg)
+    try:
+      os.remove(test_file_path)
+    except FileNotFoundError:
+      pass
+    error_msg = f"Failed to generate test file for {member_to_capitalized_words(alg)}."
     generate_test_file_if_necessary(alg)
+    self.assertTrue(os.path.exists(test_file_path), error_msg)
+
     with (patch(self.fp_base + "get_practice_file_dir", 
                 return_value=solution_file_dir), 
           patch(self.fp_base + "get_practice_file_path", 
                 return_value=solution_file)):
-      result = run_tests(alg, language, self.do_debug, str(self.do_debug))
       error_msg = f"Solution for {member_to_capitalized_words(alg)} in {member_to_capitalized_words(language)} failed."
+      
+      result = run_tests(alg, language, self.do_debug, str(self.do_debug))
       self.assertEqual(True, result, error_msg)
+
       print("Solution correct.")
 
   # Runs tests for the given Language that correspond to actual

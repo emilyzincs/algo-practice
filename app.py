@@ -14,14 +14,18 @@ from typing import assert_never
 from types import ModuleType
 from util.general import no_op, load_module_from_path
 from util.file_io import read_json, copy_file, match_json_keys
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
+from util.constants import (
+  SOLUTION_CLASS_NAME,
+  SOLUTION_FUNCTION_NAME,
+  DEBUG,
+  GENERATOR_CLASS_NAME
+)
 from util.enums import (
   Language, 
   is_member, 
   SpecificAlgorithm,
   GeneralAlgorithm,
   member_from_string,
-  SPECIFIC_ALG_TO_GENERAL,
   member_to_capitalized_words
 )
 
@@ -119,7 +123,7 @@ def handle_practice(alg: SpecificAlgorithm) -> float|None:
 # - ModuleNotFoundError if the test file does not exist and the test-generation
 #     file does, but the test-generation file has no generate() function.
 def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
-  test_file_path = fp.specific_alg_to_test_path(alg)
+  test_file_path = fp.get_test_path(alg)
   if os.path.exists(test_file_path):
     return
   alg_name = member_to_capitalized_words(alg)
@@ -134,15 +138,13 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   except ModuleNotFoundError:
     raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
   
-  gen_alg: GeneralAlgorithm = SPECIFIC_ALG_TO_GENERAL[alg]
-  generator_class_name = (
-      member_to_capitalized_words(gen_alg).replace(" ", "") + "Generator")
+  gen_alg: GeneralAlgorithm = alg.general_type
 
   try:
-    generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
+    generator_class: type[BaseGenerator] = getattr(module, GENERATOR_CLASS_NAME)
   except AttributeError:
     raise AttributeError(f"Test generator class for {alg_name} must" +
-                         f" be named {generator_class_name} in {test_generator_path}.")
+                         f" be named {GENERATOR_CLASS_NAME} in {test_generator_path}.")
   
   generator_class().generate_tests()
 
@@ -151,7 +153,7 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
 #   starting practice text for the given 'alg'.
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
-  info_file = fp.specific_alg_to_info_path(alg)
+  info_file = fp.get_info_path(alg)
   alg_name = member_to_capitalized_words(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
     f.write(get_starting_practice_text(alg_name, info_file))
