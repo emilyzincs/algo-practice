@@ -1,5 +1,5 @@
 from enum import Enum, auto
-from typing import Type, TypeVar
+from typing import Type, TypeVar, List
 
 E = TypeVar('E', bound=Enum)
 
@@ -59,115 +59,6 @@ class Language(Enum):
     return self.value[1]
 
 
-# Enum for specific algorithms that can be practiced.
-class SpecificAlgorithm(Enum):
-  BINARY_SEARCH = auto()
-  MERGE_SORT = auto()
-  QUICK_SORT = auto()
-  HEAP_SORT = auto()
-  RADIX_SORT = auto()
-  BUCKET_SORT = auto()
-  KADANE = auto()
-  BREADTH_FIRST_SEARCH = auto()
-  DEPTH_FIRST_SEARCH = auto()
-  DIJKSTRA = auto()
-  BELLMAN_FORD = auto()
-  FLOYD_WARSHALL = auto()
-  KRUSKAL = auto()
-  PRIM = auto()
-  KAHN = auto()
-  FORD_FULKERSON = auto()
-  TARJAN = auto()
-  KNUTH_MORRIS_PRATT = auto()
-  
-
-class GeneralAlgorithm(Enum):
-  SEARCH = auto()
-  SORT = auto()
-  SUBARRAY = auto()
-  REACHABLE = auto()
-  SHORTEST_PATH = auto()
-  MINIMUM_SPANNING_TREE = auto()
-  TOPOLOGICAL_SORT = auto()
-  MAX_FLOW = auto()
-  CONNECTED_COMPONENTS = auto()
-  PATTERN_MATCHING = auto()
-
-
-class AlgorithmCategory(Enum):
-  ARRAYS = auto()
-  GRAPHS = auto()
-  STRINGS = auto()
-
-
-# Map from recognized user input strings to SpecificAlgorithm members.
-INPUT_ALG_TO_SPECIFIC = {
-  "binary search": SpecificAlgorithm.BINARY_SEARCH,
-  "merge sort": SpecificAlgorithm.MERGE_SORT,
-  "quick sort": SpecificAlgorithm.QUICK_SORT,
-  "heap sort": SpecificAlgorithm.HEAP_SORT,
-  "radix sort": SpecificAlgorithm.RADIX_SORT,
-  "bucket sort": SpecificAlgorithm.BUCKET_SORT,
-  "kadane": SpecificAlgorithm.KADANE,
-  "kadane's": SpecificAlgorithm.KADANE,
-  "bfs": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
-  "breadth first search": SpecificAlgorithm.BREADTH_FIRST_SEARCH,
-  "dfs": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-  "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
-  "dijkstra": SpecificAlgorithm.DIJKSTRA,
-  "dijkstra's": SpecificAlgorithm.DIJKSTRA,
-  "bellman ford": SpecificAlgorithm.BELLMAN_FORD,
-  "floyd warshall": SpecificAlgorithm.FLOYD_WARSHALL,
-  "kruskal": SpecificAlgorithm.KRUSKAL,
-  "kruskal's": SpecificAlgorithm.KRUSKAL,
-  "prim": SpecificAlgorithm.PRIM,
-  "prim's": SpecificAlgorithm.PRIM,
-  "kahn": SpecificAlgorithm.KAHN,
-  "kahn's": SpecificAlgorithm.KAHN,
-  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
-  "tarjan": SpecificAlgorithm.TARJAN,
-  "tarjan's": SpecificAlgorithm.TARJAN,
-  "kmp": SpecificAlgorithm.KNUTH_MORRIS_PRATT,
-  "knuth morris pratt": SpecificAlgorithm.KNUTH_MORRIS_PRATT,
-}
-
-
-SPECIFIC_ALG_TO_GENERAL = {
-  SpecificAlgorithm.BINARY_SEARCH: GeneralAlgorithm.SEARCH,
-  SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.SORT,
-  SpecificAlgorithm.KADANE: GeneralAlgorithm.SUBARRAY,
-  SpecificAlgorithm.BREADTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
-  SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
-  SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.SHORTEST_PATH,
-  SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.SHORTEST_PATH,
-  SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.SHORTEST_PATH,
-  SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
-  SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
-  SpecificAlgorithm.KAHN: GeneralAlgorithm.TOPOLOGICAL_SORT,
-  SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
-  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
-  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.PATTERN_MATCHING,
-}
-
-
-GENERAL_ALG_TO_CATEGORY = {
-  GeneralAlgorithm.SEARCH: AlgorithmCategory.ARRAYS,
-  GeneralAlgorithm.SORT: AlgorithmCategory.ARRAYS,
-  GeneralAlgorithm.SUBARRAY: AlgorithmCategory.ARRAYS,
-  GeneralAlgorithm.REACHABLE: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.SHORTEST_PATH: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.MINIMUM_SPANNING_TREE: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.TOPOLOGICAL_SORT: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.MAX_FLOW: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.CONNECTED_COMPONENTS: AlgorithmCategory.GRAPHS,
-  GeneralAlgorithm.PATTERN_MATCHING: AlgorithmCategory.STRINGS,
-}
-
-
 # Enum for commands that are valid from any menu (global commands).
 class GlobalCommand(Enum):
   HELP = "Lists commands"
@@ -219,3 +110,136 @@ class ParseType(Enum):
   SET = auto()
   HASHABLE_SET = auto()
   MAP = auto()
+
+
+class DirectoryType(Enum):
+    SPECIFIC = auto()
+    GENERAL = auto()
+
+
+class AlgorithmCategory(Enum):
+    ARRAYS = auto()
+    GRAPHS = auto()
+    STRINGS = auto()
+
+
+class GeneralAlgorithm(Enum):
+    # Format: (Category)
+    SEARCH = (AlgorithmCategory.ARRAYS, auto())
+    SORT = (AlgorithmCategory.ARRAYS, auto())
+    SUBARRAY = (AlgorithmCategory.ARRAYS, auto())
+    REACHABLE = (AlgorithmCategory.GRAPHS, auto())
+    SHORTEST_PATH = (AlgorithmCategory.GRAPHS, auto())
+    MINIMUM_SPANNING_TREE = (AlgorithmCategory.GRAPHS, auto())
+    TOPOLOGICAL_SORT = (AlgorithmCategory.GRAPHS, auto())
+    MAX_FLOW = (AlgorithmCategory.GRAPHS, auto())
+    CONNECTED_COMPONENTS = (AlgorithmCategory.GRAPHS, auto())
+    PATTERN_MATCHING = (AlgorithmCategory.STRINGS, auto())
+
+    @property
+    def category(self) -> AlgorithmCategory:
+        return self.value[0]
+
+
+class SpecificAlgorithm(Enum):
+    # Format: (GeneralType, InfoDir, TestDir, Aliases)
+    BINARY_SEARCH = (
+        GeneralAlgorithm.SEARCH, DirectoryType.GENERAL, 
+        DirectoryType.SPECIFIC, ["binary search"]
+    )
+    MERGE_SORT = (
+        GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["merge sort"]
+    )
+    QUICK_SORT = (
+        GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["quick sort"]
+    )
+    HEAP_SORT = (
+        GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["heap sort"]
+    )
+    RADIX_SORT = (
+        GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["radix sort"]
+    )
+    BUCKET_SORT = (
+        GeneralAlgorithm.SORT, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["bucket sort"]
+    )
+    KADANE = (
+        GeneralAlgorithm.SUBARRAY, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["kadane", "kadane's"]
+    )
+    BREADTH_FIRST_SEARCH = (
+        GeneralAlgorithm.REACHABLE, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["bfs", "breadth first search"]
+    )
+    DEPTH_FIRST_SEARCH = (
+        GeneralAlgorithm.REACHABLE, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["dfs", "depth first search"]
+    )
+    DIJKSTRA = (
+        GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["dijkstra", "dijkstra's"]
+    )
+    BELLMAN_FORD = (
+        GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["bellman ford"]
+    )
+    FLOYD_WARSHALL = (
+        GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["floyd warshall"]
+    )
+    KRUSKAL = (
+        GeneralAlgorithm.MINIMUM_SPANNING_TREE, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["kruskal", "kruskal's"]
+    )
+    PRIM = (
+        GeneralAlgorithm.MINIMUM_SPANNING_TREE, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["prim", "prim's"]
+    )
+    KAHN = (
+        GeneralAlgorithm.TOPOLOGICAL_SORT, DirectoryType.GENERAL, 
+        DirectoryType.SPECIFIC, ["kahn", "kahn's"]
+    )
+    FORD_FULKERSON = (
+        GeneralAlgorithm.MAX_FLOW, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["ford fulkerson"]
+    )
+    TARJAN = (
+        GeneralAlgorithm.CONNECTED_COMPONENTS, DirectoryType.GENERAL, 
+        DirectoryType.GENERAL, ["tarjan", "tarjan's"]
+    )
+    KNUTH_MORRIS_PRATT = (
+        GeneralAlgorithm.PATTERN_MATCHING, DirectoryType.SPECIFIC, 
+        DirectoryType.SPECIFIC, ["kmp", "knuth morris pratt"]
+    )
+
+    @property
+    def general_type(self) -> GeneralAlgorithm:
+        return self.value[0]
+
+    @property
+    def info_dir(self) -> DirectoryType:
+        return self.value[1]
+
+    @property
+    def test_dir(self) -> DirectoryType:
+        return self.value[2]
+
+    @property
+    def aliases(self) -> List[str]:
+        return self.value[3]
+
+    @property
+    def category(self) -> AlgorithmCategory:
+        return self.general_type.category
+
+    @classmethod
+    def from_input(cls, user_input: str) -> 'SpecificAlgorithm':
+        normalized = user_input.strip().lower()
+        for member in cls:
+            if normalized in member.aliases:
+                return member
+        raise ValueError(f"No match for: {user_input}")

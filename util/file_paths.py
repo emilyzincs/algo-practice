@@ -4,7 +4,9 @@ from typing import assert_never
 from util.enums import (
   SpecificAlgorithm,
   GeneralAlgorithm,
+  AlgorithmCategory,
   SPECIFIC_ALG_TO_GENERAL,
+  GENERAL_ALG_TO_CATEGORY,
   Language,
   member_to_string
 )
