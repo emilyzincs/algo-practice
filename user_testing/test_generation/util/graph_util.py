@@ -1,4 +1,4 @@
-from user_testing.test_generation import generation_util as util
+from user_testing.test_generation.util import array_util as util
 from typing import TypeVar, Callable
 import random
 from problems.reachable.depth_first_search.solution import Solution as DfsSolution

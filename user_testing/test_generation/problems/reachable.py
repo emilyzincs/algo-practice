@@ -1,6 +1,6 @@
 from problems.reachable.breadth_first_search.solution import Solution
 
-from user_testing.test_generation.graph_util import (
+from user_testing.test_generation.util.graph_util import (
   UnweightedGraph,
   get_unweighted_graphs,
   get_rand_vertices
