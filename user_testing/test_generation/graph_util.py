@@ -229,7 +229,6 @@ def rand_graph(
     connected: bool, 
     edge_prob: float = 0.2
 ) -> UnweightedGraph:
-  
   graph: UnweightedGraph = [[] for _ in range(num_vertices)]
   for i in range(num_vertices):
     for j in range(i+1, num_vertices):
@@ -243,3 +242,22 @@ def rand_graph(
     connect_graph(graph, directed) 
       
   return graph
+
+def digraph_to_dag(old_graph: UnweightedGraph) -> UnweightedGraph:
+  components: set[frozenset[int]] = tarjan.solve(old_graph)
+  new_graph: UnweightedGraph = [[] for _ in range(len(components))]
+  vertex_to_component: list[int] = [-1] * len(old_graph)
+
+  for i, comp in enumerate(components):
+    for vertex in comp:
+      vertex_to_component[vertex] = i
+
+  for old_vertex, old_neighbors in enumerate(old_graph):
+    new_vertex = vertex_to_component[old_vertex]
+    for old_nei in old_neighbors:
+      new_nei = vertex_to_component[old_nei]
+      if new_vertex != new_nei and new_nei not in new_graph[new_vertex]:
+        new_graph[new_vertex].append(new_nei)
+
+  return new_graph
+

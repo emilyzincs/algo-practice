@@ -10,5 +10,5 @@
       }
     }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { "type": "list", "items": { "type": "int" } }
 }
