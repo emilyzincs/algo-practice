@@ -142,78 +142,78 @@ class GeneralAlgorithm(Enum):
 
 
 class SpecificAlgorithm(Enum):
-    # Format: (GeneralType, InfoDir, TestDir, Aliases)
+    # Format: (GeneralType, InfoDir, TestDir, GeneratorFileName, Aliases)
     BINARY_SEARCH = (
         GeneralAlgorithm.SEARCH, DirectoryType.GENERAL, 
-        DirectoryType.SPECIFIC, ["binary search"]
+        DirectoryType.SPECIFIC, None, ["binary search"]
     )
     MERGE_SORT = (
         GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["merge sort"]
+        DirectoryType.GENERAL, "general", ["merge sort"]
     )
     QUICK_SORT = (
         GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["quick sort"]
+        DirectoryType.GENERAL, "general", ["quick sort"]
     )
     HEAP_SORT = (
         GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["heap sort"]
+        DirectoryType.GENERAL, "general", ["heap sort"]
     )
     RADIX_SORT = (
         GeneralAlgorithm.SORT, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["radix sort"]
+        DirectoryType.GENERAL, "general", ["radix sort"]
     )
     BUCKET_SORT = (
         GeneralAlgorithm.SORT, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["bucket sort"]
+        DirectoryType.SPECIFIC, None, ["bucket sort"]
     )
     KADANE = (
         GeneralAlgorithm.SUBARRAY, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["kadane", "kadane's"]
+        DirectoryType.SPECIFIC, None, ["kadane", "kadane's"]
     )
     BREADTH_FIRST_SEARCH = (
         GeneralAlgorithm.REACHABLE, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["bfs", "breadth first search"]
+        DirectoryType.GENERAL, "general", ["bfs", "breadth first search"]
     )
     DEPTH_FIRST_SEARCH = (
         GeneralAlgorithm.REACHABLE, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["dfs", "depth first search"]
+        DirectoryType.GENERAL, "general", ["dfs", "depth first search"]
     )
     DIJKSTRA = (
         GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["dijkstra", "dijkstra's"]
+        DirectoryType.SPECIFIC, None, ["dijkstra", "dijkstra's"]
     )
     BELLMAN_FORD = (
         GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["bellman ford"]
+        DirectoryType.SPECIFIC, None, ["bellman ford"]
     )
     FLOYD_WARSHALL = (
         GeneralAlgorithm.SHORTEST_PATH, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["floyd warshall"]
+        DirectoryType.SPECIFIC, None, ["floyd warshall"]
     )
     KRUSKAL = (
         GeneralAlgorithm.MINIMUM_SPANNING_TREE, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["kruskal", "kruskal's"]
+        DirectoryType.GENERAL, "general", ["kruskal", "kruskal's"]
     )
     PRIM = (
         GeneralAlgorithm.MINIMUM_SPANNING_TREE, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["prim", "prim's"]
+        DirectoryType.GENERAL, "general", ["prim", "prim's"]
     )
     KAHN = (
         GeneralAlgorithm.TOPOLOGICAL_SORT, DirectoryType.GENERAL, 
-        DirectoryType.SPECIFIC, ["kahn", "kahn's"]
+        DirectoryType.SPECIFIC, None, ["kahn", "kahn's"]
     )
     FORD_FULKERSON = (
         GeneralAlgorithm.MAX_FLOW, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["ford fulkerson"]
+        DirectoryType.GENERAL, "general", ["ford fulkerson"]
     )
     TARJAN = (
         GeneralAlgorithm.CONNECTED_COMPONENTS, DirectoryType.GENERAL, 
-        DirectoryType.GENERAL, ["tarjan", "tarjan's"]
+        DirectoryType.GENERAL, "general", ["tarjan", "tarjan's"]
     )
     KNUTH_MORRIS_PRATT = (
         GeneralAlgorithm.PATTERN_MATCHING, DirectoryType.SPECIFIC, 
-        DirectoryType.SPECIFIC, ["kmp", "knuth morris pratt"]
+        DirectoryType.SPECIFIC, None, ["kmp", "knuth morris pratt"]
     )
 
     @property
@@ -227,10 +227,16 @@ class SpecificAlgorithm(Enum):
     @property
     def test_dir(self) -> DirectoryType:
         return self.value[2]
+    
+    @property
+    def generator_file_name(self) -> str:
+      raw: str|None = self.value[3]
+      return (raw if type(raw) == str
+              else member_to_string(self))
 
     @property
     def aliases(self) -> List[str]:
-        return self.value[3]
+        return self.value[4]
 
     @property
     def category(self) -> AlgorithmCategory:

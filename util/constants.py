@@ -1,4 +1,6 @@
+DEBUG = False
+
 SOLUTION_CLASS_NAME = "Solution"
 SOLUTION_FUNCTION_NAME = "solve"
 TAB = "  "
-DEBUG = False
+GENERATOR_CLASS_NAME = "Generator"

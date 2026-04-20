@@ -14,7 +14,12 @@ from typing import assert_never
 from types import ModuleType
 from util.general import no_op, load_module_from_path
 from util.file_io import read_json, copy_file, match_json_keys
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, DEBUG
+from util.constants import (
+  SOLUTION_CLASS_NAME,
+  SOLUTION_FUNCTION_NAME,
+  DEBUG,
+  GENERATOR_CLASS_NAME
+)
 from util.enums import (
   Language, 
   is_member, 
@@ -134,14 +139,12 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
     raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
   
   gen_alg: GeneralAlgorithm = alg.general_type
-  generator_class_name = (
-      member_to_capitalized_words(gen_alg).replace(" ", "") + "Generator")
 
   try:
-    generator_class: type[BaseGenerator] = getattr(module, generator_class_name)
+    generator_class: type[BaseGenerator] = getattr(module, GENERATOR_CLASS_NAME)
   except AttributeError:
     raise AttributeError(f"Test generator class for {alg_name} must" +
-                         f" be named {generator_class_name} in {test_generator_path}.")
+                         f" be named {GENERATOR_CLASS_NAME} in {test_generator_path}.")
   
   generator_class().generate_tests()
 

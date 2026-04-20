@@ -119,11 +119,16 @@ def get_abstract_test_dir() -> str:
   return os.path.join(PROJECT_ROOT, "app_tests")
 
 
-def get_test_generator_path(specific_alg: SpecificAlgorithm) -> str:
-  raise NotImplementedError()
-  # gen_alg = SPECIFIC_ALG_TO_GENERAL[specific_alg]
-  # return os.path.join(PROJECT_ROOT, "user_testing", "test_generation", "problems", 
-  #                     member_to_string(gen_alg) + ".py")
+def get_test_generator_dir() -> str:
+  return os.path.join(PROJECT_ROOT, "user_testing", "test_generation")
+
+
+def get_test_generator_path(alg: SpecificAlgorithm) -> str:
+  return os.path.join(get_test_generator_dir(),
+                      "problems",
+                      member_to_string(alg.category),
+                      member_to_string(alg.general_type),
+                      alg.generator_file_name + ".py")
 
 
 def get_boilerplate_dir() -> str:
