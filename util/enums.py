@@ -243,3 +243,11 @@ class SpecificAlgorithm(Enum):
             if normalized in member.aliases:
                 return member
         raise ValueError(f"No match for: {user_input}")
+    
+    @classmethod
+    def is_alg(cls, user_input: str) -> bool:
+      try:
+         cls.from_input(user_input)
+         return True
+      except ValueError:
+         return False

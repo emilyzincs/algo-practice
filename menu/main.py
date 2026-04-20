@@ -48,14 +48,14 @@ def handle_commands(
     input_is_global_cmd = is_member(GlobalCommand, user_input)
     input_is_local_cmd = is_member(MainMenuCommand, user_input)
     input_is_language = is_member(Language, user_input)
-    input_is_input_alg = user_input in INPUT_ALG_TO_SPECIFIC
+    input_is_alg = SpecificAlgorithm.is_alg(user_input)
     input_is_alg_id = is_type(user_input, int) and 0 <= int(user_input) < num_algs
 
     if not (
       input_is_global_cmd or
       input_is_local_cmd or
       input_is_language or
-      input_is_input_alg or
+      input_is_alg or
       input_is_alg_id
     ):
       print(f"Invalid algorithm name or id: {user_input}.", file=sys.stderr)
@@ -88,11 +88,12 @@ def handle_commands(
       language: Language = member_from_string(Language, user_input)
       set_language_func(language)
       input_message = responses[0]
-    elif input_is_input_alg or input_is_alg_id:
-      alg: SpecificAlgorithm = (
-        INPUT_ALG_TO_SPECIFIC[user_input] if input_is_input_alg
-        else list(SpecificAlgorithm)[int(user_input)]
-      )
+    elif input_is_alg or input_is_alg_id:
+      alg: SpecificAlgorithm
+      if input_is_alg:
+        alg = SpecificAlgorithm.from_input(user_input)
+      else:
+        alg = list(SpecificAlgorithm)[int(user_input)]
       alg_name = member_to_capitalized_words(alg)
 
       print(f"Starting {alg_name} practice.")
@@ -162,11 +163,4 @@ def print_algorithms() -> None:
 # Returns a list of strings where each index (0‑based) corresponds to an algorithm's ID
 # and contains the algorithm's '/'-delimited aliases.
 def get_grouped_alg_names() -> list[str]:
-  ret = ["" for _ in range(len(SpecificAlgorithm))]
-  for (alg_name, alg) in INPUT_ALG_TO_SPECIFIC.items():
-    idx = alg.value - 1
-    if ret[idx] == "":
-      ret[idx] = alg_name
-    else:
-      ret[idx] += '/' + alg_name
-  return ret
+  return ["/".join(alg.aliases) for alg in SpecificAlgorithm]
