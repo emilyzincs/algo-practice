@@ -15,7 +15,7 @@ sol = Solution()
 
 
 # Generator for reachability algorithm tests.
-class TopologicalSortGenerator(BaseGenerator):
+class Generator(BaseGenerator):
 
   @override
   def get_all_test_cases(self) -> list[tuple[UnweightedGraph]]:

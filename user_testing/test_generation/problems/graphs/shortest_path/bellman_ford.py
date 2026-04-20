@@ -9,7 +9,7 @@ from user_testing.test_generation.util.graph_util import (
 )
 
 
-class BellmanFordGenerator(BaseGenerator):
+class Generator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[WeightedGraph, int, int, int, int]]:

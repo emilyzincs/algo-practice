@@ -1,10 +1,10 @@
 import user_testing.test_generation.util.array_util as util
-from user_testing.test_generation.problems.arrays.sort.general import SortGenerator
+from user_testing.test_generation.problems.arrays.sort.general import Generator as SortGenerator
 from util.enums import SpecificAlgorithm
 from typing import override
 
 
-class BucketSortGenerator(SortGenerator):
+class Generator(SortGenerator):
 
   @override
   def get_algorithm(self) -> SpecificAlgorithm:

@@ -12,7 +12,7 @@ import random
 sol = Solution()
 
 
-class MaxFlowGenerator(BaseGenerator):
+class Generator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[WeightedGraph, int, int]]:

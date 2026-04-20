@@ -15,7 +15,7 @@ sol = Solution()
 
 
 # Generator for reachability algorithm tests.
-class ReachableGenerator(BaseGenerator):
+class Generator(BaseGenerator):
 
   @override
   def get_all_test_cases(self) -> list[tuple[UnweightedGraph, int]]:

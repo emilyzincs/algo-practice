@@ -10,7 +10,7 @@ from user_testing.test_generation.util.graph_util import (
 
 floyd_warshall_sol = FloydWarshallSolution()
 
-class FloydWarshallGenerator(BaseGenerator):
+class Generator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[WeightedGraph, int, int]]:

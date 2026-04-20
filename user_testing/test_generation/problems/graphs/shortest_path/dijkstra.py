@@ -12,7 +12,7 @@ from user_testing.test_generation.util.graph_util import (
 sol = Solution()
 
 
-class DijkstraGenerator(BaseGenerator):
+class Generator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[WeightedGraph, int, int]]:

@@ -8,7 +8,7 @@ sol = Solution()
 
 
 # Generator for binary search algorithm tests.
-class KadaneGenerator(BaseGenerator):
+class Generator(BaseGenerator):
 
   # Builds the complete list of test cases for binary search.
   #

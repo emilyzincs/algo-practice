@@ -5,7 +5,7 @@ from user_testing.test_generation.util.string_util import get_random_string
 import random
 
 
-class KnuthMorrisPrattGenerator(BaseGenerator):
+class Generator(BaseGenerator):
  
   @override
   def get_all_test_cases(self) -> list[tuple[str, str]]:

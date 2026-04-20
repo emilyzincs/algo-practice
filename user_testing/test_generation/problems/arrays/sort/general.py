@@ -4,7 +4,7 @@ from util.enums import SpecificAlgorithm
 from typing import override
 
 
-class SortGenerator(BaseGenerator):
+class Generator(BaseGenerator):
 
   @override
   def get_all_test_cases(self) -> list[tuple[tuple[int, ...], ...]]:
