@@ -69,6 +69,7 @@ class SpecificAlgorithm(Enum):
   HEAP_SORT = auto()
   RADIX_SORT = auto()
   BUCKET_SORT = auto()
+  KADANE = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
   FLOYD_WARSHALL = auto()
@@ -85,6 +86,7 @@ class GeneralAlgorithm(Enum):
   SORT = auto()
   BUCKET_SORT = auto()
   DIJKSTRA = auto()
+  KADANE = auto()
   BELLMAN_FORD = auto()
   FLOYD_WARSHALL = auto()
   MINIMUM_SPANNING_TREE = auto()
@@ -104,6 +106,8 @@ INPUT_ALG_TO_SPECIFIC = {
   "heap sort": SpecificAlgorithm.HEAP_SORT,
   "radix sort": SpecificAlgorithm.RADIX_SORT,
   "bucket sort": SpecificAlgorithm.BUCKET_SORT,
+  "kadane": SpecificAlgorithm.KADANE,
+  "kadane's": SpecificAlgorithm.KADANE,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
   "bellman ford": SpecificAlgorithm.BELLMAN_FORD,
@@ -128,6 +132,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
+  SpecificAlgorithm.KADANE: GeneralAlgorithm.KADANE,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
   SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.FLOYD_WARSHALL,
