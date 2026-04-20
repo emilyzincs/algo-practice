@@ -1,6 +1,6 @@
 {
   "unique_answer": true,
-  "parameter_names": ["graph"],
+  "parameter_names": ["graph", "s", "t"],
   "input_types": [
     {
       "type": "list",
@@ -11,7 +11,9 @@
           "items": { "type": "int" }
         }
       }
-    }
+    },
+    { "type": "int" },
+    { "type": "int" }
   ],
   "expected_type": { "type": "int" }
 }

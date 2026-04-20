@@ -66,23 +66,34 @@ class SpecificAlgorithm(Enum):
   DEPTH_FIRST_SEARCH = auto()
   MERGE_SORT = auto()
   QUICK_SORT = auto()
+  HEAP_SORT = auto()
+  RADIX_SORT = auto()
+  BUCKET_SORT = auto()
+  TOPOLOGICAL_SORT = auto()
+  KADANE = auto()
   DIJKSTRA = auto()
   BELLMAN_FORD = auto()
+  FLOYD_WARSHALL = auto()
   KRUSKAL = auto()
   PRIM = auto()
-  IN_DEGREE = auto()
-  POSTORDER = auto()
-
+  TARJAN = auto()
+  FORD_FULKERSON = auto()
+  
 
 # Enum for general algorithm categories.
 class GeneralAlgorithm(Enum):
   BINARY_SEARCH = auto()
   REACHABLE = auto()
   SORT = auto()
-  DIJKSTRA = auto()
-  BELLMAN_FORD = auto()
-  MINIMUM_SPANNING_TREE = auto()
+  BUCKET_SORT = auto()
   TOPOLOGICAL_SORT = auto()
+  DIJKSTRA = auto()
+  KADANE = auto()
+  BELLMAN_FORD = auto()
+  FLOYD_WARSHALL = auto()
+  MINIMUM_SPANNING_TREE = auto()
+  CONNECTED_COMPONENTS = auto()
+  MAX_FLOW = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -94,16 +105,23 @@ INPUT_ALG_TO_SPECIFIC = {
   "depth first search": SpecificAlgorithm.DEPTH_FIRST_SEARCH,
   "merge sort": SpecificAlgorithm.MERGE_SORT,
   "quick sort": SpecificAlgorithm.QUICK_SORT,
+  "heap sort": SpecificAlgorithm.HEAP_SORT,
+  "radix sort": SpecificAlgorithm.RADIX_SORT,
+  "bucket sort": SpecificAlgorithm.BUCKET_SORT,
+  "topological sort": SpecificAlgorithm.TOPOLOGICAL_SORT,
+  "kadane": SpecificAlgorithm.KADANE,
+  "kadane's": SpecificAlgorithm.KADANE,
   "dijkstra": SpecificAlgorithm.DIJKSTRA,
   "dijkstra's": SpecificAlgorithm.DIJKSTRA,
-  "shortest path": SpecificAlgorithm.DIJKSTRA,
   "bellman ford": SpecificAlgorithm.BELLMAN_FORD,
+  "floyd warshall": SpecificAlgorithm.FLOYD_WARSHALL,
   "kruskal": SpecificAlgorithm.KRUSKAL,
   "kruskal's": SpecificAlgorithm.KRUSKAL,
   "prim": SpecificAlgorithm.PRIM,
   "prim's": SpecificAlgorithm.PRIM,
-  "in degree": SpecificAlgorithm.IN_DEGREE,
-  "postorder": SpecificAlgorithm.POSTORDER,
+  "tarjan": SpecificAlgorithm.TARJAN,
+  "tarjan's": SpecificAlgorithm.TARJAN,
+  "ford fulkerson": SpecificAlgorithm.FORD_FULKERSON,
 }
 
 
@@ -114,12 +132,18 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.DEPTH_FIRST_SEARCH: GeneralAlgorithm.REACHABLE,
   SpecificAlgorithm.MERGE_SORT: GeneralAlgorithm.SORT,
   SpecificAlgorithm.QUICK_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.HEAP_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.RADIX_SORT: GeneralAlgorithm.SORT,
+  SpecificAlgorithm.BUCKET_SORT: GeneralAlgorithm.BUCKET_SORT,
+  SpecificAlgorithm.TOPOLOGICAL_SORT: GeneralAlgorithm.TOPOLOGICAL_SORT,
+  SpecificAlgorithm.KADANE: GeneralAlgorithm.KADANE,
   SpecificAlgorithm.DIJKSTRA: GeneralAlgorithm.DIJKSTRA,
   SpecificAlgorithm.BELLMAN_FORD: GeneralAlgorithm.BELLMAN_FORD,
+  SpecificAlgorithm.FLOYD_WARSHALL: GeneralAlgorithm.FLOYD_WARSHALL,
   SpecificAlgorithm.KRUSKAL: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
-  SpecificAlgorithm.IN_DEGREE: GeneralAlgorithm.TOPOLOGICAL_SORT,
-  SpecificAlgorithm.POSTORDER: GeneralAlgorithm.TOPOLOGICAL_SORT,
+  SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
+  SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
 }
 
 
@@ -170,6 +194,7 @@ class ParseType(Enum):
   STRING = auto()
   ARRAY = auto()
   LIST = auto()
-  IMMUTABLE_LIST = auto()
+  HASHABLE_LIST = auto()
   SET = auto()
+  HASHABLE_SET = auto()
   MAP = auto()

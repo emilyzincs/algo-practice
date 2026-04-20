@@ -56,13 +56,11 @@ class JavaBp(BpInterface):
         return "boolean" if not should_box_if_primitive else "Boolean"
       case ParseType.STRING:
         return "String"
-      case ParseType.ARRAY:
+      case ParseType.ARRAY | ParseType.HASHABLE_LIST:
         return f"{self.parse_type_string(typ["items"], False)}[]"
       case ParseType.LIST:
         return f"List<{self.parse_type_string(typ["items"], True)}>"
-      case ParseType.IMMUTABLE_LIST:
-        return f"{self.parse_type_string(typ["items"], False)}[]"
-      case ParseType.SET:
+      case ParseType.SET | ParseType.HASHABLE_SET:
         return f"Set<{self.parse_type_string(typ["items"], True)}>"
       case ParseType.MAP:
         return (f"Map<{self.parse_type_string(typ["keys"], True)}," + 

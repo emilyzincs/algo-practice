@@ -4,8 +4,7 @@ from util.enums import GeneralAlgorithm
 from problems.minimum_spanning_tree.prim.solution import Solution
 from user_testing.test_generation.graph_util import (
   WeightedGraph,
-  get_weighted_graphs,
-  get_graphs_with_rand_vertices
+  get_weighted_graphs
 )
 
 
@@ -21,9 +20,7 @@ class MinimumSpanningTreeGenerator(BaseGenerator):
     graphs: list[WeightedGraph] = get_weighted_graphs(
       directed=False, connected=False, lo=lo, hi=hi)
     unboxed_test_cases.extend(graphs)
-    boxed_test_cases = (
-        get_graphs_with_rand_vertices(unboxed_test_cases, num_rand_vertices=0))
-    return boxed_test_cases
+    return [(graph,) for graph in unboxed_test_cases]
   
   @override
   def oracle(self, graph: WeightedGraph) -> int:

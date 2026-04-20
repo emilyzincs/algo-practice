@@ -5,7 +5,7 @@ from problems.dijkstra.solution import Solution
 from user_testing.test_generation.graph_util import (
   WeightedGraph,
   get_weighted_graphs,
-  get_graphs_with_rand_vertices
+  get_rand_vertices
 )
 
 
@@ -20,7 +20,8 @@ class DijkstraGenerator(BaseGenerator):
     lo, hi = 0, 100
     graphs: list[WeightedGraph] = get_weighted_graphs(
       directed=True, connected=False, lo=lo, hi=hi)
-    test_cases.extend(get_graphs_with_rand_vertices(graphs, num_rand_vertices=2))
+    rand_vertices = get_rand_vertices(graphs, num_rand_vertices=2)
+    test_cases.extend([(g, st[0], st[1]) for g, st in zip(graphs, rand_vertices)])
     return test_cases
   
   @override

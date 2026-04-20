@@ -40,16 +40,28 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Java 17+
 
 ## Suppported Algorithms
-- Binary Search
+- Search
+  - Binary Search
 - Reachable
   - Breadth First Search
   - Depth First Search
 - Sort
   - Merge Sort
   - Quick Sort
-- Dijkstra
-- Bellman Ford
+  - Heap Sort
+  - Radix Sort
+  - Bucket Sort
+  - Topological Sort
+- Subarray
+  - Kadane
+- Shortest Path
+  - Dijkstra
+  - Bellman Ford
+  - Floyd Warshall
 - Minimum Spanning Tree
   - Kruskal
   - Prim
-
+- Connected Components
+  - Tarjan
+- Max Flow
+  - Ford Fulkerson
