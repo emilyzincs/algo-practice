@@ -10,7 +10,7 @@ class KnuthMorrisPrattGenerator(BaseGenerator):
   @override
   def get_all_test_cases(self) -> list[tuple[str, str]]:
     test_cases: list[tuple[str, str]] = self.get_edge_cases()
-    for text_size in [5, 10, 20, 50, 100, 500, 1000, 10000]:
+    for text_size in [5, 10, 20, 50, 100, 500, 1000, 10000, 100000]:
       for num_allowed_chars in [5, 10, 50, 100, 500, 1000, 10000]:
         self.add_random_cases(test_cases, 5, text_size, num_allowed_chars)
     return test_cases
@@ -28,7 +28,7 @@ class KnuthMorrisPrattGenerator(BaseGenerator):
 
   @override
   def get_algorithm(self) -> GeneralAlgorithm:
-    return GeneralAlgorithm.KNUTH_MORRISS_PRATT
+    return GeneralAlgorithm.KNUTH_MORRIS_PRATT
   
   def get_edge_cases(self) -> list[tuple[str, str]]:
     return [

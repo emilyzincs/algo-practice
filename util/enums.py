@@ -95,7 +95,7 @@ class GeneralAlgorithm(Enum):
   MINIMUM_SPANNING_TREE = auto()
   CONNECTED_COMPONENTS = auto()
   MAX_FLOW = auto()
-  KNUTH_MORRISS_PRATT = auto()
+  KNUTH_MORRIS_PRATT = auto()
 
 
 # Map from recognized user input strings to SpecificAlgorithm members.
@@ -148,7 +148,7 @@ SPECIFIC_ALG_TO_GENERAL = {
   SpecificAlgorithm.PRIM: GeneralAlgorithm.MINIMUM_SPANNING_TREE,
   SpecificAlgorithm.TARJAN: GeneralAlgorithm.CONNECTED_COMPONENTS,
   SpecificAlgorithm.FORD_FULKERSON: GeneralAlgorithm.MAX_FLOW,
-  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.KNUTH_MORRISS_PRATT
+  SpecificAlgorithm.KNUTH_MORRIS_PRATT: GeneralAlgorithm.KNUTH_MORRIS_PRATT
 }
 
 

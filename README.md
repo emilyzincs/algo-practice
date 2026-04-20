@@ -65,3 +65,5 @@ Each menu consists of a few, manageable commands, with functional descriptions g
   - Tarjan
 - Max Flow
   - Ford Fulkerson
+- String
+  - Knuth Morris Pratt 
