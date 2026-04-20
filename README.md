@@ -48,6 +48,7 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 - Heap Sort
 - Radix Sort
 - Bucket Sort
+- Kadane
 - Dijkstra
 - Bellman Ford
 - Floyd Warshall
