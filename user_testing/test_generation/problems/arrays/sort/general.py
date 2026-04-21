@@ -43,7 +43,7 @@ class Generator(BaseGenerator):
     reverse_sorted_big_arr = tuple(list(big_arr)[::-1])
     test_cases.append((reverse_sorted_big_arr,))
 
-    test_cases.append((util.all_same_big_arr(0),))
+    test_cases.append(self.get_all_same_case())
 
     test_cases = self.remove_duplicate_cases(test_cases)
     return test_cases
@@ -102,3 +102,6 @@ class Generator(BaseGenerator):
 
   def rand_sorted_big_arr(self) -> tuple[int, ...]:
     return tuple(sorted(list((self.rand_big_arr()))))
+  
+  def get_all_same_case(self) -> tuple[tuple[int, ...]]:
+    return (util.all_same_big_arr(0),)

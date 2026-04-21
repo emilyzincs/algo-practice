@@ -302,10 +302,10 @@ public class Runner {
         yield val;
       }
       case ARRAY -> {
-        if (val == null || val.getClass().isArray()) {
+        if (val == null || !val.getClass().isArray()) {
           throw new IllegalArgumentException("Expected List or Array for type ARRAY");
         }
-        List<?> rawList = (val instanceof List) ? (List<?>) val : Arrays.asList((Object[]) val);
+        List<?> rawList = Arrays.asList((Object[]) box(val));
         @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
         Class<?> componentType = parseType(itemDef);

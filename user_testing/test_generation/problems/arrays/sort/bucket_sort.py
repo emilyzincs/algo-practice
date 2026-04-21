@@ -43,3 +43,7 @@ class Generator(SortGenerator):
   @override
   def rand_big_arr(self) -> tuple[float, ...]: # type: ignore
     return util.rand_float_big_arry()
+  
+  @override
+  def get_all_same_case(self) -> tuple[tuple[float, ...]]: # type: ignore
+    return (util.all_same_big_arr(0.0),) # type: ignore

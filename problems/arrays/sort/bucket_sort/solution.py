@@ -19,7 +19,7 @@ class Solution:
       idx = int((num - min_val) / diff * (n - 1))
       buckets[idx].append(num)
 
-    sorted_list = []
+    sorted_list: list[float] = []
     for bucket in buckets:
       if bucket:
         sorted_list.extend(sorted(bucket))
