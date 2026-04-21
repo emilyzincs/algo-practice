@@ -2,9 +2,11 @@
 #include <unordered_set>
 #include <fstream>
 #include "json.hpp"
+#include "helpers.hpp"
 
 using json = nlohmann::json;
 using
+  std::cout,
   std::cerr, 
   std::string,
   std::vector,
@@ -13,36 +15,6 @@ using
 
 
 // compilation: g++ -std=c++11 main.cpp -o my_program
-
-enum class ParseType {
-  INT,
-  LONG,
-  BOOLEAN,
-  FLOAT,
-  STRING,
-  ARRAY,
-  LIST,
-  UNORDERED_LIST,
-};
-
-vector<string> PARSE_TYPE_LIST = {
-  "int", 
-  "long", 
-  "boolean", 
-  "float", 
-  "string", 
-  "array",
-  "list",
-  "unordered_list",
-};
-
-void usage(int argc, char** argv);
-void validateParseTypeEnumList(vector<string> parseTypesString);
-void printErr(string msg) {
-  cerr << msg;
-  std::exit(1);
-};
-json get_json_from_path(string path);
 
 int main(int argc, char** argv) {
   if (argc != 8 || ("True" != argv[4] && "False" != argv[4])) {
@@ -56,48 +28,22 @@ int main(int argc, char** argv) {
   validateParseTypeEnumList(parseTypesString);
 
   string info_path = argv[2];
+  string test_path = argv[3];
   json info = get_json_from_path(info_path);
+  json tests = get_json_from_path(test_path);
 
+  for (int i = 0; i < tests.size(); i++) {
+    auto& test = tests[i];
+    // TODO FILL auto raw = {method}({args});
 
+    {output_type} actual = standardize_output(raw, expected_type);
+    {output_type} expected = {expected};
 
-  return 0;
-}
-
-void usage(int argc, char** argv) {
-  string usageMsg = (
-    std::string("Usage: java Runner") + 
-    " <practiceFilePackage>" +
-    " <infoFilePath>.json" +
-    " <testFilePath>.json" + 
-    " <debug>, where <debug> is True or False." +
-    " <SolutionClassName>" + 
-    " <SolutionMethodName>" +
-    " <ParseTypes list string>"
-  );
-  string argsMsg = ("Given args: [");
-  if (argc != 0) {
-    argsMsg += argv[0];
-    for (int i = 1; i < argc; i++) {
-      argsMsg += ", ";
-      argsMsg += argv[i];
+    if (actual != expected) {
+      cerr << "Failed test " << i+1 << ". Expected " << 
+            expected << ", but was " << actual;
     }
   }
-  argsMsg += "]";
-  printErr(usageMsg + argsMsg);
-}
-
-void validateParseTypeList(vector<string> parseTypesString) {
-  if (parseTypesString != PARSE_TYPE_LIST) {
-    printErr("Given ParseTypes enum entries do not match the expected.");
-  }
-}
-
-json get_json_from_path(string path) {
-  std::ifstream file(path);
-  if (!file.is_open()) {
-    printErr("Could not open " + path + ".");
-  }
-  json data;
-  data << file;
-  return data;
+  cout << "All tests passed!;
+  return 0;
 }
