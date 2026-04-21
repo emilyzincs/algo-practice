@@ -102,11 +102,8 @@ def _add_nested_types(typ: dict[str, Any], s: set[ParseType]) -> None:
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       pass
-    case ParseType.ARRAY | ParseType.LIST | ParseType.HASHABLE_LIST | ParseType.SET | ParseType.HASHABLE_SET:
+    case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
       _add_nested_types(typ["items"], s)
-    case ParseType.MAP:
-      _add_nested_types(typ["keys"], s)
-      _add_nested_types(typ["values"], s)
     case _:
       assert_never(curr_type)
 
@@ -134,11 +131,8 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return None
-    case ParseType.ARRAY | ParseType.LIST | ParseType.HASHABLE_LIST | ParseType.SET | ParseType.HASHABLE_SET:
+    case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
       return _find_type(typ["items"], to_find)
-    case ParseType.MAP:
-      key_typ = _find_type(typ["keys"], to_find)
-      return key_typ if key_typ is not None else _find_type(typ["values"], to_find)
     case _:
       assert_never(curr_type)
 

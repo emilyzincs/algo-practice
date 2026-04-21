@@ -48,17 +48,8 @@ class PythonBp(BpInterface):
         return "str"
       case ParseType.ARRAY:
         return f"list[{self.parse_type_string(typ["items"])}]"
-      case ParseType.LIST:
+      case ParseType.LIST | ParseType.UNORDERED_LIST:
         return f"list[{self.parse_type_string(typ["items"])}]"
-      case ParseType.HASHABLE_LIST:
-        return f"tuple[{self.parse_type_string(typ["items"])}, ...]"
-      case ParseType.SET:
-        return f"set[{self.parse_type_string(typ["items"])}]"
-      case ParseType.HASHABLE_SET:
-        return f"frozenset[{self.parse_type_string(typ["items"])}]"
-      case ParseType.MAP:
-        return (f"dict[{self.parse_type_string(typ["keys"])}," + 
-              f" {self.parse_type_string(typ["values"])}]")
       case _:
         assert_never(curr_type)
 

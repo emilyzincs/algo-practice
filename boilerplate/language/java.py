@@ -17,7 +17,7 @@ class JavaBp(BpInterface):
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
     imports = ""
-    for t in [ParseType.LIST, ParseType.SET, ParseType.MAP]:
+    for t in [ParseType.LIST]:
       if t in included_types:
         imports += f"import java.util.{member_to_capitalized_words(t).capitalize()};\n"
     return imports 
@@ -56,15 +56,10 @@ class JavaBp(BpInterface):
         return "boolean" if not should_box_if_primitive else "Boolean"
       case ParseType.STRING:
         return "String"
-      case ParseType.ARRAY | ParseType.HASHABLE_LIST:
+      case ParseType.ARRAY:
         return f"{self.parse_type_string(typ["items"], False)}[]"
-      case ParseType.LIST:
+      case ParseType.LIST | ParseType.UNORDERED_LIST:
         return f"List<{self.parse_type_string(typ["items"], True)}>"
-      case ParseType.SET | ParseType.HASHABLE_SET:
-        return f"Set<{self.parse_type_string(typ["items"], True)}>"
-      case ParseType.MAP:
-        return (f"Map<{self.parse_type_string(typ["keys"], True)}," + 
-              f" {self.parse_type_string(typ["values"], True)}>")
       case _:
         assert_never(curr_type)
 

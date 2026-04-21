@@ -106,10 +106,7 @@ class ParseType(Enum):
   STRING = auto()
   ARRAY = auto()
   LIST = auto()
-  HASHABLE_LIST = auto()
-  SET = auto()
-  HASHABLE_SET = auto()
-  MAP = auto()
+  UNORDERED_LIST = auto()
 
 
 class DirectoryType(Enum):

@@ -14,6 +14,7 @@ This document explains the core concepts and components of the project.
   - [JSON](#json)
   - [Python](#python)
   - [Java](#java)
+  - [C++](#c)
 - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
   - [Motivation](#motivation)
   - [Steps](#steps)
@@ -188,6 +189,20 @@ Let `<T>` represent a nested language‑agnostic type.
 | `long`                                   | long       |
 | `float`                                  | double     |
 | `boolean`                                | boolean    |
+| `string`                                 | string     |
+| `array`, `hashable_list`                 | Array      |
+| `list`                                   | List       |
+| `set`, `hashable_set`                    | Set        |
+| `map`                                    | Map        |
+
+### C++
+
+| Language-Agnostic Type                   | Language Type  |
+|------------------------------------------|------------|
+| `int`                                    | int        |
+| `long`                                   | long long  |
+| `float`                                  | double     |
+| `boolean`                                | bool       |
 | `string`                                 | string     |
 | `array`, `hashable_list`                 | Array      |
 | `list`                                   | List       |
