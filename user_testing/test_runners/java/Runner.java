@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,7 @@ import java.util.Set;
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
+  private static final AgnosticComparator AGNOSTIC_COMPARATOR = new AgnosticComparator();
   private static String fullPackageClassName;
 
   // Enumeration of all supported data types for parsing and validation.
@@ -262,13 +265,25 @@ public class Runner {
         }
         yield array;
       }
-      case LIST, UNORDERED_LIST -> {
+      case LIST -> {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw)
+        for (Object o : raw) {
           list.add(parseValue(o, inner));
+        }
+        yield list;
+      }
+      case UNORDERED_LIST -> {
+        List<?> raw = (List<?>) val;
+        List<Object> list = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> inner = (Map<String, Object>) def.get("items");
+        for (Object o : raw) {
+          list.add(parseValue(o, inner));
+        }
+        Collections.sort(list, AGNOSTIC_COMPARATOR);
         yield list;
       }
     };
@@ -378,4 +393,52 @@ public class Runner {
     }
     return arr;
   }
+
+  public static class AgnosticComparator implements Comparator<Object> {
+    @Override
+    public int compare(Object a, Object b) {
+      if (a.getClass() != b.getClass()) {
+        throw new IllegalArgumentException(
+          "Type Mismatch: Cannot compare " + a.getClass().getSimpleName() + 
+          " and " + b.getClass().getSimpleName()
+        );
+      }
+
+      if (a instanceof String) {
+        return ((String) a).compareTo((String) b);
+      }
+      if (a instanceof Number) {
+        return Double.compare(((Number) a).doubleValue(), ((Number) b).doubleValue());
+      }
+      if (a instanceof Boolean) {
+        return Boolean.compare((Boolean) a, (Boolean) b);
+      }
+      if (a instanceof List) {
+        List<?> listA = (List<?>) a;
+        List<?> listB = (List<?>) b;
+        
+        int minSize = Math.min(listA.size(), listB.size());
+        for (int i = 0; i < minSize; i++) {
+          int cmp = compare(listA.get(i), listB.get(i));
+          if (cmp != 0) return cmp;
+        }
+        return Integer.compare(listA.size(), listB.size());
+      }
+      if (a.getClass().isArray()) {
+        Object[] arrA = (Object[]) a;
+        Object[] arrB = (Object[]) b;
+        
+        int minSize = Math.min(arrA.length, arrB.length);
+        for (int i = 0; i < minSize; i++) {
+          int cmp = compare(arrA[i], arrB[i]);
+          if (cmp != 0) return cmp;
+        }
+        return Integer.compare(arrA.length, arrB.length);
+      }
+
+      throw new UnsupportedOperationException("Unknown type: " + a.getClass());
+    }
+  }
 }
+
+

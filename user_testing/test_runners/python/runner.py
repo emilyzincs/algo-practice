@@ -123,8 +123,10 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return val
-    case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
+    case ParseType.ARRAY | ParseType.LIST:
       return [parse_value(v, typ["items"]) for v in val]
+    case ParseType.UNORDERED_LIST:
+      return sorted([parse_value(v, typ["items"]) for v in val])
     case _:
       assert_never(curr_type)
 
