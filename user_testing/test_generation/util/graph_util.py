@@ -141,11 +141,9 @@ def rand_graph_and_root(
 def connect_graph(graph: UnweightedGraph, directed: bool) -> None:
   def get_directed_representatives() -> list[int]:
     component_representatives = []
-    components: set[frozenset[int]] = tarjan.solve(graph)
+    components: list[list[int]] = tarjan.solve(graph)
     for comp in components:
-      for vertex in comp:
-        component_representatives.append(vertex)
-        break
+      component_representatives.append(comp[0])
     return component_representatives
   
   def get_undirected_representatives(graph: UnweightedGraph) -> list[int]:
@@ -255,7 +253,7 @@ def rand_graph(
   return graph
 
 def digraph_to_dag(old_graph: UnweightedGraph) -> UnweightedGraph:
-  components: set[frozenset[int]] = tarjan.solve(old_graph)
+  components: list[list[int]] = tarjan.solve(old_graph)
   new_graph: UnweightedGraph = [[] for _ in range(len(components))]
   vertex_to_component: list[int] = [-1] * len(old_graph)
 

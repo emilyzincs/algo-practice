@@ -10,8 +10,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +32,7 @@ public class Runner {
     STRING,
     ARRAY,
     LIST,
-    HASHABLE_LIST,
-    SET,
-    HASHABLE_SET,
-    MAP,
+    UNORDERED_LIST,
   }
 
   // Entry point: validates arguments, loads the user's class, runs all tests,
@@ -204,14 +199,12 @@ public class Runner {
       case FLOAT -> double.class;
       case BOOLEAN -> boolean.class;
       case STRING -> String.class;
-      case ARRAY, HASHABLE_LIST -> {
+      case ARRAY -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         yield Array.newInstance(inner, 0).getClass();
       }
-      case LIST -> List.class;
-      case SET, HASHABLE_SET -> Set.class;
-      case MAP -> Map.class;
+      case LIST, UNORDERED_LIST -> List.class;
     };
   }
 
@@ -257,7 +250,7 @@ public class Runner {
       case LONG -> ((Number) val).longValue();
       case FLOAT -> ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
       case BOOLEAN, STRING -> val;
-      case ARRAY, HASHABLE_LIST -> {
+      case ARRAY -> {
         List<?> rawList = (List<?>) val;
         @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
@@ -269,7 +262,7 @@ public class Runner {
         }
         yield array;
       }
-      case LIST -> {
+      case LIST, UNORDERED_LIST -> {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
@@ -277,41 +270,6 @@ public class Runner {
         for (Object o : raw)
           list.add(parseValue(o, inner));
         yield list;
-      }
-      case SET, HASHABLE_SET -> {
-        List<?> raw = (List<?>) val;
-        Set<Object> set = new HashSet<>();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw)
-          set.add(parseValue(o, inner));
-        yield set;
-      }
-      case MAP -> {
-        @SuppressWarnings("unchecked")
-        List<List<?>> keysAndValues = (List<List<?>>) val;
-        if (keysAndValues.size() != 2 || 
-            keysAndValues.get(0).size() != 
-            keysAndValues.get(1).size()) {
-          throw new IllegalArgumentException("Maps must be represented as two"
-            + " lists of equal length.");
-        }
-
-        List<?> keys = keysAndValues.get(0);
-        List<?> values = keysAndValues.get(1);
-        int n = keys.size();
-        Map<Object, Object> map = new HashMap<>();
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
-        @SuppressWarnings("unchecked")
-        Map<String, Object> valDef = (Map<String, Object>) def.get("values");
-
-        for (int i = 0; i < n; i++) {
-          map.put(parseValue(keys.get(i), keyDef), 
-                  parseValue(values.get(i), valDef));
-        }
-        yield map;
       }
     };
   }

@@ -22,10 +22,7 @@ enum class ParseType {
   STRING,
   ARRAY,
   LIST,
-  HASHABLE_LIST,
-  SET,
-  HASHABLE_SET,
-  MAP,
+  UNORDERED_LIST,
 };
 
 vector<string> PARSE_TYPE_LIST = {
@@ -36,10 +33,7 @@ vector<string> PARSE_TYPE_LIST = {
   "string", 
   "array",
   "list",
-  "hashable_list",
-  "set",
-  "hashable_set",
-  "map",
+  "unordered_list",
 };
 
 void usage(int argc, char** argv);
@@ -64,7 +58,7 @@ int main(int argc, char** argv) {
   string info_path = argv[2];
   json info = get_json_from_path(info_path);
 
-  
+
 
   return 0;
 }

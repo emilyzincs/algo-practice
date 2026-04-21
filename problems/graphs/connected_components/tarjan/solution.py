@@ -1,12 +1,12 @@
 class Solution:
-  def solve(self, graph: list[list[int]]) -> set[frozenset[int]]:
+  def solve(self, graph: list[list[int]]) -> list[list[int]]:
     n = len(graph)
     index = 0
     indices = [-1] * n
     lowlink = [0] * n
     on_stack = [False] * n
     stack = []
-    sccs: set[frozenset[int]] = set()
+    sccs: list[list[int]] = []
 
     def strongconnect(v: int) -> None:
       nonlocal index
@@ -24,14 +24,14 @@ class Solution:
           lowlink[v] = min(lowlink[v], indices[w])
 
       if lowlink[v] == indices[v]:
-        scc: set[int] = set()
+        scc = []
         while True:
           w = stack.pop()
           on_stack[w] = False
-          scc.add(w)
+          scc.append(w)
           if w == v:
             break
-        sccs.add(frozenset(scc))
+        sccs.append(scc)
 
     for v in range(n):
       if indices[v] == -1:
