@@ -128,7 +128,8 @@ public class Runner {
         List<?> rawInputs = (List<?>) test.get("inputs");
         Object[] argsParsed = parseInputs(rawInputs, inputDefs);
         
-        Object actual = userMethod.invoke(null, argsParsed);
+        Object raw = userMethod.invoke(null, argsParsed);
+        Object actual = standardizeOutput(raw, expectedType);
         
         boolean fail = false;
         
@@ -232,7 +233,7 @@ public class Runner {
     return res;
   }
 
-  // Parses a single value according to a type definition.
+  // Parses a single value from JSON according to a type definition.
   //
   // Parameters:
   // - val: The raw JSON value (may be a String, Number, List, Map, etc.).
@@ -243,10 +244,6 @@ public class Runner {
   private static Object parseValue(Object val, Map<String, Object> def) throws Exception {
     String candidate = (String) def.get("type");
     ParseType type = toParseType(candidate);
-
-    if (type != ParseType.STRING && val instanceof String) {
-      val = mapper.readValue((String) val, Object.class);
-    }
 
     return switch (type) {
       case INT -> ((Number) val).intValue();
@@ -265,7 +262,7 @@ public class Runner {
         }
         yield array;
       }
-      case LIST -> {
+      case LIST, UNORDERED_LIST -> {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
@@ -273,20 +270,77 @@ public class Runner {
         for (Object o : raw) {
           list.add(parseValue(o, inner));
         }
-        yield list;
-      }
-      case UNORDERED_LIST -> {
-        List<?> raw = (List<?>) val;
-        List<Object> list = new ArrayList<>();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw) {
-          list.add(parseValue(o, inner));
-        }
-        Collections.sort(list, AGNOSTIC_COMPARATOR);
         yield list;
       }
     };
+  }
+
+  private static Object standardizeOutput(Object val, Map<String, Object> def) throws Exception {
+    String candidate = (String) def.get("type");
+    ParseType type = toParseType(candidate);
+
+    return switch (type) {
+      case INT -> {
+        typeAssert(val, Integer.class, type);
+        yield ((Number) val).intValue();
+      }
+      case LONG -> {
+        typeAssert(val, Long.class, type);
+        yield ((Number) val).longValue();
+      }
+      case FLOAT -> {
+        typeAssert(val, Number.class, type); // Checks if it's any numeric type
+        double d = ((Number) val).doubleValue();
+        yield d == 0 ? 0.0 : d;
+      }
+      case BOOLEAN -> {
+        typeAssert(val, Boolean.class, type);
+        yield val;
+      }
+      case STRING -> {
+        typeAssert(val, String.class, type);
+        yield val;
+      }
+      case ARRAY -> {
+        if (val == null || val.getClass().isArray()) {
+          throw new IllegalArgumentException("Expected List or Array for type ARRAY");
+        }
+        List<?> rawList = (val instanceof List) ? (List<?>) val : Arrays.asList((Object[]) val);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
+        Class<?> componentType = parseType(itemDef);
+        Object array = Array.newInstance(componentType, rawList.size());
+        for (int i = 0; i < rawList.size(); i++) {
+          Array.set(array, i, standardizeOutput(rawList.get(i), itemDef));
+        }
+        yield array;
+      }
+      case LIST, UNORDERED_LIST -> {
+        typeAssert(val, List.class, type);
+        List<?> raw = (List<?>) val;
+        List<Object> list = new ArrayList<>();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> inner = (Map<String, Object>) def.get("items");
+        for (Object o : raw) {
+          list.add(standardizeOutput(o, inner));
+        }
+        if (type == ParseType.UNORDERED_LIST) {
+          Collections.sort(list, AGNOSTIC_COMPARATOR);
+        }
+        yield list;
+      }
+    };
+  }
+
+  private static void typeAssert(Object val, Class<?> expected, ParseType type) {
+    if (!expected.isInstance(val)) {
+      throw new IllegalArgumentException(
+        String.format("Expected %s for type %s, but got %s", 
+          expected.getSimpleName(), 
+          type, 
+          (val == null ? "null" : val.getClass().getSimpleName()))
+      );
+    }
   }
 
   // Performs a deep equality comparison between two objects.

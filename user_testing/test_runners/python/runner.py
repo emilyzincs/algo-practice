@@ -78,6 +78,7 @@ def main() -> bool:
         return False
       
       actual = solution_method(*args)
+      actual = standardize_output(actual, expected_type)
 
       expected = test["expected"]
       if expected_type:
@@ -107,9 +108,7 @@ def main() -> bool:
   return True
 
 
-# Parses a JSON value according to a type definition, converting it into a Python object
-# (primitive, list, set, dict, ListNode, TreeNode, etc.).
-#
+# Parses a JSON value according to a type definition
 # Parameters:
 # - val: The raw JSON value.
 # - typ: The corresponding type definition dictionary.
@@ -123,12 +122,38 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return val
-    case ParseType.ARRAY | ParseType.LIST:
+    case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
       return [parse_value(v, typ["items"]) for v in val]
-    case ParseType.UNORDERED_LIST:
-      return sorted([parse_value(v, typ["items"]) for v in val])
     case _:
       assert_never(curr_type)
+  
+def standardize_output(val: Any, typ: dict[str, Any]) -> Any:
+  validate_type(typ)
+  curr_type: ParseType = member_from_string(ParseType, typ["type"])
+
+  match curr_type:
+    case ParseType.INT | ParseType.LONG:
+      type_assert(val, int)
+    case ParseType.FLOAT:
+      type_assert(val, float)
+    case ParseType.BOOLEAN:
+      type_assert(val, bool)
+    case ParseType.STRING:
+      type_assert(val, str)
+    case ParseType.ARRAY | ParseType.LIST:
+      type_assert(val, list)
+      val = [standardize_output(v, typ["items"]) for v in val]
+    case ParseType.UNORDERED_LIST:
+      type_assert(val, list)
+      return sorted([standardize_output(v, typ["items"]) for v in val])
+    case _:
+      assert_never(curr_type)
+  return val
+    
+  
+def type_assert(val: Any, typ: type):
+  if type(val) != typ:
+    raise ValueError(f"Expected {val} to have type {typ}, but was {type(val)}.")
 
 
 # Runs the test runner. Exits with code 1 if any test fails,
