@@ -1,0 +1,19 @@
+{
+  "unique_answer": true,
+  "parameter_names": ["input"],
+  "input_types": [
+    { "type": "list",
+      "items": { 
+        "type": "array",
+        "items": { "type": "boolean" }
+      }
+    }
+  ],
+  "expected_type": { 
+    "type": "unordered_list",
+    "items": { 
+      "type": "unordered_list",
+      "items": { "type": "boolean" }
+    }
+  }
+}

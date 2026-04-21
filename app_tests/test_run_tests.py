@@ -108,7 +108,7 @@ class TestRunTests(parent):
     expected_values = [
       True, False, True, True, True, # 5
       True, True, False, True, False, # 10
-      False, True, True,
+      False, True, True, True
     ]
     total_tests = len(expected_values)
     info_path_prefix = self.get_info_path_prefix()

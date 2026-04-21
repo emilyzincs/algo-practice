@@ -1,0 +1,10 @@
+package app_tests.language.java.boilerplate_files;
+
+import java.util.List;
+
+// Algorithm: Test.
+public class Bp14 {
+  public static List<List<Boolean>> solve(List<boolean[]> input) {
+    
+  }
+}

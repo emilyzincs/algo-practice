@@ -1,0 +1,14 @@
+[
+  {
+    "inputs": [
+      [
+        [true, false, true],
+        [false, true]
+      ]
+    ],
+    "expected": [
+        [false, true],
+        [false, true, true]
+      ]
+  }
+]
