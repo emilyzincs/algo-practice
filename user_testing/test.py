@@ -41,7 +41,7 @@ def run_tests(
   info_file = fp.get_info_path(alg)
   test_file = fp.get_test_path(alg)
 
-  parse_types_list = member_name_list(ParseType)
+  parse_types_list: list[str] = member_name_list(ParseType)
   additional_args = [
     required_class_name,
     required_method_name,
@@ -58,7 +58,7 @@ def run_tests(
         info_file,
         test_file,
         fp.PROJECT_ROOT,
-        parse_types_list,
+        dumps(parse_types_list),
         required_class_name,
         required_method_name,
       )

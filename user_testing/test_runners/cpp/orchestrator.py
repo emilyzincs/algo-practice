@@ -1,6 +1,8 @@
 import json
-import sys
+import os
 import subprocess
+from util.file_paths import get_test_runner_dir_path
+from util.enums import Language
 
 from boilerplate.language.cpp import CppBp
 
@@ -36,15 +38,18 @@ def main(
     cpp_input_types,
     cpp_expected_type,
   )
+
+  dir_path = get_test_runner_dir_path(Language.CPP)
+  runner_path = os.path.join(dir_path, "runner.cpp")
   
-  with open("runner.cpp", "w") as f:
-      f.write(cpp_runner_contents)
+  with open(runner_path, "w") as f:
+    f.write(cpp_runner_contents)
 
   compile_cmd = [
-      "g++", "-std=c++17", "runner.cpp", "helpers.cpp",
-      "-o", "runner.exe", f"-I{PROJECT_ROOT}"
+    "g++", "-std=c++17", "runner.cpp", "helpers.cpp",
+    "-o", "runner.exe", f"-I{PROJECT_ROOT}"
   ]
-  compilation = subprocess.run(compile_cmd, capture_output=True, text=True)
+  compilation = subprocess.run(compile_cmd, capture_output=True, text=True, cwd=dir_path)
   
   if compilation.returncode != 0:
     if debug:
@@ -52,7 +57,7 @@ def main(
     return False
 
   run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
-  result = subprocess.run(run_cmd, capture_output=False, text=debug)
+  result = subprocess.run(run_cmd, capture_output=False, text=debug, cwd=dir_path)
 
   return result.returncode == 0
 
