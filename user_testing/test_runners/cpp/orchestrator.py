@@ -75,7 +75,8 @@ def main(
     return False
 
   run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
-  result = subprocess.run(run_cmd, capture_output=False, text=debug, cwd=dir_path)
+  result = subprocess.run(run_cmd, capture_output=not debug, text=not debug, cwd=dir_path)
+
 
   return result.returncode == 0
 
