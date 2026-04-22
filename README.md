@@ -38,6 +38,7 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 ## Supported Languages
 - Python 3.12.1+
 - Java 17+
+- C++ 17+
 
 ## Suppported Algorithms
 

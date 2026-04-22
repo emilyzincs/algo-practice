@@ -1,0 +1,7 @@
+// Algorithm: Test.
+class Solution {
+ public:
+  static bool solve() {
+    
+  }
+};

@@ -26,9 +26,7 @@ class Generator(BaseGenerator):
   
   @override
   def oracle(self, graph: list[list[int]]) -> list[list[int]]:
-    components: set[frozenset[int]] = sol.solve(graph)
-    return [list(component) for component in components]
-
+    return sorted([sorted(comp) for comp in sol.solve(graph)])
   
   @override
   def get_algorithm(self) -> SpecificAlgorithm:

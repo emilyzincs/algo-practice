@@ -1,39 +1,23 @@
 import json
 import sys
 from typing import Any, assert_never
-
-# Validate command‑line arguments and print usage if incorrect.
-if len(sys.argv) != 9 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
-  print("Usage: python runner.py" + 
-        " <practiceFilePackage>" +
-        " <infoFilePath>.json" +
-        " <testFilePath>.json" + 
-        " <PROJECT_ROOT>" +
-        " <debug>, where <debug> is True or False." +
-        " <SolutionClassName>" + 
-        " <SolutionMethodName>" +
-        " <ParseTypes list string>", file=sys.stderr)
-  print(f"Given args: {sys.argv}.", file=sys.stderr)
-  sys.exit(1)
-
-
-PROJECT_ROOT = sys.argv[4]
-sys.path.insert(0, PROJECT_ROOT)
-
 from util.general import load_module_from_path
-from util.enums import ParseType, member_name_list, member_from_string
+from util.enums import ParseType, member_from_string
 from boilerplate.util import validate_type
 
 
 # Returns True if all tests pass, False otherwise.
-def main() -> bool:
-  practice_file_path = sys.argv[1]
-  info_file_path = sys.argv[2]
-  test_file_path = sys.argv[3]
-  debug = (sys.argv[5] == "True")
-  required_class_name = sys.argv[6]
-  required_method_name = sys.argv[7]
-  type_list_str = sys.argv[8]
+def main(
+  debug: bool,
+  practice_file_path: str,
+  info_file_path: str,
+  test_file_path: str,
+  PROJECT_ROOT: str,
+  parse_types_list: str,
+  required_class_name: str,
+  required_method_name: str
+) -> bool:
+  
 
   practice_module = load_module_from_path("practice_module", practice_file_path)
   incorrect_setup_msg = ("Error: Practice file must contain 'Solution'" +
@@ -45,10 +29,6 @@ def main() -> bool:
     if debug:
       raise
     return False
-  
-  type_list: list[str] = json.loads(type_list_str)
-  if type_list != member_name_list(ParseType):
-    raise ValueError(f"type_list does not match expected. Value: {type_list}.")
 
   with open(info_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -78,6 +58,7 @@ def main() -> bool:
         return False
       
       actual = solution_method(*args)
+      actual = standardize_output(actual, expected_type)
 
       expected = test["expected"]
       if expected_type:
@@ -107,9 +88,7 @@ def main() -> bool:
   return True
 
 
-# Parses a JSON value according to a type definition, converting it into a Python object
-# (primitive, list, set, dict, ListNode, TreeNode, etc.).
-#
+# Parses a JSON value according to a type definition
 # Parameters:
 # - val: The raw JSON value.
 # - typ: The corresponding type definition dictionary.
@@ -123,31 +102,36 @@ def parse_value(val: Any, typ: dict[str, Any]) -> Any:
   match curr_type:
     case ParseType.INT | ParseType.LONG | ParseType.FLOAT | ParseType.BOOLEAN | ParseType.STRING:
       return val
-    case ParseType.ARRAY | ParseType.LIST:
+    case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
       return [parse_value(v, typ["items"]) for v in val]
-    case ParseType.HASHABLE_LIST:
-      return tuple([parse_value(v, typ["items"]) for v in val])
-    case ParseType.SET:
-      return {parse_value(v, typ["items"]) for v in val}
-    case ParseType.HASHABLE_SET:
-      return frozenset(parse_value(v, typ["items"]) for v in val)
-    case ParseType.MAP:
-      if type(val) != list or len(val) != 2 or len(val[0]) != len(val[1]):
-        raise ValueError("Maps must be represented as two lists of equal length.")
-      keys, values = val
-      n = len(keys)
-      return {
-        parse_value(keys[i], typ["keys"]): parse_value(values[i], typ["values"])
-        for i in range(n)
-      }
     case _:
       assert_never(curr_type)
+  
+def standardize_output(val: Any, typ: dict[str, Any]) -> Any:
+  validate_type(typ)
+  curr_type: ParseType = member_from_string(ParseType, typ["type"])
 
+  match curr_type:
+    case ParseType.INT | ParseType.LONG:
+      type_assert(val, int)
+    case ParseType.FLOAT:
+      type_assert(val, float)
+    case ParseType.BOOLEAN:
+      type_assert(val, bool)
+    case ParseType.STRING:
+      type_assert(val, str)
+    case ParseType.ARRAY | ParseType.LIST:
+      type_assert(val, list)
+      val = [standardize_output(v, typ["items"]) for v in val]
+    case ParseType.UNORDERED_LIST:
+      type_assert(val, list)
+      return sorted([standardize_output(v, typ["items"]) for v in val])
+    case _:
+      assert_never(curr_type)
+  return val
+    
+  
+def type_assert(val: Any, typ: type):
+  if type(val) != typ:
+    raise ValueError(f"Expected {val} to have type {typ}, but was {type(val)}.")
 
-# Runs the test runner. Exits with code 1 if any test fails,
-# otherwise prints "All tests passed." and exits with code 0.
-if __name__ == "__main__":
-  if main():
-    print("All tests passed.")
-  else:
-    sys.exit(1)

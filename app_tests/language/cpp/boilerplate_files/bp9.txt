@@ -1,0 +1,12 @@
+#include <string>
+#include <vector>
+
+using std::string, std::vector;
+
+// Algorithm: Test.
+class Solution {
+ public:
+  static vector<string> solve() {
+    
+  }
+};

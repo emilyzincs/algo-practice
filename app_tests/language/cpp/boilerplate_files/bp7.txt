@@ -1,0 +1,11 @@
+#include <string>
+
+using std::string;
+
+// Algorithm: Test.
+class Solution {
+ public:
+  static string solve() {
+    
+  }
+};

@@ -10,8 +10,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +23,7 @@ import java.util.Set;
 public class Runner {
   private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
+  private static final AgnosticComparator AGNOSTIC_COMPARATOR = new AgnosticComparator();
   private static String fullPackageClassName;
 
   // Enumeration of all supported data types for parsing and validation.
@@ -34,10 +35,7 @@ public class Runner {
     STRING,
     ARRAY,
     LIST,
-    HASHABLE_LIST,
-    SET,
-    HASHABLE_SET,
-    MAP,
+    UNORDERED_LIST,
   }
 
   // Entry point: validates arguments, loads the user's class, runs all tests,
@@ -130,7 +128,8 @@ public class Runner {
         List<?> rawInputs = (List<?>) test.get("inputs");
         Object[] argsParsed = parseInputs(rawInputs, inputDefs);
         
-        Object actual = userMethod.invoke(null, argsParsed);
+        Object raw = userMethod.invoke(null, argsParsed);
+        Object actual = standardizeOutput(raw, expectedType);
         
         boolean fail = false;
         
@@ -204,14 +203,12 @@ public class Runner {
       case FLOAT -> double.class;
       case BOOLEAN -> boolean.class;
       case STRING -> String.class;
-      case ARRAY, HASHABLE_LIST -> {
+      case ARRAY -> {
         @SuppressWarnings("unchecked")
         Class<?> inner = parseType((Map<String, Object>) def.get("items"));
         yield Array.newInstance(inner, 0).getClass();
       }
-      case LIST -> List.class;
-      case SET, HASHABLE_SET -> Set.class;
-      case MAP -> Map.class;
+      case LIST, UNORDERED_LIST -> List.class;
     };
   }
 
@@ -236,7 +233,7 @@ public class Runner {
     return res;
   }
 
-  // Parses a single value according to a type definition.
+  // Parses a single value from JSON according to a type definition.
   //
   // Parameters:
   // - val: The raw JSON value (may be a String, Number, List, Map, etc.).
@@ -248,16 +245,12 @@ public class Runner {
     String candidate = (String) def.get("type");
     ParseType type = toParseType(candidate);
 
-    if (type != ParseType.STRING && val instanceof String) {
-      val = mapper.readValue((String) val, Object.class);
-    }
-
     return switch (type) {
       case INT -> ((Number) val).intValue();
       case LONG -> ((Number) val).longValue();
       case FLOAT -> ((Number) val).doubleValue() == 0 ? 0.0 : ((Number) val).doubleValue();
       case BOOLEAN, STRING -> val;
-      case ARRAY, HASHABLE_LIST -> {
+      case ARRAY -> {
         List<?> rawList = (List<?>) val;
         @SuppressWarnings("unchecked")
         Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
@@ -269,51 +262,85 @@ public class Runner {
         }
         yield array;
       }
-      case LIST -> {
+      case LIST, UNORDERED_LIST -> {
         List<?> raw = (List<?>) val;
         List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw)
+        for (Object o : raw) {
           list.add(parseValue(o, inner));
+        }
         yield list;
       }
-      case SET, HASHABLE_SET -> {
+    };
+  }
+
+  private static Object standardizeOutput(Object val, Map<String, Object> def) throws Exception {
+    String candidate = (String) def.get("type");
+    ParseType type = toParseType(candidate);
+
+    return switch (type) {
+      case INT -> {
+        typeAssert(val, Integer.class, type);
+        yield ((Number) val).intValue();
+      }
+      case LONG -> {
+        typeAssert(val, Long.class, type);
+        yield ((Number) val).longValue();
+      }
+      case FLOAT -> {
+        typeAssert(val, Number.class, type); // Checks if it's any numeric type
+        double d = ((Number) val).doubleValue();
+        yield d == 0 ? 0.0 : d;
+      }
+      case BOOLEAN -> {
+        typeAssert(val, Boolean.class, type);
+        yield val;
+      }
+      case STRING -> {
+        typeAssert(val, String.class, type);
+        yield val;
+      }
+      case ARRAY -> {
+        if (val == null || !val.getClass().isArray()) {
+          throw new IllegalArgumentException("Expected List or Array for type ARRAY");
+        }
+        List<?> rawList = Arrays.asList((Object[]) box(val));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> itemDef = (Map<String, Object>) def.get("items");
+        Class<?> componentType = parseType(itemDef);
+        Object array = Array.newInstance(componentType, rawList.size());
+        for (int i = 0; i < rawList.size(); i++) {
+          Array.set(array, i, standardizeOutput(rawList.get(i), itemDef));
+        }
+        yield array;
+      }
+      case LIST, UNORDERED_LIST -> {
+        typeAssert(val, List.class, type);
         List<?> raw = (List<?>) val;
-        Set<Object> set = new HashSet<>();
+        List<Object> list = new ArrayList<>();
         @SuppressWarnings("unchecked")
         Map<String, Object> inner = (Map<String, Object>) def.get("items");
-        for (Object o : raw)
-          set.add(parseValue(o, inner));
-        yield set;
-      }
-      case MAP -> {
-        @SuppressWarnings("unchecked")
-        List<List<?>> keysAndValues = (List<List<?>>) val;
-        if (keysAndValues.size() != 2 || 
-            keysAndValues.get(0).size() != 
-            keysAndValues.get(1).size()) {
-          throw new IllegalArgumentException("Maps must be represented as two"
-            + " lists of equal length.");
+        for (Object o : raw) {
+          list.add(standardizeOutput(o, inner));
         }
-
-        List<?> keys = keysAndValues.get(0);
-        List<?> values = keysAndValues.get(1);
-        int n = keys.size();
-        Map<Object, Object> map = new HashMap<>();
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> keyDef = (Map<String, Object>) def.get("keys");
-        @SuppressWarnings("unchecked")
-        Map<String, Object> valDef = (Map<String, Object>) def.get("values");
-
-        for (int i = 0; i < n; i++) {
-          map.put(parseValue(keys.get(i), keyDef), 
-                  parseValue(values.get(i), valDef));
+        if (type == ParseType.UNORDERED_LIST) {
+          Collections.sort(list, AGNOSTIC_COMPARATOR);
         }
-        yield map;
+        yield list;
       }
     };
+  }
+
+  private static void typeAssert(Object val, Class<?> expected, ParseType type) {
+    if (!expected.isInstance(val)) {
+      throw new IllegalArgumentException(
+        String.format("Expected %s for type %s, but got %s", 
+          expected.getSimpleName(), 
+          type, 
+          (val == null ? "null" : val.getClass().getSimpleName()))
+      );
+    }
   }
 
   // Performs a deep equality comparison between two objects.
@@ -420,4 +447,52 @@ public class Runner {
     }
     return arr;
   }
+
+  public static class AgnosticComparator implements Comparator<Object> {
+    @Override
+    public int compare(Object a, Object b) {
+      if (a.getClass() != b.getClass()) {
+        throw new IllegalArgumentException(
+          "Type Mismatch: Cannot compare " + a.getClass().getSimpleName() + 
+          " and " + b.getClass().getSimpleName()
+        );
+      }
+
+      if (a instanceof String) {
+        return ((String) a).compareTo((String) b);
+      }
+      if (a instanceof Number) {
+        return Double.compare(((Number) a).doubleValue(), ((Number) b).doubleValue());
+      }
+      if (a instanceof Boolean) {
+        return Boolean.compare((Boolean) a, (Boolean) b);
+      }
+      if (a instanceof List) {
+        List<?> listA = (List<?>) a;
+        List<?> listB = (List<?>) b;
+        
+        int minSize = Math.min(listA.size(), listB.size());
+        for (int i = 0; i < minSize; i++) {
+          int cmp = compare(listA.get(i), listB.get(i));
+          if (cmp != 0) return cmp;
+        }
+        return Integer.compare(listA.size(), listB.size());
+      }
+      if (a.getClass().isArray()) {
+        Object[] arrA = (Object[]) a;
+        Object[] arrB = (Object[]) b;
+        
+        int minSize = Math.min(arrA.length, arrB.length);
+        for (int i = 0; i < minSize; i++) {
+          int cmp = compare(arrA[i], arrB[i]);
+          if (cmp != 0) return cmp;
+        }
+        return Integer.compare(arrA.length, arrB.length);
+      }
+
+      throw new UnsupportedOperationException("Unknown type: " + a.getClass());
+    }
+  }
 }
+
+

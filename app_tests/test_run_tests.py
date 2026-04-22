@@ -39,7 +39,7 @@ class TestRunTests(parent):
     practice_file_dir = os.path.join(get_abstract_test_dir(), "language",
                                      member_to_string(language), "solution_files")
     match language:
-      case Language.PYTHON:
+      case Language.PYTHON | Language.CPP:
         pass
       case Language.JAVA:
         required_class_name_prefix = "Sol"
@@ -108,9 +108,7 @@ class TestRunTests(parent):
     expected_values = [
       True, False, True, True, True, # 5
       True, True, False, True, False, # 10
-      False, True, True, True,  True, # 15
-      False, True, True, False, False, # 20
-      True
+      False, True, True, True
     ]
     total_tests = len(expected_values)
     info_path_prefix = self.get_info_path_prefix()

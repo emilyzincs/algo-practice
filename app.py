@@ -207,7 +207,7 @@ def load_solution_into_practice(alg: SpecificAlgorithm) -> None:
   if not os.path.exists(solution_file):
     raise FileNotFoundError(f"Solution file does not exist: {solution_file}.")
   match LANGUAGE:
-    case Language.PYTHON:
+    case Language.PYTHON | Language.CPP:
       pass
     case Language.JAVA:
       lines = None

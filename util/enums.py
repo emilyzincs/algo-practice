@@ -47,6 +47,7 @@ def member_from_string(enum: Type[E], string: str) -> E:
 class Language(Enum):
   PYTHON = (".py", "#")
   JAVA = (".java", "//")
+  CPP = (".cpp", "//")
 
   # Returns the file extension for this language.
   @property
@@ -106,10 +107,7 @@ class ParseType(Enum):
   STRING = auto()
   ARRAY = auto()
   LIST = auto()
-  HASHABLE_LIST = auto()
-  SET = auto()
-  HASHABLE_SET = auto()
-  MAP = auto()
+  UNORDERED_LIST = auto()
 
 
 class DirectoryType(Enum):

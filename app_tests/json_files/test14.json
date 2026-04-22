@@ -2,10 +2,13 @@
   {
     "inputs": [
       [
-        [12.7, -1.1, -0.0, 132],
-        [false, true, true, false]
+        [true, false, true],
+        [false, true]
       ]
     ],
-    "expected": [0, 12.7, 132, -1.1]
+    "expected": [
+        [false, true],
+        [false, true, true]
+      ]
   }
 ]

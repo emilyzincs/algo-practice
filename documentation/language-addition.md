@@ -17,13 +17,6 @@ The first and most important step in adding a new language is to create a test r
 
 This is how your new test runner will be invoked. In the function's match statement, add a branch for `<language>` that constructs the appropriate command-line.
 
-Example for Python:
-```python
-case Language.PYTHON:
-    cmd = ["python", test_runner_file, practice_file, 
-           info_file, test_file, fp.PROJECT_ROOT, debug]
-```
-
 You may need to factor this out into its own function, especially if there are any files (including the runner itself) that may need to be compiled before running the command (this function is responsible for such compilations). Recall, some staple command-line arguments for test runners are given in [Command-Line Arguments](DEVELOPER.md#command-line-arguments).
 
 

@@ -34,7 +34,7 @@ class TestBoilerplate(parent):
     boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", "language", 
                                         member_to_string(language), "boilerplate_files")
     match language:
-      case Language.PYTHON:
+      case Language.PYTHON | Language.CPP:
         pass
       case Language.JAVA:
         required_class_name_prefix = "Bp"
@@ -87,6 +87,8 @@ class TestBoilerplate(parent):
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
       expected = f.read()
     error_msg = (f"Test {test_number} failed.")
+    if self.do_debug:
+      print(f"GENERATED BP:\n{boilerplate}")
     self.assertEqual(expected, boilerplate, error_msg)
     print("Test passed.")
     return True

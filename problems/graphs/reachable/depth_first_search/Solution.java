@@ -1,21 +1,20 @@
 package problems.graphs.reachable.depth_first_search;
 
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class Solution {
-  public static Set<Integer> solve(List<List<Integer>> graph, int root) {
+  public static List<Integer> solve(List<List<Integer>> graph, int root) {
     int n = graph.size();
-    Set<Integer> reachable = new HashSet<Integer>();
+    List<Integer> reachable = new ArrayList<Integer>();
     boolean[] seen = new boolean[n];
+    seen[root] = true;
     dfs(graph, root, reachable, seen);
     return reachable;
   }
   
-  private static void dfs(List<List<Integer>> graph, int root, Set<Integer> reachable, boolean[] seen) {
-    int n = graph.size();
-    if (root < 0 || n <= root) throw new IllegalArgumentException("Invalid root vertex: " + root);
+  private static void dfs(List<List<Integer>> graph, int root, 
+                          List<Integer> reachable, boolean[] seen) {
     reachable.add(root);
     for (int neighbor : graph.get(root)) {
       if (!seen[neighbor]) {

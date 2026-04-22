@@ -11,9 +11,9 @@
     }
   ],
   "expected_type": { 
-    "type": "set", 
+    "type": "unordered_list", 
     "items": { 
-      "type": "hashable_set", 
+      "type": "unordered_list", 
       "items": { "type": "int"}
     }
   }

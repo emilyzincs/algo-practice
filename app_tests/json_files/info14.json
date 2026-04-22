@@ -1,15 +1,19 @@
 {
   "unique_answer": true,
-  "parameter_names": ["m"],
+  "parameter_names": ["input"],
   "input_types": [
-    {
-      "type": "map",
-      "keys": { "type": "float" },
-      "values": { "type": "boolean" }
+    { "type": "list",
+      "items": { 
+        "type": "array",
+        "items": { "type": "boolean" }
+      }
     }
   ],
-  "expected_type": {
-    "type": "set",
-    "items": { "type": "float" }
+  "expected_type": { 
+    "type": "unordered_list",
+    "items": { 
+      "type": "unordered_list",
+      "items": { "type": "boolean" }
+    }
   }
 }

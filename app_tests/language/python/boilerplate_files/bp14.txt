@@ -1,4 +1,4 @@
 # Algorithm: Test.
 class Solution:
-  def solve(self, m: dict[float, bool]) -> set[float]:
+  def solve(self, input: list[list[bool]]) -> list[list[bool]]:
     

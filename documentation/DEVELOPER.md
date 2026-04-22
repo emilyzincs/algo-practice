@@ -14,6 +14,7 @@ This document explains the core concepts and components of the project.
   - [JSON](#json)
   - [Python](#python)
   - [Java](#java)
+  - [C++](#c)
 - [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
   - [Motivation](#motivation)
   - [Steps](#steps)
@@ -145,12 +146,11 @@ Let `<T>` represent a nested language‑agnostic type.
 |------------|-------------------------------------------------|
 | Primitive  | `{ "type": "int" }`                             |
 | Collection | `{ "type": "array", "items": <T> }`             |
-| Map        | `{ "type": "map", "keys": <T>, "values": <T> }` |
 
 **Allowed primitives:** `int`, `long`, `float`, `boolean`, `string`  
-**Allowed collections:** `array`, `list`, `hashable_list`, `set`, `hashable_set`
+**Allowed collections:** `array`, `list`, `unordered_list`
 
-> The distinction between `array`, `list`, and `hashable_list` is only relevant for languages that differentiate them (e.g., Python’s `list` vs `tuple`). Test runners should map them to the most natural sequence type.
+> The distinction between `array`, `list`, and `unordered_list` is only relevant for languages that differentiate them (e.g., Java’s `array` vs `list`). Test runners should map them to the most natural sequence type.
 
 ---
 
@@ -163,8 +163,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | `int`, `long`, `float`                   | number     |
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
-| `array`, `list`, `hashable_list`, `set`, `hashable_set` | Array      |
-| `map`                                    | Array of two equal-length arrays (first corresponds to keys, second to values). This is done to allow arbitrary hashable types as keys (not just strings) |
+| `array`, `list`, `unordered_list`,       | Array      |
 
 ### Python
 
@@ -174,11 +173,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | `float`                                  | float      |
 | `boolean`                                | bool       |
 | `string`                                 | str        |
-| `array`, `list`                          | list       |
-| `hashable_list`                          | tuple      |
-| `set`                                    | set        |
-| `hashable_set`                           | frozenset  |
-| `map`                                    | dict       |
+| `array`, `list`, `unordered_list`        | list       |
 
 ### Java
 
@@ -189,15 +184,24 @@ Let `<T>` represent a nested language‑agnostic type.
 | `float`                                  | double     |
 | `boolean`                                | boolean    |
 | `string`                                 | string     |
-| `array`, `hashable_list`                 | Array      |
-| `list`                                   | List       |
-| `set`, `hashable_set`                    | Set        |
-| `map`                                    | Map        |
+| `array`,                                 | Array      |
+| `list`, `unordered_list`                 | List       |
 
 >**Note**: If a primitive appears in a non-array language-agnostic collection type, then its Java type will be boxed to an object. For example, below, the language-agnostic type `"int"` maps to the Java object `Integer`, since "int" is in "list".
 ```
 { "type": "list", "items": { "type": "int" } } <-> List<Integer>
 ```
+
+### C++
+
+| Language-Agnostic Type                   | Language Type  |
+|------------------------------------------|------------|
+| `int`                                    | int        |
+| `long`                                   | long       |
+| `float`                                  | double     |
+| `boolean`                                | bool       |
+| `string`                                 | string     |
+| `array`, `list`, `unordered_list`        | vector     |
 
 ---
 

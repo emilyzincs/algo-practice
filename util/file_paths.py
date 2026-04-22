@@ -16,7 +16,7 @@ from util.enums import (
 def to_language_file_case(string: str, lang: Language) -> str:
   words = string.strip().split()
   match lang:
-    case Language.PYTHON:
+    case Language.PYTHON | Language.CPP:
       return "_".join(words).lower()
     case Language.JAVA:
       for i, word in enumerate(words):
@@ -103,7 +103,11 @@ def get_test_runner_dir_path(lang: Language) -> str:
 
 
 def get_test_runner_file_path(lang: Language) -> str:
-  return os.path.join(get_test_runner_dir_path(lang), 
+  orch_path = os.path.join(get_test_runner_dir_path(lang), "orchestrator.py")
+  if os.path.exists(orch_path):
+    return orch_path
+  else:
+    return os.path.join(get_test_runner_dir_path(lang), 
                       to_language_file_case("runner", lang) + lang.extension)
 
 

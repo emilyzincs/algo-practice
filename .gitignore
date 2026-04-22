@@ -1,3 +1,7 @@
+*.exe
+*.o
+*.class
+
 # So users start with default settings
 *current.json
 
@@ -8,6 +12,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+
 
 # Distribution / packaging
 .Python
@@ -129,9 +135,6 @@ mvnw.cmd
 .gradle/
 gradle-app.setting
 gradle-wrapper.jar
-
-# Compiled files from test runners
-test_runners/**/*.class
 
 # Practice files
 /practice/

@@ -7,7 +7,7 @@
       "items": {
         "type": "list",
         "items": {
-          "type": "hashable_list",
+          "type": "array",
           "items": { "type": "int" }
         }
       }
