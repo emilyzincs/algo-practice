@@ -63,7 +63,7 @@ class CppBp(BpInterface):
       case ParseType.INT | ParseType.LONG:
         return "int"
       case ParseType.LONG:
-        return "long long"
+        return "long"
       case ParseType.FLOAT:
         return "double"
       case ParseType.BOOLEAN:

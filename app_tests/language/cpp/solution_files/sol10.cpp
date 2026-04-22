@@ -1,0 +1,11 @@
+#include <string>
+#include <vector>
+
+using std::string, std::vector;
+
+class Solution {
+ public:
+  static vector<string> solve() {
+    return {"foo", "bar", "biz"};
+  }
+};

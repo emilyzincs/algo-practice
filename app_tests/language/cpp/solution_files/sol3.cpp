@@ -1,0 +1,6 @@
+class Solution {
+ public:
+  static int solve(bool b1, int i, bool b2) {
+    return i - 37;
+  }
+};

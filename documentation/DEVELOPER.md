@@ -200,7 +200,7 @@ Let `<T>` represent a nested language‑agnostic type.
 | Language-Agnostic Type                   | Language Type  |
 |------------------------------------------|------------|
 | `int`                                    | int        |
-| `long`                                   | long long  |
+| `long`                                   | long       |
 | `float`                                  | double     |
 | `boolean`                                | bool       |
 | `string`                                 | string     |
