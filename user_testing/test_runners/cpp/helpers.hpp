@@ -1,3 +1,6 @@
+#ifndef HELPERS_HPP
+#define HELPERS_HPP
+
 #include <iostream>
 #include <unordered_set>
 #include <fstream>
@@ -25,7 +28,7 @@ enum class ParseType {
   UNORDERED_LIST,
 };
 
-vector<string> PARSE_TYPE_LIST = {
+inline vector<string> PARSE_TYPE_LIST = {
   "int", 
   "long", 
   "boolean", 
@@ -38,14 +41,12 @@ vector<string> PARSE_TYPE_LIST = {
 
 void usage(int argc, char** argv);
 void validateParseTypeEnumList(vector<string> parseTypesString);
-void printErr(string msg) {
-  cerr << msg;
-  std::exit(1);
-};
-json get_json_from_path(string path);
+void printErr(string msg);
+json getJsonFromPath(string path);
 struct AgnosticComparator {
   bool operator()(const json& a, const json& b) const;
 };
-json standardize_output(json val, const json& def);
-bool validate_output(json actual, json expected, bool unique, int test_num);
+json standardizeOutput(json val, const json& def);
+bool validateOutput(json actual, json expected, bool unique, int test_num);
 
+#endif  // HELPERS_HPP

@@ -1,11 +1,11 @@
-#include <string>
 #include <vector>
 
-using std::string, std::vector;
+using std::vector;
 
+// Algorithm: Test.
 class Solution {
  public:
-  static vector<string> solve() {
+  static vector<bool> solve() {
     
   }
 };

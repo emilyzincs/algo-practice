@@ -2,9 +2,10 @@
 
 using std::vector;
 
+// Algorithm: Test.
 class Solution {
  public:
-  static long solve(double f, vector<double> a) {
-
+  static long solve(double f, vector<double>& a) {
+    
   }
 };

@@ -87,6 +87,8 @@ class TestBoilerplate(parent):
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
       expected = f.read()
     error_msg = (f"Test {test_number} failed.")
+    if self.do_debug:
+      print(f"GENERATED BP:\n{boilerplate}")
     self.assertEqual(expected, boilerplate, error_msg)
     print("Test passed.")
     return True

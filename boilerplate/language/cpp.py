@@ -27,12 +27,11 @@ class CppBp(BpInterface):
       using.append("std::vector")
     ret = ""
     for inc in includes:
-      ret += f"#include <{inc}>"
+      ret += f"#include <{inc}>\n"
     if includes and using:
       ret += "\n"
-    ret += f"using {', '.join(using)};"
-    if ret:
-      ret += "\n"
+    if using:
+      ret += f"using {', '.join(using)};\n"
     return ret
 
   @override
@@ -49,18 +48,23 @@ class CppBp(BpInterface):
     if n == 0:
       in_parentheses = ""
     else:
-      in_parentheses = f"{parameter_types[0]} {parameter_names[0]}"
+      in_parentheses = f"{self.ampersand_if_necessary(parameter_types[0])} {parameter_names[0]}"
       for i in range(1, n):
-        in_parentheses += f", {parameter_types[i]} {parameter_names[i]}"
+        in_parentheses += f", {self.ampersand_if_necessary(parameter_types[i])} {parameter_names[i]}"
     return (f"{one_indent}static {return_type} {require_method_name}({in_parentheses})" +
             " {\n" + (one_indent * 2) + f"\n{one_indent}" + "}\n")
+
+  def ampersand_if_necessary(self, typ: str) -> str:
+    if typ not in ["int", "long", "double", "bool", "string"]:
+      typ += "&"
+    return typ
 
   @override
   def parse_type_string(self, typ: dict[str, Any]) -> str:
     validate_type(typ)
     curr_type: ParseType = member_from_string(ParseType, typ["type"])
     match curr_type:
-      case ParseType.INT | ParseType.LONG:
+      case ParseType.INT:
         return "int"
       case ParseType.LONG:
         return "long"
