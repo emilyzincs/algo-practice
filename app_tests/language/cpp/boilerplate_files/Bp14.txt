@@ -1,10 +1,10 @@
-package app_tests.language.java.boilerplate_files;
+#include <vector>
 
-import java.util.List;
+using std::vector;
 
-// Algorithm: Test.
-public class Bp14 {
-  public static List<List<Boolean>> solve(List<boolean[]> input) {
+class Solution {
+ public:
+  static vector<vector<bool>> solve(vector<vector<bool>> input) {
     
   }
-}
+};

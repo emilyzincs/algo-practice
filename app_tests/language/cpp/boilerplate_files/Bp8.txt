@@ -1,8 +1,10 @@
-package app_tests.language.java.boilerplate_files;
+#include <string>
 
-// Algorithm: Test.
-public class Bp8 {
-  public static String solve() {
+using std::string;
+
+class Solution {
+ public:
+  static string solve() {
     
   }
-}
+};

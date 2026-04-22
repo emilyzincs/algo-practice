@@ -1,8 +1,10 @@
-package app_tests.language.java.boilerplate_files;
+#include <vector>
 
-// Algorithm: Test.
-public class Bp12 {
-  public static long solve(double f, double[] a) {
-    
+using std::vector;
+
+class Solution {
+ public:
+  static long solve(double f, vector<double> a) {
+
   }
-}
+};

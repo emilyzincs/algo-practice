@@ -1,8 +1,6 @@
-package app_tests.language.java.boilerplate_files;
-
-// Algorithm: Test.
-public class Bp3 {
-  public static int solve(boolean b1, int i, boolean b2) {
+class Solution {
+ public:
+  static int solve(bool b1, int i, bool b2) {
     
   }
-}
+};

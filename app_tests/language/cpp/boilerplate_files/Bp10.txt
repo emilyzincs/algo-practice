@@ -1,8 +1,11 @@
-package app_tests.language.java.boilerplate_files;
+#include <string>
+#include <vector>
 
-// Algorithm: Test.
-public class Bp10 {
-  public static boolean[] solve() {
+using std::string, std::vector;
+
+class Solution {
+ public:
+  static vector<string> solve() {
     
   }
-}
+};
