@@ -33,6 +33,11 @@ int main(int argc, char** argv) {{
 
   for (int i = 0; i < tests.size(); i++) {{
     auto& test = tests[i];
+    // 1. Get the actual type returned by the user's function
+    using ActualRetType = decltype(Solution::solve(std::declval<vector<int>&>(), std::declval<int&>()));
+    using ExpectedRetType = int; 
+    static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, 
+                  "Return type mismatch! Your function signature does not match the problem definition.");
     
     auto arg0 = test["inputs"][0].get<vector<int>>();
     auto arg1 = test["inputs"][1].get<int>();
