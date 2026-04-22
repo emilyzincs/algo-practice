@@ -39,7 +39,7 @@ class TestRunTests(parent):
     practice_file_dir = os.path.join(get_abstract_test_dir(), "language",
                                      member_to_string(language), "solution_files")
     match language:
-      case Language.PYTHON:
+      case Language.PYTHON | Language.CPP:
         pass
       case Language.JAVA:
         required_class_name_prefix = "Sol"

@@ -47,6 +47,7 @@ def member_from_string(enum: Type[E], string: str) -> E:
 class Language(Enum):
   PYTHON = (".py", "#")
   JAVA = (".java", "//")
+  CPP = (".cpp", "//")
 
   # Returns the file extension for this language.
   @property

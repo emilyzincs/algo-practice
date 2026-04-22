@@ -16,7 +16,7 @@ from util.enums import (
 def to_language_file_case(string: str, lang: Language) -> str:
   words = string.strip().split()
   match lang:
-    case Language.PYTHON:
+    case Language.PYTHON | Language.CPP:
       return "_".join(words).lower()
     case Language.JAVA:
       for i, word in enumerate(words):

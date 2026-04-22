@@ -34,7 +34,7 @@ class TestBoilerplate(parent):
     boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", "language", 
                                         member_to_string(language), "boilerplate_files")
     match language:
-      case Language.PYTHON:
+      case Language.PYTHON | Language.CPP:
         pass
       case Language.JAVA:
         required_class_name_prefix = "Bp"
