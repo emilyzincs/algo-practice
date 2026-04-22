@@ -135,29 +135,3 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
       return _find_type(typ["items"], to_find)
     case _:
       assert_never(curr_type)
-
-
-# Recursively searches the language-agnostic type representations in
-# 'input_types' and 'expected_type' to find a (possibly nested) representation
-# of a type whose "type" value is a string representation of 'to_find'.
-# Then returns the language-specific representation of that types 'field' field.
-# 
-# For example, if 'to_find' is ParseType.LISTNODE and 'field' is 'val', and
-# the first part of this function finds { "type": "ListNode", "val": "float" },
-# then if the language is Java, it will return "double", since double is the Java
-# representation of ParseType.FLOAT.
-#
-# Raises RuntimError if the first part of the function fails.
-def _get_nested_type_string(to_find: ParseType, field: str, 
-                           input_types: list[dict[str, Any]], expected_type: dict[str, Any]) -> str:
-  typ: dict[str, Any] | None = None
-  for input_type in input_types:
-    curr = _find_type(input_type, to_find)
-    if curr is not None:
-      typ = curr
-      break
-  if typ is None:
-    typ = _find_type(expected_type, to_find)
-  if typ is None:
-    raise RuntimeError(f"Type not found: {to_find}")
-  return BP_LANG_INSTANCE.parse_type_string(typ[field])

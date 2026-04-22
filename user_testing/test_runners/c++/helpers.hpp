@@ -43,4 +43,8 @@ void printErr(string msg) {
   std::exit(1);
 };
 json get_json_from_path(string path);
+struct AgnosticComparator {
+  bool operator()(const json& a, const json& b) const;
+};
+json standardize_output(json val, const json& def);
 

@@ -36,9 +36,7 @@ class PythonBp(BpInterface):
     validate_type(typ)
     curr_type: ParseType = member_from_string(ParseType, typ["type"])
     match curr_type:
-      case ParseType.INT:
-        return "int"
-      case ParseType.LONG:
+      case ParseType.INT | ParseType.LONG:
         return "int"
       case ParseType.FLOAT:
         return "float"
@@ -46,9 +44,7 @@ class PythonBp(BpInterface):
         return "bool"
       case ParseType.STRING:
         return "str"
-      case ParseType.ARRAY:
-        return f"list[{self.parse_type_string(typ["items"])}]"
-      case ParseType.LIST | ParseType.UNORDERED_LIST:
+      case ParseType.ARRAY | ParseType.LIST | ParseType.UNORDERED_LIST:
         return f"list[{self.parse_type_string(typ["items"])}]"
       case _:
         assert_never(curr_type)
