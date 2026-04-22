@@ -44,9 +44,27 @@ def main(
   
   with open(runner_path, "w") as f:
     f.write(cpp_runner_contents)
+  
+  helpers_src = os.path.join(dir_path, "helpers.cpp")
+  helpers_obj = os.path.join(dir_path, "helpers.o")
+
+  # Compile if .o doesn't exist OR if .cpp has been modified more recently than the .o
+  should_compile = not os.path.exists(helpers_obj) or \
+                  os.path.getmtime(helpers_src) > os.path.getmtime(helpers_obj)
+
+  if should_compile:
+    compile_helpers = [
+      "g++", "-std=c++17", "-O0", "-c", "helpers.cpp", 
+      "-o", "helpers.o", f"-I{PROJECT_ROOT}"
+    ]
+    compilation = subprocess.run(compile_helpers, capture_output=True, text=True, cwd=dir_path)
+    if compilation.returncode != 0:
+      if debug:
+        print(f"Compilation Error:\n{compilation.stderr}")
+      return False
 
   compile_cmd = [
-    "g++", "-std=c++17", "runner.cpp", "helpers.cpp",
+    "g++", "-std=c++17", "-O0", "runner.cpp", "helpers.o",
     "-o", "runner.exe", f"-I{PROJECT_ROOT}"
   ]
   compilation = subprocess.run(compile_cmd, capture_output=True, text=True, cwd=dir_path)
