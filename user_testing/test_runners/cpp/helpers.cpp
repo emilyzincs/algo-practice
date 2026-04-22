@@ -39,6 +39,7 @@ void printErr(string msg) {
   std::exit(1);
 }
 
+
 json get_json_from_path(string path) {
   std::ifstream file(path);
   if (!file.is_open()) {
@@ -48,6 +49,7 @@ json get_json_from_path(string path) {
   data << file;
   return data;
 }
+
 
 struct AgnosticComparator {
   bool operator()(const json& a, const json& b) const {
@@ -84,4 +86,27 @@ json standardize_output(json val, const json& def) {
   }
   
   return val;
+}
+
+
+bool validate_output(json actual, json expected, bool unique, int test_num) {
+  if (unique && actual != expected) {
+    cerr << "Failed test " << test_num+1 << ". Expected " << 
+          expected << ", but was " << actual;
+    return false;
+  } else if (!unique) {
+    bool matched = false;
+    for (const auto& candidate : expected) {
+      if (actual == candidate) {
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      cerr << "Failed test " << test_num+1 << ". Expected one of " << 
+          expected << ", but was " << actual;
+      return false;
+    }
+  }
+  return true;
 }

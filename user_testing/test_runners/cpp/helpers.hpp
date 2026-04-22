@@ -47,4 +47,5 @@ struct AgnosticComparator {
   bool operator()(const json& a, const json& b) const;
 };
 json standardize_output(json val, const json& def);
+bool validate_output(json actual, json expected, bool unique, int test_num);
 

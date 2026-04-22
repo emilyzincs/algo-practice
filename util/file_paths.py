@@ -103,7 +103,11 @@ def get_test_runner_dir_path(lang: Language) -> str:
 
 
 def get_test_runner_file_path(lang: Language) -> str:
-  return os.path.join(get_test_runner_dir_path(lang), 
+  orch_path = os.path.join(get_test_runner_dir_path(lang), "orchestrator.py")
+  if os.path.exists(orch_path):
+    return orch_path
+  else:
+    return os.path.join(get_test_runner_dir_path(lang), 
                       to_language_file_case("runner", lang) + lang.extension)
 
 

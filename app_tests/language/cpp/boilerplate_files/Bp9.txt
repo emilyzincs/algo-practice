@@ -1,0 +1,8 @@
+package app_tests.language.java.boilerplate_files;
+
+// Algorithm: Test.
+public class Bp9 {
+  public static String[] solve() {
+    
+  }
+}
