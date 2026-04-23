@@ -59,8 +59,11 @@ def main(
     ]
     compilation = subprocess.run(compile_helpers, capture_output=True, text=True, cwd=dir_path)
     if compilation.returncode != 0:
+      debug= True
       if debug:
         print(f"Compilation Error:\n{compilation.stderr}")
+      else:
+        print(f"A compilation error occurred.")
       return False
 
   compile_cmd = [
@@ -70,13 +73,15 @@ def main(
   compilation = subprocess.run(compile_cmd, capture_output=True, text=True, cwd=dir_path)
   
   if compilation.returncode != 0:
+    debug = True
     if debug:
       print(f"Compilation Error:\n{compilation.stderr}")
+    else:
+      print(f"A compilation error occurred.")
     return False
 
   run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
-  result = subprocess.run(run_cmd, capture_output=not debug, text=not debug, cwd=dir_path)
-
+  result = subprocess.run(run_cmd, capture_output=False, text=False, cwd=dir_path)
 
   return result.returncode == 0
 
