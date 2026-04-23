@@ -143,13 +143,14 @@ def get_cpp_runner_contents(
     '  for (int i = 0; i < tests.size(); i++) {{\n' +
     '    auto& test = tests[i];\n' +
     '    // 1. Get the actual type returned by the user\'s function\n' +
-    f'    using ActualRetType = decltype({required_class_name}::{required_method_name}({decltype_args}));\n' +
+    f'    using ActualRetType = decltype(std::declval<{required_class_name}>().{required_method_name}({decltype_args}));\n' +
     f'    using ExpectedRetType = {cpp_expected_type}; \n' +
     '    static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, \n' +
     '                  "Return type mismatch! Your function signature does not match the problem definition.");\n' +
     '    \n' +
+    f'    {required_class_name} {required_class_name.lower()};' + 
     arg_lines + "\n" +
-    f'    {cpp_expected_type} raw = {required_class_name}::{required_method_name}({final_args});\n' +
+    f'    {cpp_expected_type} raw = {required_class_name.lower()}.{required_method_name}({final_args});\n' +
     '\n' +
     '    json actual = standardizeOutput(raw, expected_type);\n' +
     '    json expected = test["expected"];\n' +

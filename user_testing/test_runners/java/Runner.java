@@ -101,18 +101,25 @@ public class Runner {
         paramTypes[i] = parseType(inputDefs.get(i));
       }
 
+      Class<?> clazz = null;
+      Method userMethod = null;
       try {
-        Class<?> clazz = Class.forName(fullPackageClassName);
+        clazz = Class.forName(fullPackageClassName);
         userMethod = clazz.getDeclaredMethod(requiredMethodName, paramTypes);
+        int mod = userMethod.getModifiers();
+        if (!Modifier.isPublic(mod)) {
+          printErr("Error: Method '" + requiredMethodName + "' must be public.");
+        } else if (Modifier.isStatic(mod)) {
+          printErr("Error: Method '" + requiredMethodName + "' must not be static.");
+        } else if (Modifier.isAbstract(mod)) {
+          printErr("Error: Method '" + requiredMethodName + "' must be concrete (not abstract).");
+        }
       } catch (NoSuchMethodException e) {
-        printErr("Error: Practice file must contain" + " public " + requiredClassName
-            + " class with appropriate public static " + requiredMethodName + " method.");
+          printErr("Error: Practice file must contain a public class '" + requiredClassName 
+                  + "' with a public instance method '" + requiredMethodName 
+                  + "' matching the expected parameter types.");
       }
-
-      if (!Modifier.isStatic(userMethod.getModifiers())) {
-        printErr("solve must be static.");
-      }
-
+      
       boolean unique = (boolean) root.get("unique_answer");
       @SuppressWarnings("unchecked")
       Map<String, Object> expectedType = (Map<String, Object>) root.get("expected_type");
@@ -123,12 +130,21 @@ public class Runner {
       );
       
       for (int i = 0; i < tests.size(); i++) {
+        Object instance = null;
+        try {
+          instance = clazz.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException e) {
+          printErr("Error: Class '" + requiredClassName + "' must have a public no‑argument constructor.");
+        } catch (Exception e) {
+          printErr("Error: Could not instantiate class '" + requiredClassName + "': " + e.getMessage());
+        }
+
         Map<String, Object> test = tests.get(i);
         
         List<?> rawInputs = (List<?>) test.get("inputs");
         Object[] argsParsed = parseInputs(rawInputs, inputDefs);
         
-        Object raw = userMethod.invoke(null, argsParsed);
+        Object raw = userMethod.invoke(instance, argsParsed);
         Object actual = standardizeOutput(raw, expectedType);
         
         boolean fail = false;
@@ -494,5 +510,3 @@ public class Runner {
     }
   }
 }
-
-

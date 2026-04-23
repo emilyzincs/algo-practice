@@ -34,13 +34,13 @@ int main(int argc, char** argv) {{
   for (int i = 0; i < tests.size(); i++) {{
     auto& test = tests[i];
     // 1. Get the actual type returned by the user's function
-    using ActualRetType = decltype(Solution::solve(std::declval<vector<vector<int>>&>()));
+    using ActualRetType = decltype(std::declval<Solution>().solve(std::declval<vector<vector<int>>&>()));
     using ExpectedRetType = vector<int>; 
     static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, 
                   "Return type mismatch! Your function signature does not match the problem definition.");
     
-    auto arg0 = test["inputs"][0].get<vector<vector<int>>>();
-    vector<int> raw = Solution::solve(arg0);
+    Solution solution;    auto arg0 = test["inputs"][0].get<vector<vector<int>>>();
+    vector<int> raw = solution.solve(arg0);
 
     json actual = standardizeOutput(raw, expected_type);
     json expected = test["expected"];

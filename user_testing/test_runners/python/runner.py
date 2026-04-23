@@ -40,9 +40,9 @@ def main(
   with open(test_file_path, "r", encoding="utf-8") as f:
     tests = json.load(f)
 
-  sol = Solution()
-
   for i, test in enumerate(tests):
+    sol = Solution()
+    
     try:
       args = [
         parse_value(v, input_types[idx])
