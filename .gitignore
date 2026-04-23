@@ -1,6 +1,7 @@
 *.exe
 *.o
 *.class
+*runner.cpp
 
 # So users start with default settings
 *current.json

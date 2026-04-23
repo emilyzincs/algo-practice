@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import subprocess
 from util.file_paths import get_test_runner_dir_path
 from util.enums import Language
@@ -45,39 +46,13 @@ def main(
   with open(runner_path, "w") as f:
     f.write(cpp_runner_contents)
   
-  helpers_src = os.path.join(dir_path, "helpers.cpp")
-  helpers_obj = os.path.join(dir_path, "helpers.o")
+  compile_result = subprocess.run(["make"], capture_output=True, text=True, cwd=dir_path)
 
-  # Compile if .o doesn't exist OR if .cpp has been modified more recently than the .o
-  should_compile = not os.path.exists(helpers_obj) or \
-                  os.path.getmtime(helpers_src) > os.path.getmtime(helpers_obj)
-
-  if should_compile:
-    compile_helpers = [
-      "g++", "-std=c++17", "-O0", "-c", "helpers.cpp", 
-      "-o", "helpers.o", f"-I{PROJECT_ROOT}"
-    ]
-    compilation = subprocess.run(compile_helpers, capture_output=True, text=True, cwd=dir_path)
-    if compilation.returncode != 0:
-      debug= True
-      if debug:
-        print(f"Compilation Error:\n{compilation.stderr}")
-      else:
-        print(f"A compilation error occurred.")
-      return False
-
-  compile_cmd = [
-    "g++", "-std=c++17", "-O0", "runner.cpp", "helpers.o",
-    "-o", "runner.exe", f"-I{PROJECT_ROOT}"
-  ]
-  compilation = subprocess.run(compile_cmd, capture_output=True, text=True, cwd=dir_path)
-  
-  if compilation.returncode != 0:
-    debug = True
+  if compile_result.returncode != 0:
     if debug:
-      print(f"Compilation Error:\n{compilation.stderr}")
+      print(f"Compilation Error:\n{compile_result.stderr}", file=sys.stderr)
     else:
-      print(f"A compilation error occurred.")
+      print("Compilation Error.", file=sys.stderr)
     return False
 
   run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
@@ -107,12 +82,11 @@ def get_cpp_runner_contents(
   final_args = ", ".join(call_args_names)
 
   return (
+    '#include "helpers.hpp"\n' +
     '#include <iostream>\n' +
     '#include <utility>\n' +
     '#include <unordered_set>\n' +
     '#include <fstream>\n' +
-    '#include "json.hpp"\n' +
-    '#include "helpers.hpp"\n' +
     '\n' +
     f'#include "../../..{practice_file_path}"\n' +
     '\n' +

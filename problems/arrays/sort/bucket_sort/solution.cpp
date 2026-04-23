@@ -8,9 +8,8 @@ class Solution {
  public:
   vector<double> solve(vector<double>& nums) {
     int n = nums.size();
-    if (n == 0) {
-      return nums;
-    }
+    if (n == 0) return nums;
+
     double min = nums[0], max = nums[0];
     for (int i = 1; i < n; i++) {
       min = std::min(min, nums[i]);
