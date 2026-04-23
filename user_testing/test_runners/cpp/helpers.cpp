@@ -32,7 +32,7 @@ void validateParseTypeEnumList(vector<string> parseTypesString) {
 
 
 void printErr(string msg) {
-  cerr << msg;
+  cerr << msg << std::endl;
   std::exit(1);
 }
 
@@ -90,12 +90,12 @@ bool validateOutput(json actual, json expected, bool unique, int test_num) {
       return true;
     } else{
       cerr << "Failed test " << test_num+1 << ". Expected " << 
-            expected << ", but was " << actual;
+            expected << ", but was " << actual << "." << std::endl;
       return false;
     }
   } else {
     if (!expected.is_array()) {
-      cerr << "Error: 'unique' is false but multiple answers are not expected";
+      cerr << "Error: 'unique' is false but multiple answers are not expected." << std::endl;
       return false;
     }
     bool matched = false;
@@ -107,7 +107,7 @@ bool validateOutput(json actual, json expected, bool unique, int test_num) {
     }
     if (!matched) {
       cerr << "Failed test " << test_num+1 << ". Expected one of " << 
-          expected << ", but was " << actual;
+          expected << ", but was " << actual << "." << std::endl;
       return false;
     }
   }

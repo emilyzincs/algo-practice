@@ -126,7 +126,7 @@ def get_cpp_runner_contents(
     '  std::unordered_set;\n' +
     '\n' +
     '\n' +
-    'int main(int argc, char** argv) {{\n' +
+    'int main(int argc, char** argv) {\n' +
     '  bool debug = string(argv[1]) == "True";\n' +
     '  \n' +
     '  vector<string> parseTypesString = json::parse(argv[4]).get<vector<string>>();\n' +
@@ -140,7 +140,7 @@ def get_cpp_runner_contents(
     '  bool unique = info["unique_answer"];\n' +
     '  json expected_type = info["expected_type"];\n' +
     '\n' +
-    '  for (int i = 0; i < tests.size(); i++) {{\n' +
+    '  for (int i = 0; i < tests.size(); i++) {\n' +
     '    auto& test = tests[i];\n' +
     '    // 1. Get the actual type returned by the user\'s function\n' +
     f'    using ActualRetType = decltype(std::declval<{required_class_name}>().{required_method_name}({decltype_args}));\n' +
@@ -148,17 +148,17 @@ def get_cpp_runner_contents(
     '    static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, \n' +
     '                  "Return type mismatch! Your function signature does not match the problem definition.");\n' +
     '    \n' +
-    f'    {required_class_name} {required_class_name.lower()};' + 
+    f'    {required_class_name} {required_class_name.lower()};\n' + 
     arg_lines + "\n" +
     f'    {cpp_expected_type} raw = {required_class_name.lower()}.{required_method_name}({final_args});\n' +
     '\n' +
     '    json actual = standardizeOutput(raw, expected_type);\n' +
     '    json expected = test["expected"];\n' +
     '\n' +
-    '    if (!validateOutput(actual, expected, unique, i)) {{\n' +
+    '    if (!validateOutput(actual, expected, unique, i)) {\n' +
     '      std::exit(1);\n' +
-    '    }}\n' +
-    '  }}\n' +
+    '    }\n' +
+    '  }\n' +
     '  return 0;\n' +
-    '}}\n'
+    '}\n'
 )
