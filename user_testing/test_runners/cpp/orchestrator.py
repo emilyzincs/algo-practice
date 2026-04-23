@@ -42,9 +42,13 @@ def main(
 
   dir_path = get_test_runner_dir_path(Language.CPP)
   runner_path = os.path.join(dir_path, "runner.cpp")
+  obj_path = os.path.join(dir_path, "runner.o")
   
   with open(runner_path, "w") as f:
     f.write(cpp_runner_contents)
+
+  if (os.path.exists(obj_path)):
+    os.remove(obj_path)
   
   compile_result = subprocess.run(["make"], capture_output=True, text=True, cwd=dir_path)
   if debug:
