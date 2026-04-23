@@ -8,7 +8,7 @@
 Fully specified by [General Implementation Requirements](#general-implementation-requirements)
 
 ### Java
-The ```Solution``` class must be public, and the ```solve``` method must just be public and static.
+The ```Solution``` class must be public, and the ```solve``` method must be public.
 (When qualifiers are described here, it means *exactly* those qualifiers and no more).
 
 
