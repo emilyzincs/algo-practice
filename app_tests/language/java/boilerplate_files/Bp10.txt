@@ -2,7 +2,7 @@ package app_tests.language.java.boilerplate_files;
 
 // Algorithm: Test.
 public class Bp10 {
-  public static boolean[] solve() {
+  public boolean[] solve() {
     
   }
 }

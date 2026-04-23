@@ -38,7 +38,7 @@ class JavaBp(BpInterface):
       in_parentheses = f"{parameter_types[0]} {parameter_names[0]}"
       for i in range(1, n):
         in_parentheses += f", {parameter_types[i]} {parameter_names[i]}"
-    return (f"{one_indent}public static {return_type} {require_method_name}({in_parentheses})" +
+    return (f"{one_indent}public {return_type} {require_method_name}({in_parentheses})" +
             " {\n" + (one_indent * 2) + f"\n{one_indent}" + "}\n")
 
   @override

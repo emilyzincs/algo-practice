@@ -5,7 +5,7 @@ using std::string, std::vector;
 
 class Solution {
  public:
-  static vector<string> solve() {
+  vector<string> solve() {
     return {"foo", "bar", "biz"};
   }
 };

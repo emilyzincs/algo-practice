@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Solution {
-  public static Set<Integer> solve(List<List<Integer>> graph, int root) {
+  public Set<Integer> solve(List<List<Integer>> graph, int root) {
     
   }
 }

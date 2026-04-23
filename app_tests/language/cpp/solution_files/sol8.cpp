@@ -4,7 +4,7 @@ using std::string;
 
 class Solution {
  public:
-  static string solve() {
+  string solve() {
     return "foo";
   }
 };

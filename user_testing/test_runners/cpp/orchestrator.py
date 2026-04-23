@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 import subprocess
 from util.file_paths import get_test_runner_dir_path
 from util.enums import Language
@@ -41,42 +42,27 @@ def main(
 
   dir_path = get_test_runner_dir_path(Language.CPP)
   runner_path = os.path.join(dir_path, "runner.cpp")
+  obj_path = os.path.join(dir_path, "runner.o")
   
   with open(runner_path, "w") as f:
     f.write(cpp_runner_contents)
+
+  if (os.path.exists(obj_path)):
+    os.remove(obj_path)
   
-  helpers_src = os.path.join(dir_path, "helpers.cpp")
-  helpers_obj = os.path.join(dir_path, "helpers.o")
+  compile_result = subprocess.run(["make"], capture_output=True, text=True, cwd=dir_path)
+  if debug:
+    print(compile_result.stdout)
 
-  # Compile if .o doesn't exist OR if .cpp has been modified more recently than the .o
-  should_compile = not os.path.exists(helpers_obj) or \
-                  os.path.getmtime(helpers_src) > os.path.getmtime(helpers_obj)
-
-  if should_compile:
-    compile_helpers = [
-      "g++", "-std=c++17", "-O0", "-c", "helpers.cpp", 
-      "-o", "helpers.o", f"-I{PROJECT_ROOT}"
-    ]
-    compilation = subprocess.run(compile_helpers, capture_output=True, text=True, cwd=dir_path)
-    if compilation.returncode != 0:
-      if debug:
-        print(f"Compilation Error:\n{compilation.stderr}")
-      return False
-
-  compile_cmd = [
-    "g++", "-std=c++17", "-O0", "runner.cpp", "helpers.o",
-    "-o", "runner.exe", f"-I{PROJECT_ROOT}"
-  ]
-  compilation = subprocess.run(compile_cmd, capture_output=True, text=True, cwd=dir_path)
-  
-  if compilation.returncode != 0:
+  if compile_result.returncode != 0:
     if debug:
-      print(f"Compilation Error:\n{compilation.stderr}")
+      print(f"Compilation Error:\n{compile_result.stderr}", file=sys.stderr)
+    else:
+      print("Compilation Error.", file=sys.stderr)
     return False
 
   run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
-  result = subprocess.run(run_cmd, capture_output=not debug, text=not debug, cwd=dir_path)
-
+  result = subprocess.run(run_cmd, capture_output=False, text=False, cwd=dir_path)
 
   return result.returncode == 0
 
@@ -102,12 +88,11 @@ def get_cpp_runner_contents(
   final_args = ", ".join(call_args_names)
 
   return (
+    '#include "helpers.hpp"\n' +
     '#include <iostream>\n' +
     '#include <utility>\n' +
     '#include <unordered_set>\n' +
     '#include <fstream>\n' +
-    '#include "json.hpp"\n' +
-    '#include "helpers.hpp"\n' +
     '\n' +
     f'#include "../../..{practice_file_path}"\n' +
     '\n' +
@@ -121,7 +106,7 @@ def get_cpp_runner_contents(
     '  std::unordered_set;\n' +
     '\n' +
     '\n' +
-    'int main(int argc, char** argv) {{\n' +
+    'int main(int argc, char** argv) {\n' +
     '  bool debug = string(argv[1]) == "True";\n' +
     '  \n' +
     '  vector<string> parseTypesString = json::parse(argv[4]).get<vector<string>>();\n' +
@@ -135,24 +120,25 @@ def get_cpp_runner_contents(
     '  bool unique = info["unique_answer"];\n' +
     '  json expected_type = info["expected_type"];\n' +
     '\n' +
-    '  for (int i = 0; i < tests.size(); i++) {{\n' +
+    '  for (int i = 0; i < tests.size(); i++) {\n' +
     '    auto& test = tests[i];\n' +
     '    // 1. Get the actual type returned by the user\'s function\n' +
-    f'    using ActualRetType = decltype({required_class_name}::{required_method_name}({decltype_args}));\n' +
+    f'    using ActualRetType = decltype(std::declval<{required_class_name}>().{required_method_name}({decltype_args}));\n' +
     f'    using ExpectedRetType = {cpp_expected_type}; \n' +
     '    static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, \n' +
     '                  "Return type mismatch! Your function signature does not match the problem definition.");\n' +
     '    \n' +
+    f'    {required_class_name} {required_class_name.lower()};\n' + 
     arg_lines + "\n" +
-    f'    {cpp_expected_type} raw = {required_class_name}::{required_method_name}({final_args});\n' +
+    f'    {cpp_expected_type} raw = {required_class_name.lower()}.{required_method_name}({final_args});\n' +
     '\n' +
     '    json actual = standardizeOutput(raw, expected_type);\n' +
     '    json expected = test["expected"];\n' +
     '\n' +
-    '    if (!validateOutput(actual, expected, unique, i)) {{\n' +
+    '    if (!validateOutput(actual, expected, unique, i)) {\n' +
     '      std::exit(1);\n' +
-    '    }}\n' +
-    '  }}\n' +
+    '    }\n' +
+    '  }\n' +
     '  return 0;\n' +
-    '}}\n'
+    '}\n'
 )

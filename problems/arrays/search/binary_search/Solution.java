@@ -1,7 +1,7 @@
 package problems.arrays.search.binary_search;
 
 public class Solution {
-  public static int solve(int[] nums, int target) {
+  public int solve(int[] nums, int target) {
     int lo = 0;
     int hi = nums.length - 1;
     while (lo <= hi) {

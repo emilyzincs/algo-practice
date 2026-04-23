@@ -4,6 +4,7 @@ from typing import Any, assert_never
 from util.general import load_module_from_path
 from util.enums import ParseType, member_from_string
 from boilerplate.util import validate_type
+import traceback
 
 
 # Returns True if all tests pass, False otherwise.
@@ -27,7 +28,7 @@ def main(
   except AttributeError as e:
     print(incorrect_setup_msg, file=sys.stderr)
     if debug:
-      raise
+      traceback.print_exc()
     return False
 
   with open(info_file_path, "r", encoding="utf-8") as f:
@@ -40,9 +41,9 @@ def main(
   with open(test_file_path, "r", encoding="utf-8") as f:
     tests = json.load(f)
 
-  sol = Solution()
-
   for i, test in enumerate(tests):
+    sol = Solution()
+    
     try:
       args = [
         parse_value(v, input_types[idx])
@@ -54,7 +55,7 @@ def main(
       except AttributeError:
         print(incorrect_setup_msg, file=sys.stderr)
         if debug:
-          raise
+          traceback.print_exc()
         return False
       
       actual = solution_method(*args)
@@ -82,7 +83,7 @@ def main(
     except Exception as e:
       print(f"Test {i + 1} runtime error: {e}", file=sys.stderr)
       if debug:
-        raise
+        traceback.print_exc()
       return False
 
   return True

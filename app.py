@@ -138,8 +138,6 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
   except ModuleNotFoundError:
     raise ModuleNotFoundError(f"Invalid generator path: {test_generator_path}.")
   
-  gen_alg: GeneralAlgorithm = alg.general_type
-
   try:
     generator_class: type[BaseGenerator] = getattr(module, GENERATOR_CLASS_NAME)
   except AttributeError:

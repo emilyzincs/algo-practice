@@ -1,7 +1,7 @@
 // Algorithm: Test.
 class Solution {
  public:
-  static int solve() {
+  int solve() {
     
   }
 };
