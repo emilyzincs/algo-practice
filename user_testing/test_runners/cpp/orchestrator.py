@@ -47,6 +47,8 @@ def main(
     f.write(cpp_runner_contents)
   
   compile_result = subprocess.run(["make"], capture_output=True, text=True, cwd=dir_path)
+  if debug:
+    print(compile_result.stdout)
 
   if compile_result.returncode != 0:
     if debug:
