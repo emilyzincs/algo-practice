@@ -1,7 +1,6 @@
+all:
+	@echo "Nothing to build by default. Use 'make clean' to clean."
+
 clean:
-	find . -name "*.class" -type f -delete
-	find . -name "*.exe" -type f -delete
-	find . -name "*.o" -type f -delete
-	find . -name "*.gch" -type f -delete
-	find . -path "./problems/*/test.json" -type f -delete 
-	find . -name "runner.cpp" -type f -delete 
+	find . \( -name "*.class" -o -name "*.exe" -o -name "*.o" -o -name "*.gch" -o -name "runner.cpp" \) -type f -delete
+	find . -path "./problems/*/test.json" -type f -delete
