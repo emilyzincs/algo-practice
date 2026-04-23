@@ -67,7 +67,7 @@ Test runners must be passed the necessary command-line arguments to fulfill thei
 ### Implementation Advice
 - Use a JSON library to initially load the JSON files into concrete types.
 - Validate command-line arguments match the expected form.
-- Use a local version of the `ParseType` enum for static type safety, and check that this enum matches `<parse_types_list>` argument for runtime safety.
+- Use a local version of the `ParseType` enum for type safety, and check that this enum matches `<parse_types_list>` argument for runtime safety.
 - Create a recursive function for parsing the (initially loaded) test JSON items into values in the target language that match their language-agnostic type.
 - Potentially, add a function for parsing a language-agnostic type into a type in the target language. This is useful for reflection or generating the expected implementation method signature.
 

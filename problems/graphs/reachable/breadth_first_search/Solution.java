@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Solution {
-  public static List<Integer> solve(List<List<Integer>> graph, int root) {
+  public List<Integer> solve(List<List<Integer>> graph, int root) {
     int n = graph.size();
     Queue<Integer> q = new LinkedList<Integer>();
     boolean[] seen = new boolean[n];
     List<Integer> reachable = new ArrayList<Integer>();
-    if (root < 0 || root >= n) throw new IllegalArgumentException();
+    if (root < 0 || root >= n)
+      throw new IllegalArgumentException();
     q.add(root);
     seen[root] = true;
     while (!q.isEmpty()) {
@@ -25,5 +26,5 @@ public class Solution {
       }
     }
     return reachable;
-  }  
+  }
 }

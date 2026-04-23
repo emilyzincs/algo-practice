@@ -5,7 +5,7 @@ using std::string;
 // Algorithm: Test.
 class Solution {
  public:
-  static string solve(string s, long l) {
+  string solve(string s, long l) {
     
   }
 };

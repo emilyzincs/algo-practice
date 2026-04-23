@@ -6,7 +6,7 @@ using std::vector;
 // Algorithm: Kruskal.
 class Solution {
  public:
-  static int solve(vector<vector<vector<int>>>& graph) {
+  int solve(vector<vector<vector<int>>>& graph) {
     const int n = graph.size();
     vector<vector<int>> edges;
     for (int i = 0; i < n; i++) {
@@ -36,9 +36,9 @@ class Solution {
   }
 
  private:
-  inline static vector<int> parent;
-  inline static vector<int> rank;
-  static int find(int elem) {
+  vector<int> parent;
+  vector<int> rank;
+  int find(int elem) {
     while (parent[elem] != elem) {
       parent[elem] = parent[parent[elem]];
       elem = parent[elem];
@@ -46,7 +46,7 @@ class Solution {
     return elem;
   }
 
-  static bool join(int first_el, int second_el) {
+  bool join(int first_el, int second_el) {
     int first = find(first_el), second = find(second_el);
     if (first == second) return false;
 

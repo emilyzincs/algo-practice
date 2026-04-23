@@ -6,7 +6,7 @@ using std::vector;
 // Algorithm: Bucket Sort.
 class Solution {
  public:
-  static vector<double> solve(vector<double>& nums) {
+  vector<double> solve(vector<double>& nums) {
     int n = nums.size();
     if (n == 0) {
       return nums;

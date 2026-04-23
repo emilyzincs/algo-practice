@@ -1,6 +1,6 @@
 class Solution {
  public:
-  static int solve() {
+  int solve() {
     return -17;
   }
 };

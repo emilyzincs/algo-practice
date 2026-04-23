@@ -3,7 +3,7 @@ using std::vector;
 
 class Solution {
  public:
-  static int solve(vector<int>& nums, int target) {
+  int solve(vector<int>& nums, int target) {
     int lo = 0;
     int hi = nums.size() - 1;
     while (lo <= hi) {

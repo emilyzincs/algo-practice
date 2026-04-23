@@ -1,6 +1,6 @@
 class Solution {
  public:
-  static bool solve() {
+  bool solve() {
     return false;
   }
 };

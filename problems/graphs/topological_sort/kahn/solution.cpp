@@ -6,7 +6,7 @@ using std::vector, std::queue;
 // Algorithm: Kahn.
 class Solution {
  public:
-  static vector<int> solve(vector<vector<int>>& graph) {
+  vector<int> solve(vector<vector<int>>& graph) {
     int n = graph.size();
     vector<int> indegs(n, 0);
     for (const auto& neighbors : graph) {
