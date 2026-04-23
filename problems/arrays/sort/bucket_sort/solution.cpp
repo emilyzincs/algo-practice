@@ -17,6 +17,8 @@ class Solution {
       max = std::max(max, nums[i]);
     }
 
+    if (min == max) return nums;
+
     vector<vector<double>> buckets(n);
     for (double num : nums) {
       int idx = int((num - min) / (max - min) * (n - 1));
