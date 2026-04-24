@@ -152,7 +152,7 @@ def _get_algorithm_description(alg: SpecificAlgorithm) -> str:
       "\nif a path between them goes through a negative cycle).")
   match alg:
     case SpecificAlgorithm.BINARY_SEARCH:
-      description = ("Returns an index of the target value the given sorted array," 
+      description = ("Returns an index of the target value in the given sorted array," 
                     "\nor -1 if no such index exists.")
       
     case (SpecificAlgorithm.MERGE_SORT | 
@@ -187,7 +187,7 @@ def _get_algorithm_description(alg: SpecificAlgorithm) -> str:
       description = ("Returns the unique topological ordering of the given DAG"
                     "\nmatching this algorithm (see solution for exact implementation).")
     case SpecificAlgorithm.FORD_FULKERSON:
-      description = ("Returns the max flow on the given network.")
+      description = ("Returns the maximum flow on the given network.")
     case SpecificAlgorithm.TARJAN:
       description = ("Returns the strongly connected components of the given digraph"
                     "\nin any order.")
