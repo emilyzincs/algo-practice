@@ -6,7 +6,6 @@ from util.enums import (
   member_from_string,
   member_to_capitalized_words,
   SpecificAlgorithm,
-  member_to_string
 )
 from util.general import load_module_from_path
 from boilerplate.util import validate_type
@@ -53,7 +52,7 @@ def get_boilerplate_text(
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
   class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n" 
-  class_prefix += _to_comment(get_algorithm_description(alg), comment_symbol) + "\n"
+  class_prefix += _to_comment(get_algorithm_description(alg), comment_symbol)
   class_declaration = (class_prefix + 
           BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent))
   
@@ -199,8 +198,11 @@ def get_algorithm_description(alg: SpecificAlgorithm) -> str:
     case _:
       assert_never(alg)
     
-  return description
+  return description + '\n'
 
 def _to_comment(string: str, comment_symbol: str) -> str:
-  ret = '\n'.join([f"{comment_symbol} {line}" for line in string.split('\n')])
+  prefix = f"{comment_symbol} "
+  ret = '\n'.join([f"{prefix}{line}" for line in string.split('\n')])
+  if ret.endswith(prefix):
+    ret = ret[:-len(prefix)]
   return ret
