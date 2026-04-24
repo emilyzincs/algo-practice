@@ -249,6 +249,15 @@ class SpecificAlgorithm(Enum):
         raise ValueError(f"No match for: {user_input}")
     
     @classmethod
+    def from_name(cls, name: str) -> 'SpecificAlgorithm':
+      normalized = name.strip().lower()
+      for member in cls:
+          if normalized == member_to_string(member):
+            return member
+      raise ValueError(f"No match for: {name}")
+    
+    
+    @classmethod
     def is_alg(cls, user_input: str) -> bool:
       try:
          cls.from_input(user_input)

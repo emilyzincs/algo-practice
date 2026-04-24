@@ -6,7 +6,7 @@
     { "type": "string" }
   ],
   "expected_type": {
-    "type": "list",
+    "type": "unordered_list",
     "items": {
       "type": "int"
     }

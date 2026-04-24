@@ -70,20 +70,26 @@ class TestBoilerplate(parent):
     info_path, boilerplate_file_path = res
     print(f"\nRunning {member_to_capitalized_words(language)} boilerplate test {test_number}:")
     info = read_json(info_path)
-    boilerplate = get_boilerplate_text(
-      info["parameter_names"],
-      info["input_types"],
-      info["expected_type"],
-      " " * settings["tab_size"]["value"],
-      language.comment_symbol,
-      "Test",
-      (
-        SOLUTION_CLASS_NAME if not required_class_name_prefix 
-        else f"{required_class_name_prefix}{test_number}"
-      ),
-      SOLUTION_FUNCTION_NAME,
-      language
-    )
+
+    with (
+      patch("util.enums.SpecificAlgorithm.from_input", return_value=None),
+      patch("boilerplate.boilerplate._get_algorithm_description", return_value="")
+    ):
+      boilerplate = get_boilerplate_text(
+        info["parameter_names"],
+        info["input_types"],
+        info["expected_type"],
+        " " * settings["tab_size"]["value"],
+        language.comment_symbol,
+        "Test",
+        (
+          SOLUTION_CLASS_NAME if not required_class_name_prefix 
+          else f"{required_class_name_prefix}{test_number}"
+        ),
+        SOLUTION_FUNCTION_NAME,
+        language
+      )
+    
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
       expected = f.read()
     error_msg = (f"Test {test_number} failed.")
