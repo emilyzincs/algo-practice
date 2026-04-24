@@ -1,6 +1,13 @@
 from util.file_paths import get_boilerplate_language_file_path
 from typing import assert_never, Any
-from util.enums import Language, ParseType, member_from_string, member_to_capitalized_words
+from util.enums import (
+  Language,
+  ParseType,
+  member_from_string,
+  member_to_capitalized_words,
+  SpecificAlgorithm,
+  member_to_string
+)
 from util.general import load_module_from_path
 from boilerplate.util import validate_type
 from boilerplate.interface import BpInterface
@@ -37,7 +44,7 @@ def get_boilerplate_text(
   language: Language
 ) -> str:
   _set_bp_lang_class(language)
-
+  alg: SpecificAlgorithm = SpecificAlgorithm.from_name(alg_name)
   parameter_type_strings = [BP_LANG_INSTANCE.parse_type_string(input_type) for input_type in input_types]
   return_type_string = BP_LANG_INSTANCE.parse_type_string(expected_type)
   included_types: set[ParseType] = _add_all_nested_types(input_types, expected_type)
@@ -45,7 +52,8 @@ def get_boilerplate_text(
   start = BP_LANG_INSTANCE.get_start()
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
-  class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n"
+  class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n" 
+  class_prefix += get_algorithm_description(alg)
   class_declaration = (class_prefix + 
           BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent))
   
@@ -135,3 +143,61 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
       return _find_type(typ["items"], to_find)
     case _:
       assert_never(curr_type)
+
+def get_algorithm_description(alg: SpecificAlgorithm) -> str:
+  description: str
+  min_dist_def = ("(The minimum distance from one vertex to another is defined to be"
+      " infinity (indicated by the provided sentinel) if there is no path"
+      " between them, and negative infinity (indicated by the provided sentinel)"
+      " if a path between them goes through a negative cycle).")
+  match alg:
+    case SpecificAlgorithm.BINARY_SEARCH:
+      description = ("Returns an index of the target value the given sorted array," 
+                    " or -1 if no such index exists.")
+      
+    case (SpecificAlgorithm.MERGE_SORT | 
+          SpecificAlgorithm.QUICK_SORT | 
+          SpecificAlgorithm.HEAP_SORT | 
+          SpecificAlgorithm.RADIX_SORT | 
+          SpecificAlgorithm.BUCKET_SORT):
+      description = "Returns the sorted version of the input array."
+    case SpecificAlgorithm.KADANE:
+      description = ("Returns the maximum subarray sum of the given array."  
+                    " (The empty subarray is valid and has sum zero).")
+    case SpecificAlgorithm.BREADTH_FIRST_SEARCH | SpecificAlgorithm.DEPTH_FIRST_SEARCH:
+      description = ("Returns the reachable vertices from the given vertex" 
+                     " in the given digraph, in any order.")
+    case SpecificAlgorithm.DIJKSTRA:
+      description = ("Given a digraph with nonnegative edge weights, returns the minimum"
+                     " cost of a path from the start vertex" 
+                     " to the target vertex, or -1 if there is no path.")
+    case SpecificAlgorithm.BELLMAN_FORD:
+      description = ("Given a weighted digraph, returns the minimum cost of a path"
+        " from the start vertex to the target vertex."
+        " " + min_dist_def)
+    case SpecificAlgorithm.FLOYD_WARSHALL:
+      description = ("Given a weighted digraph with n vertices,"
+        " returns an n by n matrix m where m[i][j]"
+        " is the minimum cost of a path from vertex i to vertex j." 
+        " " + min_dist_def)
+    case SpecificAlgorithm.KRUSKAL | SpecificAlgorithm.PRIM:
+      description = ("Returns the minimum cost of a spanning forest for the given"
+        " undirected graph.")
+    case SpecificAlgorithm.KAHN:
+      description = ("Returns the unique topological ordering of the given DAG"
+                    " matching this algorithm (see solution for exact implementation).")
+    case SpecificAlgorithm.FORD_FULKERSON:
+      description = ("Returns the max flow on the given network.")
+    case SpecificAlgorithm.TARJAN:
+      description = ("Returns the strongly connected components of the given digraph"
+                    " in any order.")
+    
+    case SpecificAlgorithm.KNUTH_MORRIS_PRATT:
+      description = ("Returns the start indices, in any order, where the given"
+                    " pattern appears in the text.")
+    case _:
+      assert_never(alg)
+      
+
+  return description + "\n"
+
