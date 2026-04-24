@@ -73,7 +73,7 @@ class TestBoilerplate(parent):
 
     with (
       patch("util.enums.SpecificAlgorithm.from_input", return_value=None),
-      patch("boilerplate.boilerplate._to_comment", return_value="")
+      patch("boilerplate.boilerplate._get_algorithm_description", return_value="")
     ):
       boilerplate = get_boilerplate_text(
         info["parameter_names"],
