@@ -94,13 +94,16 @@ Otherwise, write the file by doing the following.
 
 The program will automatically use this generator to create exhaustive test cases. Because these tests will be used to validate every implementation of the algorithm, ensure the tests are **as thorough as possible** (include edge cases, random inputs, and property‑based tests where applicable).
 
-### 4. Add Solutions for the New Algorithm
+### 4. Update `match` Statements in the Codebase
+Using **mypy (or your IDE’s type checker)**, find all `match` (or `switch`) statements that switch on `SpecificAlgorithm`. The type checker will complain about non‑exhaustive patterns. Update each one to handle your new algorithm.
+
+### 5. Add Solutions for the New Algorithm
 This step is *optional* but **recommended**.
 
 At this point you may add solutions for the algorithm in any of the supported languages. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
 
 When you are done, run the app tests to verify correctness.
 
-### 5. Update Documentation
+### 6. Update Documentation
 
 As the last step, update all documentation (the `README` and files in the `documentation/` directory) to reflect that the new algorithm was added.
