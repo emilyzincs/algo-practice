@@ -2,9 +2,11 @@ import subprocess
 import util.file_paths as fp
 from json import dumps
 from typing import assert_never
+import sys
 from util.enums import SpecificAlgorithm, Language, member_name_list, ParseType
 from user_testing.test_commands.java import get_test_command as java_get_test_command
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
+from user_testing.test_commands.cpp import get_test_command as cpp_get_test_command
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, TIME_LIMIT_SECONDS
 from util.general import load_module_from_path
 
 
@@ -49,20 +51,20 @@ def run_tests(
   ]
   cmd: list[str]|None
   match language:
-    case Language.PYTHON | Language.CPP:
-      module = load_module_from_path("run", test_runner_file)
-      runner_func = getattr(module, "main")
-      return runner_func(
-        debug == "True",
-        practice_file,
-        info_file,
+    case Language.PYTHON:
+
+      cmd = [
+        "python", 
+        test_runner_file, 
+        practice_file, 
+        info_file, 
         test_file,
         fp.PROJECT_ROOT,
-        dumps(parse_types_list),
-        required_class_name,
-        required_method_name,
-      )
+        debug,
+      ]
+
     case Language.JAVA:
+
       cmd = java_get_test_command(
         practice_file_dir,
         practice_file,
@@ -72,10 +74,37 @@ def run_tests(
         test_file,
         debug
       )
+
+    case Language.CPP:
+
+      cmd = cpp_get_test_command(
+        debug == "True",
+        practice_file,
+        info_file,
+        test_file,
+        fp.PROJECT_ROOT,
+        dumps(parse_types_list),
+        required_class_name,
+        required_method_name,
+      )
+    
     case _:
       assert_never(language)
+
   if cmd is None:
     return False
+  
   cmd.extend(additional_args)
-  result = subprocess.run(cmd, cwd=test_runner_dir, capture_output=not show_subprocess_text)
-  return result.returncode == 0
+
+  try:
+    result = subprocess.run(
+      cmd,
+      cwd=test_runner_dir,
+      capture_output=not show_subprocess_text,
+      timeout=TIME_LIMIT_SECONDS
+    )
+    return result.returncode == 0
+
+  except subprocess.TimeoutExpired:
+    print("Timed limit exceeded.", file=sys.stderr)
+    return False
