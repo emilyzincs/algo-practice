@@ -78,14 +78,14 @@ def run_tests(
     case Language.CPP:
 
       cmd = cpp_get_test_command(
-        debug == "True",
         practice_file,
         info_file,
         test_file,
         fp.PROJECT_ROOT,
-        dumps(parse_types_list),
+        debug == "True",
         required_class_name,
         required_method_name,
+        dumps(parse_types_list),
       )
     
     case _:

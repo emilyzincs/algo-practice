@@ -10,14 +10,14 @@ from boilerplate.language.cpp import CppBp
 cpp_type_parser = CppBp()
 
 def get_test_command(
-  debug: bool,
   practice_file_path: str,
   info_file_path: str,
   test_file_path: str,
   PROJECT_ROOT: str,
-  type_list_str: str,
+  debug: bool,
   required_class_name: str,
   required_method_name: str,
+  type_list_str: str,
 ) -> list[str]|None:
 
   with open(info_file_path, "r", encoding="utf-8") as f:
