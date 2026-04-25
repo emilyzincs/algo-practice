@@ -21,7 +21,6 @@ import java.util.Set;
 // Main test runner for Java solutions. Reads test definitions, invokes the user's method,
 // and compares results using deep equality.
 public class Runner {
-  private static Method userMethod;
   private static final ObjectMapper mapper = new ObjectMapper();
   private static final AgnosticComparator AGNOSTIC_COMPARATOR = new AgnosticComparator();
   private static String fullPackageClassName;

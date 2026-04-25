@@ -9,17 +9,16 @@ from boilerplate.language.cpp import CppBp
 
 cpp_type_parser = CppBp()
 
-# Returns True if all tests pass, False otherwise.
-def main(
-  debug: bool,
+def get_test_command(
   practice_file_path: str,
   info_file_path: str,
   test_file_path: str,
   PROJECT_ROOT: str,
-  type_list_str: str,
+  debug: bool,
   required_class_name: str,
   required_method_name: str,
-) -> bool:
+  type_list_str: str,
+) -> list[str]|None:
 
   with open(info_file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
@@ -59,13 +58,11 @@ def main(
       print(f"Compilation Error:\n{compile_result.stderr}", file=sys.stderr)
     else:
       print("Compilation Error.", file=sys.stderr)
-    return False
+    return None
 
-  run_cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
-  result = subprocess.run(run_cmd, capture_output=False, text=False, cwd=dir_path)
-
-  return result.returncode == 0
-
+  cmd = ["./runner.exe", str(debug), info_file_path, test_file_path, type_list_str]
+  return cmd
+  
 
 def get_cpp_runner_contents(
   practice_file_path: str,

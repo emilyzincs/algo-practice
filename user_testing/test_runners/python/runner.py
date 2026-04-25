@@ -1,20 +1,36 @@
 import json
 import sys
+import traceback
 from typing import Any, assert_never
+
+if len(sys.argv) != 9 or (sys.argv[5] != "True" and sys.argv[5] != "False"):
+  print("Usage: python runner.py" + 
+        " <practiceFilePath>" +
+        " <infoFilePath>.json" +
+        " <testFilePath>.json" + 
+        " <PROJECT_ROOT>" +
+        " <debug>, where <debug> is True or False." +
+        " <SolutionClassName>" + 
+        " <SolutionMethodName>" +
+        " <parseTypeList>", file=sys.stderr)
+  print(f"Given args: {sys.argv}.", file=sys.stderr)
+  sys.exit(1)
+
+PROJECT_ROOT = sys.argv[4]
+sys.path.insert(0, PROJECT_ROOT)
+
 from util.general import load_module_from_path
 from util.enums import ParseType, member_from_string
 from boilerplate.util import validate_type
-import traceback
 
 
 # Returns True if all tests pass, False otherwise.
 def main(
-  debug: bool,
   practice_file_path: str,
   info_file_path: str,
   test_file_path: str,
   PROJECT_ROOT: str,
-  parse_types_list: str,
+  debug: bool,
   required_class_name: str,
   required_method_name: str
 ) -> bool:
@@ -135,4 +151,19 @@ def standardize_output(val: Any, typ: dict[str, Any]) -> Any:
 def type_assert(val: Any, typ: type):
   if type(val) != typ:
     raise ValueError(f"Expected {val} to have type {typ}, but was {type(val)}.")
-
+  
+if __name__ == "__main__":
+  args = sys.argv
+  success = main(
+    practice_file_path = args[1],
+    info_file_path = args[2],
+    test_file_path = args[3],
+    PROJECT_ROOT = args[4],
+    debug = args[5] == "True",
+    required_class_name = args[6],
+    required_method_name = args[7]
+  )
+  if success:
+    print("All tests passed.")
+  else:
+    sys.exit(1)

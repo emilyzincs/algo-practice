@@ -36,7 +36,7 @@ def handle_commands(
 ) -> float|None:
   start_time = time.perf_counter()
   potential_end_time = None
-  correct = False
+  correct: bool|None = False
   while not correct:
     user_input = input("\nType 'done' when you are finished or 'help' for options:\n")
     input_is_global_cmd = is_member(GlobalCommand, user_input)
