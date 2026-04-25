@@ -32,7 +32,8 @@ def run_tests(
   debug: str = "False",
   required_class_name: str = SOLUTION_CLASS_NAME,
   required_method_name: str = SOLUTION_FUNCTION_NAME,
-) -> bool:
+  time_limit_seconds: int = TIME_LIMIT_SECONDS
+) -> bool|None:
   if (debug != "False" and debug != "True"):
     raise ValueError(f"Debug must be a string that is either 'False' or 'True', was {debug}.")
 
@@ -101,10 +102,10 @@ def run_tests(
       cmd,
       cwd=test_runner_dir,
       capture_output=not show_subprocess_text,
-      timeout=TIME_LIMIT_SECONDS
+      timeout=time_limit_seconds
     )
     return result.returncode == 0
 
   except subprocess.TimeoutExpired:
-    print("Timed limit exceeded.", file=sys.stderr)
+    print("Time limit exceeded.", file=sys.stderr)
     return False

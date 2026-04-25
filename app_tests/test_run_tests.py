@@ -54,6 +54,53 @@ class TestRunTests(parent):
     )
     self.language_test_solutions(language)  
 
+  # Runs tests for the given Language that do not correspond to actual
+  # algorithm implementations. 
+  def language_test_run_tests(
+      self,
+      language: Language,
+      practice_file_dir: str,
+      practice_file_name_prefix: str,
+      required_class_name_prefix: Optional[str] = None,
+  ) -> None:
+    expected_values = [
+      None, True, False, True, True, # 5
+      True, True, True, False, True,  # 10
+      False, False, True, True, True
+    ]
+    total_tests = len(expected_values)
+    info_path_prefix = self.get_info_path_prefix()
+    test_path_prefix = self.get_test_path_prefix()
+    practice_file_path_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
+    with patch(self.fp_base + "get_practice_file_dir", return_value=practice_file_dir):
+      if self.num is not None:
+        self.specific_test_run_test(
+          self.num,
+          language,
+          expected_values[self.num],
+          info_path_prefix,
+          test_path_prefix,
+          practice_file_path_prefix,
+          total_tests,
+          required_class_name_prefix
+        )
+      elif self.alg is not None:
+        return
+      else: 
+        print("\n\nRUNNING " + member_to_capitalized_words(language) + " run_test TESTS.")
+        for i in range(len(expected_values)):
+          self.specific_test_run_test(
+            i,
+            language,
+            expected_values[i],
+            info_path_prefix,
+            test_path_prefix,
+            practice_file_path_prefix,
+            total_tests,
+            required_class_name_prefix
+          )
+        print("Done.")
+  
   # Runs test number 'test_number' for language 'language' that does not correspond
   #   to an actual algorithm implementation.
   # Returns True if the test is successful, False if the info, test, and practice
@@ -63,7 +110,7 @@ class TestRunTests(parent):
       self,
       test_number: int,
       language: Language,
-      expected: bool,
+      expected: bool|None,
       info_path_prefix: str,
       test_path_prefix: str,
       practice_file_path_prefix: str,
@@ -90,58 +137,16 @@ class TestRunTests(parent):
           else run_tests(dummy, language, self.do_debug, 
                           str(self.do_debug), required_class_name_prefix + str(test_number))
         )
-      error_msg = (f"Expected test {test_number} to succeed but it failed." 
-                  if expected
-                  else f"Expected test {test_number} to fail but it succeeded.")
-      self.assertEqual(expected, result, error_msg)
-      print("Test passed.")      
 
-  # Runs tests for the given Language that do not correspond to actual
-  # algorithm implementations. 
-  def language_test_run_tests(
-      self,
-      language: Language,
-      practice_file_dir: str,
-      practice_file_name_prefix: str,
-      required_class_name_prefix: Optional[str] = None,
-  ) -> None:
-    expected_values = [
-      True, False, True, True, True, # 5
-      True, True, False, True, False, # 10
-      False, True, True, True
-    ]
-    total_tests = len(expected_values)
-    info_path_prefix = self.get_info_path_prefix()
-    test_path_prefix = self.get_test_path_prefix()
-    practice_file_path_prefix = os.path.join(practice_file_dir, practice_file_name_prefix)
-    with patch(self.fp_base + "get_practice_file_dir", return_value=practice_file_dir):
-      if self.num is not None:
-        self.specific_test_run_test(
-          self.num,
-          language,
-          expected_values[self.num-1],
-          info_path_prefix,
-          test_path_prefix,
-          practice_file_path_prefix,
-          total_tests,
-          required_class_name_prefix
-        )
-      elif self.alg is not None:
-        return
-      else: 
-        print("\n\nRUNNING " + member_to_capitalized_words(language) + " run_test TESTS.")
-        for i in range(1, len(expected_values) + 1):
-          self.specific_test_run_test(
-            i,
-            language,
-            expected_values[i-1],
-            info_path_prefix,
-            test_path_prefix,
-            practice_file_path_prefix,
-            total_tests,
-            required_class_name_prefix
-          )
-        print("Done.")
+      error_msg: str
+      if expected == True:
+        error_msg = f"Expected test {test_number} to succeed." 
+      elif expected == False:
+        error_msg = f"Expected test {test_number} to (terminate and) fail."
+      else:
+        error_msg = f"Expected test {test_number} to exceed time limit."
+      self.assertEqual(expected, result, error_msg)
+      print("Test passed.")  
 
   # Returns a tuple containing the info, test, and practice file path strings corresponding
   #   to the given prefixes, number, and extension, or None if all paths do not exist.
@@ -155,7 +160,7 @@ class TestRunTests(parent):
     extension: str,
     total_tests: int
   ) -> tuple[str, str, str]:
-    if i < 1 or total_tests + 1 <= i:
+    if i < 0 or total_tests <= i:
       raise RuntimeError(f"Invalid test number: {i}.")
     info_path = info_path_prefix + f"{i}.json"
     test_path = test_path_prefix + f"{i}.json"
