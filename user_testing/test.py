@@ -32,7 +32,7 @@ def run_tests(
   debug: str = "False",
   required_class_name: str = SOLUTION_CLASS_NAME,
   required_method_name: str = SOLUTION_FUNCTION_NAME,
-  time_limit_seconds: int = TIME_LIMIT_SECONDS
+  time_limit_seconds: float = TIME_LIMIT_SECONDS
 ) -> bool|None:
   if (debug != "False" and debug != "True"):
     raise ValueError(f"Debug must be a string that is either 'False' or 'True', was {debug}.")
@@ -108,4 +108,4 @@ def run_tests(
 
   except subprocess.TimeoutExpired:
     print("Time limit exceeded.", file=sys.stderr)
-    return False
+    return None

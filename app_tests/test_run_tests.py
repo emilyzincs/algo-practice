@@ -23,6 +23,7 @@ class TestRunTests(parent):
   def setUp(self) -> None:
     super().setUp()
     self.fp_base = "user_testing.test.fp."  # for mocking file paths for the tests
+    self.generated: set[str] = set()
 
   # Runs the tests.
   def test_run_tests(self) -> None:
@@ -132,11 +133,15 @@ class TestRunTests(parent):
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
-        result = (
-          run_tests(dummy, language, self.do_debug, str(self.do_debug)) if not required_class_name_prefix
-          else run_tests(dummy, language, self.do_debug, 
-                          str(self.do_debug), required_class_name_prefix + str(test_number))
-        )
+        time_limit_seconds = 0.4
+        result: bool|None
+        if not required_class_name_prefix:
+          result = run_tests(dummy, language, self.do_debug, str(self.do_debug),
+                             time_limit_seconds=time_limit_seconds)
+        else:
+          result = run_tests(dummy, language, self.do_debug, str(self.do_debug), 
+                         required_class_name_prefix + str(test_number), 
+                         time_limit_seconds=time_limit_seconds)
 
       error_msg: str
       if expected == True:
@@ -145,6 +150,7 @@ class TestRunTests(parent):
         error_msg = f"Expected test {test_number} to (terminate and) fail."
       else:
         error_msg = f"Expected test {test_number} to exceed time limit."
+
       self.assertEqual(expected, result, error_msg)
       print("Test passed.")  
 
@@ -184,12 +190,13 @@ class TestRunTests(parent):
     if not os.path.exists(solution_file):
       print(f"Path {solution_file} does not exist.\nContinuing.")
       return
-    
     test_file_path = get_test_path(alg)
-    try:
-      os.remove(test_file_path)
-    except FileNotFoundError:
-      pass
+    if not test_file_path in self.generated:
+      try:
+        os.remove(test_file_path)
+      except FileNotFoundError:
+        pass
+      self.generated.add(test_file_path)
     error_msg = f"Failed to generate test file for {member_to_capitalized_words(alg)}."
     generate_test_file_if_necessary(alg)
     self.assertTrue(os.path.exists(test_file_path), error_msg)
