@@ -4,11 +4,11 @@ from app_tests.base_test import BaseTest as parent
 from unittest.mock import patch
 from app import settings
 
-from boilerplate.boilerplate import get_boilerplate_text
+from boilerplate.boilerplate import _get_boilerplate_helper
 from util.file_paths import PROJECT_ROOT, to_language_file_case
 from util.file_io import read_json
 from util.enums import Language, member_to_string, member_to_capitalized_words
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME
 
 
 # Tests boilerplate text generation for practice files.
@@ -75,18 +75,17 @@ class TestBoilerplate(parent):
       patch("util.enums.SpecificAlgorithm.from_input", return_value=None),
       patch("boilerplate.boilerplate._get_algorithm_description", return_value="")
     ):
-      boilerplate = get_boilerplate_text(
+      boilerplate = _get_boilerplate_helper(
         info["parameter_names"],
         info["input_types"],
         info["expected_type"],
         " " * settings["tab_size"]["value"],
-        language.comment_symbol,
         "Test",
         (
           SOLUTION_CLASS_NAME if not required_class_name_prefix 
           else f"{required_class_name_prefix}{test_number}"
         ),
-        SOLUTION_FUNCTION_NAME,
+        SOLUTION_METHOD_NAME,
         language
       )
     

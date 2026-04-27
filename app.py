@@ -3,7 +3,7 @@ import util.file_paths as fp
 import sys
 import shutil
 
-import boilerplate.boilerplate as bp
+from boilerplate.boilerplate import get_boilerplate
 from menu.main import handle_commands as main_menu_handle_commands
 from menu.practice import handle_commands as practice_handle_commands
 from menu.settings import handle_commands as settings_handle_commands
@@ -16,7 +16,7 @@ from util.general import no_op, load_module_from_path
 from util.file_io import read_json, copy_file, match_json_keys
 from util.constants import (
   SOLUTION_CLASS_NAME,
-  SOLUTION_FUNCTION_NAME,
+  SOLUTION_METHOD_NAME,
   DEBUG,
   GENERATOR_CLASS_NAME
 )
@@ -151,10 +151,8 @@ def generate_test_file_if_necessary(alg: SpecificAlgorithm) -> None:
 #   starting practice text for the given 'alg'.
 def reset_practice_file(alg: SpecificAlgorithm) -> None:
   practice_file = fp.get_practice_file_path(LANGUAGE)
-  info_file = fp.get_info_path(alg)
-  alg_name = member_to_capitalized_words(alg)
   with open(practice_file, "w", encoding="utf-8") as f:
-    f.write(get_starting_practice_text(alg_name, info_file))
+    f.write(get_starting_practice_text(alg))
   print(f"Set up practice file: {practice_file} (cmd + click to open).")
 
 
@@ -165,7 +163,12 @@ def reset_practice_file(alg: SpecificAlgorithm) -> None:
 # - RuntimeError if the given path does not correspond to a file.
 # - Exception if the given path does not end in '.json'.
 # - json.JSONDecodeError if the corresponding file does not hold valid JSON.
-def get_starting_practice_text(alg_name: str, info_file_path: str) -> str:
+def get_starting_practice_text(alg: SpecificAlgorithm) -> str:
+  info_file_path = fp.get_info_path(alg)
+  alg_name = member_to_capitalized_words(alg)
+
+  tab_size = settings["tab_size"]["value"]
+
   if not os.path.exists(info_file_path):
     raise RuntimeError(f"Info file path does not exist: {info_file_path}.")
   data = read_json(info_file_path)
@@ -173,24 +176,10 @@ def get_starting_practice_text(alg_name: str, info_file_path: str) -> str:
   if settings["prepopulate_boilerplate"]["value"] == False:
     parameter_info_line = LANGUAGE.comment_symbol + " Parameters: " + ", ".join(parameter_names) + "."
     return (LANGUAGE.comment_symbol + 
-          f" Write '{SOLUTION_FUNCTION_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
+          f" Write '{SOLUTION_METHOD_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
           + f"{LANGUAGE.comment_symbol} Algorithm: {alg_name}.\n" + parameter_info_line)
   else:
-    input_types = data["input_types"]
-    expected_type = data["expected_type"]
-    user_tab_size = settings["tab_size"]["value"]
-    one_indent = " " * user_tab_size
-    return bp.get_boilerplate_text(
-      parameter_names,
-      input_types, 
-      expected_type, 
-      one_indent,
-      LANGUAGE.comment_symbol,
-      alg_name,
-      SOLUTION_CLASS_NAME,
-      SOLUTION_FUNCTION_NAME,
-      LANGUAGE
-    )
+    return get_boilerplate(alg, LANGUAGE, tab_size, SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME)
 
 
 # Loads the solution for the given SpecificAlgorithm 'alg' into the 

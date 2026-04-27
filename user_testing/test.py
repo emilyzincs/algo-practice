@@ -6,7 +6,7 @@ import sys
 from util.enums import SpecificAlgorithm, Language, member_name_list, ParseType
 from user_testing.test_commands.java import get_test_command as java_get_test_command
 from user_testing.test_commands.cpp import get_test_command as cpp_get_test_command
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME, TIME_LIMIT_SECONDS
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME, TIME_LIMIT_SECONDS
 from util.general import load_module_from_path
 
 
@@ -21,7 +21,7 @@ from util.general import load_module_from_path
 # - required_class_name: Name of the class containing the solution method
 #                        (defaults to SOLUTION_CLASS_NAME).
 # - required_method_name: Name of the method to test
-#                         (defaults to SOLUTION_FUNCTION_NAME).
+#                         (defaults to SOLUTION_METHOD_NAME).
 #
 # Returns:
 #   True if the subprocess returns exit code 0 (all tests passed), False otherwise.
@@ -31,7 +31,7 @@ def run_tests(
   show_subprocess_text: bool = True,
   debug: str = "False",
   required_class_name: str = SOLUTION_CLASS_NAME,
-  required_method_name: str = SOLUTION_FUNCTION_NAME,
+  required_method_name: str = SOLUTION_METHOD_NAME,
   time_limit_seconds: float = TIME_LIMIT_SECONDS
 ) -> bool|None:
   if (debug != "False" and debug != "True"):
