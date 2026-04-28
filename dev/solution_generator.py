@@ -102,7 +102,7 @@ def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
     f"'{python_solution_contents}'.\n"
     "Depending on the language, you may also find it useful to know that "
     f"your reponse will be located in a file with path "
-    f"{solution_path[len(PROJECT_ROOT):]}. "
+    f"{solution_path[len(PROJECT_ROOT):]}. Also, be careful of overflow if applicable. "
     "Respond with only the implementation and nothing else "
     "(do not even include backticks for a code block)."
   )

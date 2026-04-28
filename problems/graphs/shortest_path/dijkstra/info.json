@@ -15,5 +15,5 @@
     { "type": "int" },
     { "type": "int" }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { "type": "long" }
 }

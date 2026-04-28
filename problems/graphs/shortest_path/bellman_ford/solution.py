@@ -6,11 +6,11 @@ class Solution:
     graph: list[list[tuple[int, int]]],
     start: int,
     target: int,
-    NEG_INF_SENTINAL: int,
-    INF_SENTINAL: int
+    NEG_INF_SENTINEL: int,
+    INF_SENTINEL: int
   ) -> int:
     num_vertices = len(graph)
-    if num_vertices == 0: return INF_SENTINAL
+    if num_vertices == 0: return INF_SENTINEL
 
     # Use a large integer or infinity
     dist = [float('inf')] * num_vertices
@@ -38,7 +38,7 @@ class Solution:
             if relaxation_count[v] >= num_vertices:
               # Check if this cycle can actually reach the target
               if self._reaches_target(graph, v, target):
-                return NEG_INF_SENTINAL
+                return NEG_INF_SENTINEL
               else:
                 # If it doesn't reach target, we continue but stop 
                 # exploring this specific path to avoid infinite loops
@@ -51,7 +51,7 @@ class Solution:
               queue.append(v)
             in_queue[v] = True
 
-    return self._finalize_distance(dist, target, INF_SENTINAL)
+    return self._finalize_distance(dist, target, INF_SENTINEL)
 
   def _reaches_target(self, graph: list[list[tuple[int, int]]], start_node: int, target: int) -> bool:
     """Standard BFS to see if target is reachable from the cycle node."""
@@ -66,9 +66,9 @@ class Solution:
           q.append(v)
     return False
 
-  def _finalize_distance(self, distance: list[float], target: int, INF_SENTINAL: int) -> int:
+  def _finalize_distance(self, distance: list[float], target: int, INF_SENTINEL: int) -> int:
     d = distance[target]
     if d == float('inf'):
-      return INF_SENTINAL
+      return INF_SENTINEL
     # Cast to int for the final return
     return int(d)

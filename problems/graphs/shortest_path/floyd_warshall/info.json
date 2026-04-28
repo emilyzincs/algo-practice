@@ -19,7 +19,7 @@
     "type": "list",
     "items": {
       "type": "list",
-      "items": { "type": "int" }
+      "items": { "type": "long" }
     }
   }
 }
