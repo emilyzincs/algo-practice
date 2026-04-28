@@ -53,7 +53,6 @@ Each menu consists of a few, manageable commands, with functional descriptions g
 * **Reachable:** Breadth First Search (BFS), Depth First Search (DFS)
 * **Shortest Path:** Dijkstra, Bellman-Ford, Floyd-Warshall
 * **Minimum Spanning Tree:** Kruskal, Prim
-* **Topological Sort:** Kahn
 * **Max Flow:** Ford-Fulkerson
 * **Connected Components:** Tarjan
 

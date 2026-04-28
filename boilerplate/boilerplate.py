@@ -214,9 +214,6 @@ def get_algorithm_description(alg: SpecificAlgorithm) -> str:
     case SpecificAlgorithm.KRUSKAL | SpecificAlgorithm.PRIM:
       description = ("Returns the minimum cost of a spanning forest for the given"
         "\nundirected weighted graph.")
-    case SpecificAlgorithm.KAHN:
-      description = ("Returns the unique topological ordering of the given DAG"
-                    "\nmatching this algorithm (see solution for exact implementation).")
     case SpecificAlgorithm.FORD_FULKERSON:
       description = ("Returns the maximum flow on the given network.")
     case SpecificAlgorithm.TARJAN:
