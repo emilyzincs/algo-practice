@@ -99,7 +99,8 @@ def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
     "Depending on the language, you may also find it useful to know that "
     f"your reponse will be located in a file with path "
     f"{solution_path[len(PROJECT_ROOT):]}. "
-    "Respond with only the implementation and nothing else."
+    "Respond with only the implementation and nothing else "
+    "(do not even include backticks for a code block)."
   )
   # print("PROMPT:", prompt)
   
