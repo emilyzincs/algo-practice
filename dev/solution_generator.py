@@ -35,6 +35,7 @@ def generate_all_solutions(lang: Language) -> None:
   algs: list[SpecificAlgorithm] = list(SpecificAlgorithm)
   for alg in algs:
     solution_path = get_solution_file_path(alg, lang)
+    print()
     if os.path.exists(solution_path):
       print(f"Solution for {member_to_capitalized_words(alg)} already exists. Continuing...")
       continue
@@ -42,14 +43,17 @@ def generate_all_solutions(lang: Language) -> None:
 
 
 def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
+  alg_name = member_to_capitalized_words(alg)
   alg_str = member_to_string(alg)
   lang_str = member_to_string(lang)
 
   solution_dir = get_solution_file_dir(alg)
   solution_path = get_solution_file_path(alg, lang)
   if os.path.exists(solution_path):
-    raise RuntimeError(f"Cannot generate solution when it already exists for {alg_str}.")
+    raise RuntimeError(f"Cannot generate solution when it already exists for {alg_name}.")
   
+  print(f"Generating solution for {alg_name}.")
+
   # Get boilerplate
   boilerplate: str = get_boilerplate(
     alg,
@@ -62,7 +66,7 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
 
   # Generate with api call
   prompt = get_prompt(alg, lang, boilerplate)
-  response: str = get_response(prompt)
+  response, idx = get_response(prompt)
 
   # Write the solution file
   with open(solution_path, "w", encoding="utf-8") as f:
@@ -72,10 +76,18 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
   cmd = ["python", "test.py", "--test", "run_tests", 
          "--lang", f"{lang_str}", f"--alg", f"{alg_str}"]
   res = subprocess.run(cmd)
-  if res.returncode != 0:
-    raise RuntimeError(f"Generated solution failed for {alg_str}.")
-  else:
-    print(f"Generated solution successful for {alg_str}.")
+
+  while res.returncode != 0:
+    print(f"Generation failed for LLM {idx}. Trying again: (LLM {idx+1}).")
+    try:
+      response, idx = get_response(prompt, idx+1)
+      with open(solution_path, "w", encoding="utf-8") as f:
+        f.write(response)
+      res = subprocess.run(cmd)
+    except RuntimeError as e:
+      raise RuntimeError(f"Solution generation failed for {alg_name}: {e}")
+    
+  print(f"Solution generation successful for {alg_name}.")
 
 
 def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
