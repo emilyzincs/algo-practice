@@ -15,8 +15,10 @@ This document explains the core concepts and components of the project.
   - [Python](#python)
   - [Java](#java)
   - [C++](#c)
-- [Writing an Algorithm Solution File](#writing-an-algorithm-solution-file)
+- [Adding a Solution](#adding-a-solution)
   - [Motivation](#motivation)
+  - [Solution Generation](#solution-generation)
+  - [Writing a Solution](#writing-a-solution)
   - [Steps](#steps)
     - [1. Choose Algorithm and Language](#1-choose-algorithm-and-language)
     - [2. Get Path for Solution](#2-get-path-for-solution)
@@ -205,13 +207,31 @@ Let `<T>` represent a nested language‑agnostic type.
 
 ---
 
-## Writing an Algorithm Solution File
-
-This section explains how to create a solution file for a specific algorithm in a given language.
+## Adding a Solution
 
 ### Motivation
 
 Solution files enable the `solution` command. When a user practices an algorithm, they can load the official solution into their working file. Additionally, app‑level tests verify that every solution passes its generated tests, ensuring correctness across language implementations.
+
+### Solution Generation
+
+To quickly create solutions, utilize the **developer solution generator**. Note, this uses LLMs to create the implementations, so **some generations may fail**.
+
+To generate a solution for a **specific algorithm** that does not already have one in a **specific language**, do
+
+```
+python dev/solution_generator.py --lang <language> --alg <specific_algorithm>
+```
+
+To generate solutions for **all algorithms** that do not already have one in a **specific language**, do
+
+```
+python dev/solution_generator.py --lang <language>
+```
+
+If solution generation fails, you may have write/edit a solution manually, outlined below.
+
+### Writing a Solution
 
 >**Before you start**
 >Make sure you understand the difference between *specific* and *general* algorithms, and categories (see [Concepts](algorithm-addition.md#concepts) in the algorithm addition guide).
@@ -227,6 +247,7 @@ Let `<extension>` be the file extension for the language (e.g., `.py` for Python
 Let `<solution>` be "solution" in the language's file-name-case (e.g., `Solution` for Java),
 
 The path is `problems/<category>/<general_name>/<specific_name>/<solution>.<extension>`.
+
 Example: `problems/Graphs>/reachable/depth_first_search/solution.py`
 
 #### 3. Write the Solution

@@ -73,7 +73,7 @@ After adding the enum member, **use mypy (or your IDE’s type checker)** to fin
 
 This step is *optional* but **recommended**.
 
-At this point, you may add solutions in the language for any supported algorithms. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+At this point, you may add solutions in the language for any supported algorithms. Follow the instructions in [Adding a Solution](DEVELOPER.md#adding-a-solution).
 
 When you are done, run the app tests to verify correctness.
 

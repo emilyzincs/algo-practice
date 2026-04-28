@@ -88,7 +88,7 @@ Otherwise, write the file by doing the following.
 - Override all `@abstractmethod` methods. Do **not** override any `@final` methods.
 - Use helper functions from the test generation `util` directory and write custom helpers as needed.
 
->**Note**: Implementing an oracle may be difficult enough that you need to [write a solution](DEVELOPER.md#writing-an-algorithm-solution-file) first, then use that as the oracle. This is fine, but the generated tests will then provide **no** validation for that solution. If you go this route, it is recommended to start with some **hand-written tests** for basic validation, and to *very* careful in reviewing your code. Make sure to delete the `test.json` file after you are done, so that the generator can do its job. If time complexity is the issue (i.e., you have to use your own solution otherwise the tests would take too long) it is recommended to use a brute-force oracle for small inputs, with an input size threshold as reasonably high as possible to provide as much validation as possible.
+>**Note**: Implementing an oracle may be difficult enough that you need to [write a solution](DEVELOPER.md#adding-a-solution) first, then use that as the oracle. This is fine, but the generated tests will then provide **no** validation for that solution. If you go this route, it is recommended to start with some **hand-written tests** for basic validation, and to *very* careful in reviewing your code. Make sure to delete the `test.json` file after you are done, so that the generator can do its job. If time complexity is the issue (i.e., you have to use your own solution otherwise the tests would take too long) it is recommended to use a brute-force oracle for small inputs, with an input size threshold as reasonably high as possible to provide as much validation as possible.
 
 >**Tip**: It may be helpful to look at an already existing test-generator for a concrete example of what to implement.
 
@@ -100,7 +100,7 @@ Using **mypy (or your IDE’s type checker)**, find all `match` (or `switch`) st
 ### 5. Add Solutions for the New Algorithm
 This step is *optional* but **recommended**.
 
-At this point you may add solutions for the algorithm in any of the supported languages. Follow the instructions in [Writing an Algorithm Solution File](DEVELOPER.md#writing-an-algorithm-solution-file).
+At this point you may add solutions for the algorithm in any of the supported languages. Follow the instructions in [Adding a Solution](DEVELOPER.md#adding-a-solution).
 
 When you are done, run the app tests to verify correctness.
 
