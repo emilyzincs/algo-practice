@@ -51,7 +51,8 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
     lang,
     settings["tab_size"]["value"],
     SOLUTION_CLASS_NAME,
-    SOLUTION_METHOD_NAME
+    SOLUTION_METHOD_NAME,
+    solution_path
   )
 
   # Generate with api call

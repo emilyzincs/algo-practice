@@ -11,8 +11,13 @@ from user_testing.test_commands.java import path_to_package
 class JavaBp(BpInterface):
 
   @override
-  def get_start(self) -> str:
-    return "package " + path_to_package(get_practice_file_dir(), PROJECT_ROOT) + ";\n"
+  def get_start(self, path: str) -> str:
+    package: str = path_to_package(path, PROJECT_ROOT)
+    idx = package.rfind(".")
+    if idx == -1:
+      raise ValueError(f"Path must be for a file in a nested directory. Was {path}.")
+    package = package[:idx]
+    return "package " + package + ";\n"
   
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:

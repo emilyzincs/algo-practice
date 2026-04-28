@@ -8,7 +8,7 @@ from util.enums import ParseType, member_from_string
 class CppBp(BpInterface):
 
   @override
-  def get_start(self) -> str:
+  def get_start(self, path: str) -> str:
     return ""
   
   @override

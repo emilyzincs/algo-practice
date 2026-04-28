@@ -179,7 +179,14 @@ def get_starting_practice_text(alg: SpecificAlgorithm) -> str:
           f" Write '{SOLUTION_METHOD_NAME}' method in '{SOLUTION_CLASS_NAME}' class.\n\n" 
           + f"{LANGUAGE.comment_symbol} Algorithm: {alg_name}.\n" + parameter_info_line)
   else:
-    return get_boilerplate(alg, LANGUAGE, tab_size, SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME)
+    return get_boilerplate(
+      alg,
+      LANGUAGE,
+      tab_size,
+      SOLUTION_CLASS_NAME,
+      SOLUTION_METHOD_NAME,
+      fp.get_practice_file_path(LANGUAGE)
+    )
 
 
 # Loads the solution for the given SpecificAlgorithm 'alg' into the 

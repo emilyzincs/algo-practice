@@ -86,7 +86,8 @@ class TestBoilerplate(parent):
           else f"{required_class_name_prefix}{test_number}"
         ),
         SOLUTION_METHOD_NAME,
-        language
+        language,
+        boilerplate_file_path
       )
     
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:

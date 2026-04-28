@@ -23,7 +23,8 @@ def get_boilerplate(
     lang: Language,
     tab_size: int,
     required_class_name: str,
-    required_method_name: str
+    required_method_name: str,
+    implementation_path: str
   ) -> str:
   info_file_path = get_info_path(alg)
   alg_name = member_to_capitalized_words(alg)
@@ -42,7 +43,8 @@ def get_boilerplate(
     alg_name,
     required_class_name,
     required_method_name,
-    lang
+    lang,
+    implementation_path
   )
 
 # Gets the boilerplate text to prepopulate a practice file with
@@ -58,6 +60,8 @@ def get_boilerplate(
 # - solution_class_name: Name to use for the class
 # - SOLUTION_METHOD_NAME: Name to use for the method that tests call
 # - language: The current program language
+# - implementation_path: The path to the file that will contain the boilerplate
+#                        (the file may not yet exist).
 def _get_boilerplate_helper(
   parameter_names: list[str],
   input_types: list[dict[str, Any]],
@@ -66,7 +70,8 @@ def _get_boilerplate_helper(
   alg_name: str,
   solution_class_name: str,
   SOLUTION_METHOD_NAME: str,
-  language: Language
+  language: Language,
+  implementation_path: str
 ) -> str:
   comment_symbol = language.comment_symbol
   _set_bp_lang_class(language)
@@ -75,7 +80,7 @@ def _get_boilerplate_helper(
   return_type_string = BP_LANG_INSTANCE.parse_type_string(expected_type)
   included_types: set[ParseType] = _add_all_nested_types(input_types, expected_type)
 
-  start = BP_LANG_INSTANCE.get_start()
+  start = BP_LANG_INSTANCE.get_start(implementation_path)
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
   class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n" 
