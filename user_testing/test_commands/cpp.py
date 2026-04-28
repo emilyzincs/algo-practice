@@ -119,7 +119,6 @@ def get_cpp_runner_contents(
     '\n' +
     '  for (int i = 0; i < tests.size(); i++) {\n' +
     '    auto& test = tests[i];\n' +
-    '    // 1. Get the actual type returned by the user\'s function\n' +
     f'    using ActualRetType = decltype(std::declval<{required_class_name}>().{required_method_name}({decltype_args}));\n' +
     f'    using ExpectedRetType = {cpp_expected_type}; \n' +
     '    static_assert(std::is_same_v<ActualRetType, ExpectedRetType>, \n' +
