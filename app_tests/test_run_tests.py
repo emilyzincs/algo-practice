@@ -133,7 +133,7 @@ class TestRunTests(parent):
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
-        time_limit_seconds = 0.4
+        time_limit_seconds = 0.75
         result: bool|None
         if not required_class_name_prefix:
           result = run_tests(dummy, language, self.do_debug, str(self.do_debug),

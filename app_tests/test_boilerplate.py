@@ -31,8 +31,7 @@ class TestBoilerplate(parent):
   def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
-    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", "language", 
-                                        member_to_string(language), "boilerplate_files")
+    boilerplate_file_dir = self.get_boilerplate_dir(language)
     match language:
       case Language.PYTHON | Language.CPP:
         pass
@@ -73,7 +72,7 @@ class TestBoilerplate(parent):
 
     with (
       patch("util.enums.SpecificAlgorithm.from_input", return_value=None),
-      patch("boilerplate.boilerplate._get_algorithm_description", return_value="")
+      patch("boilerplate.boilerplate.get_algorithm_description", return_value="")
     ):
       boilerplate = _get_boilerplate_helper(
         info["parameter_names"],
@@ -87,7 +86,7 @@ class TestBoilerplate(parent):
         ),
         SOLUTION_METHOD_NAME,
         language,
-        boilerplate_file_path
+        self.get_boilerplate_dir(language)
       )
     
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
@@ -162,3 +161,7 @@ class TestBoilerplate(parent):
   # Returns the prefix string for paths to info files for these tests.
   def get_info_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")
+  
+  def get_boilerplate_dir(self, language: Language) -> str:
+    return os.path.join(PROJECT_ROOT, "app_tests", "language", 
+                        member_to_string(language), "boilerplate_files")
