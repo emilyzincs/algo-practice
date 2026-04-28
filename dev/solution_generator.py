@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, ".") # add the project root
 import argparse
 from util.enums import is_member, member_from_string, Language, SpecificAlgorithm, member_to_string, member_to_capitalized_words
-from util.file_paths import get_solution_file_path, PROJECT_ROOT
+from util.file_paths import get_solution_file_path, get_solution_file_dir, PROJECT_ROOT
 from boilerplate.boilerplate import get_boilerplate
 import os
 import subprocess
@@ -41,6 +41,7 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
   alg_str = member_to_string(alg)
   lang_str = member_to_string(lang)
 
+  solution_dir = get_solution_file_dir(alg)
   solution_path = get_solution_file_path(alg, lang)
   if os.path.exists(solution_path):
     raise RuntimeError(f"Cannot generate solution when it already exists for {alg_str}.")
@@ -52,7 +53,7 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
     settings["tab_size"]["value"],
     SOLUTION_CLASS_NAME,
     SOLUTION_METHOD_NAME,
-    solution_path
+    solution_dir
   )
 
   # Generate with api call

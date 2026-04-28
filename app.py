@@ -185,7 +185,7 @@ def get_starting_practice_text(alg: SpecificAlgorithm) -> str:
       tab_size,
       SOLUTION_CLASS_NAME,
       SOLUTION_METHOD_NAME,
-      fp.get_practice_file_path(LANGUAGE)
+      fp.get_practice_file_dir()
     )
 
 
