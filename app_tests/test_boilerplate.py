@@ -4,11 +4,11 @@ from app_tests.base_test import BaseTest as parent
 from unittest.mock import patch
 from app import settings
 
-from boilerplate.boilerplate import get_boilerplate_text
+from boilerplate.boilerplate import _get_boilerplate_helper
 from util.file_paths import PROJECT_ROOT, to_language_file_case
 from util.file_io import read_json
 from util.enums import Language, member_to_string, member_to_capitalized_words
-from util.constants import SOLUTION_CLASS_NAME, SOLUTION_FUNCTION_NAME
+from util.constants import SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME
 
 
 # Tests boilerplate text generation for practice files.
@@ -31,8 +31,7 @@ class TestBoilerplate(parent):
   def run_language_tests(self, language: Language):
     boilerplate_file_name_prefix = to_language_file_case("bp", language)
     required_class_name_prefix = None
-    boilerplate_file_dir = os.path.join(PROJECT_ROOT, "app_tests", "language", 
-                                        member_to_string(language), "boilerplate_files")
+    boilerplate_file_dir = self.get_boilerplate_dir(language)
     match language:
       case Language.PYTHON | Language.CPP:
         pass
@@ -73,21 +72,21 @@ class TestBoilerplate(parent):
 
     with (
       patch("util.enums.SpecificAlgorithm.from_input", return_value=None),
-      patch("boilerplate.boilerplate._get_algorithm_description", return_value="")
+      patch("boilerplate.boilerplate.get_algorithm_description", return_value="")
     ):
-      boilerplate = get_boilerplate_text(
+      boilerplate = _get_boilerplate_helper(
         info["parameter_names"],
         info["input_types"],
         info["expected_type"],
         " " * settings["tab_size"]["value"],
-        language.comment_symbol,
         "Test",
         (
           SOLUTION_CLASS_NAME if not required_class_name_prefix 
           else f"{required_class_name_prefix}{test_number}"
         ),
-        SOLUTION_FUNCTION_NAME,
-        language
+        SOLUTION_METHOD_NAME,
+        language,
+        self.get_boilerplate_dir(language)
       )
     
     with open(boilerplate_file_path, "r", encoding="utf-8") as f:
@@ -162,3 +161,7 @@ class TestBoilerplate(parent):
   # Returns the prefix string for paths to info files for these tests.
   def get_info_path_prefix(self) -> str:
     return os.path.join(PROJECT_ROOT, "app_tests", "json_files", "info")
+  
+  def get_boilerplate_dir(self, language: Language) -> str:
+    return os.path.join(PROJECT_ROOT, "app_tests", "language", 
+                        member_to_string(language), "boilerplate_files")

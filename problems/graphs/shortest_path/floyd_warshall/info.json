@@ -12,14 +12,14 @@
         }
       }
     },
-    { "type": "int" },
-    { "type": "int" }
+    { "type": "long" },
+    { "type": "long" }
   ],
   "expected_type": { 
     "type": "list",
     "items": {
       "type": "list",
-      "items": { "type": "int" }
+      "items": { "type": "long" }
     }
   }
 }

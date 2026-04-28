@@ -129,7 +129,6 @@ class GeneralAlgorithm(Enum):
     REACHABLE = (AlgorithmCategory.GRAPHS, auto())
     SHORTEST_PATH = (AlgorithmCategory.GRAPHS, auto())
     MINIMUM_SPANNING_TREE = (AlgorithmCategory.GRAPHS, auto())
-    TOPOLOGICAL_SORT = (AlgorithmCategory.GRAPHS, auto())
     MAX_FLOW = (AlgorithmCategory.GRAPHS, auto())
     CONNECTED_COMPONENTS = (AlgorithmCategory.GRAPHS, auto())
     PATTERN_MATCHING = (AlgorithmCategory.STRINGS, auto())
@@ -196,10 +195,6 @@ class SpecificAlgorithm(Enum):
     PRIM = (
         GeneralAlgorithm.MINIMUM_SPANNING_TREE, DirectoryType.GENERAL, 
         DirectoryType.GENERAL, "general", ["prim", "prim's"]
-    )
-    KAHN = (
-        GeneralAlgorithm.TOPOLOGICAL_SORT, DirectoryType.GENERAL, 
-        DirectoryType.SPECIFIC, None, ["kahn", "kahn's"]
     )
     FORD_FULKERSON = (
         GeneralAlgorithm.MAX_FLOW, DirectoryType.GENERAL, 

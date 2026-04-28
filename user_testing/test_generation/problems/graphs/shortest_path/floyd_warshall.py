@@ -35,7 +35,7 @@ class Generator(BaseGenerator):
   
   @override
   def oracle(self, graph: WeightedGraph, 
-            NEG_INF_SENTINAL: int, INF_SENTINAL: int) -> list[list[int]]:
+            NEG_INF_SENTINEL: int, INF_SENTINEL: int) -> list[list[int]]:
     n = len(graph)
     if n <= 20:
       dists: list[list[int]] = []
@@ -43,12 +43,12 @@ class Generator(BaseGenerator):
         dists.append([])
         for other in range(n):
           dists[vertex].append(bellman_ford_oracle(
-            graph, vertex, other, NEG_INF_SENTINAL, INF_SENTINAL
+            graph, vertex, other, NEG_INF_SENTINEL, INF_SENTINEL
           ))
       return dists
     else:
       return floyd_warshall_sol.solve(
-        graph, NEG_INF_SENTINAL, INF_SENTINAL)
+        graph, NEG_INF_SENTINEL, INF_SENTINEL)
 
   @override
   def get_algorithm(self) -> SpecificAlgorithm:
@@ -96,7 +96,7 @@ class Generator(BaseGenerator):
       lo, hi = los_and_his[i]
       N = len(graph) + 1
 
-      NEG_INF_SENTINAL = min(lo, 0) * N - 1
-      INF_SENTINAL = max(hi, 0) * N + 1
-      sentinels.append((NEG_INF_SENTINAL, INF_SENTINAL))
+      NEG_INF_SENTINEL = min(lo, 0) * N - 1
+      INF_SENTINEL = max(hi, 0) * N + 1
+      sentinels.append((NEG_INF_SENTINEL, INF_SENTINEL))
     return sentinels

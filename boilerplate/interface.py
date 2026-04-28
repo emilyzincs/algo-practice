@@ -8,7 +8,7 @@ class BpInterface(ABC):
 
   # Returns the pre-import boilerplate as a string (e.g. package declaration).
   @abstractmethod
-  def get_start(self) -> str:
+  def get_start(self, implementation_dir: str) -> str:
     pass
 
   # Returns string representing the imports corresponding to the class 

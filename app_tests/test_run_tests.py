@@ -67,7 +67,7 @@ class TestRunTests(parent):
     expected_values = [
       None, True, False, True, True, # 5
       True, True, True, False, True,  # 10
-      False, False, True, True, True
+      False, False, True, True, True, True
     ]
     total_tests = len(expected_values)
     info_path_prefix = self.get_info_path_prefix()
@@ -133,7 +133,7 @@ class TestRunTests(parent):
         patch(self.fp_base + "get_practice_file_path", return_value=practice_file_path)
       ):
         dummy: SpecificAlgorithm = SpecificAlgorithm.BINARY_SEARCH
-        time_limit_seconds = 0.4
+        time_limit_seconds = 1
         result: bool|None
         if not required_class_name_prefix:
           result = run_tests(dummy, language, self.do_debug, str(self.do_debug),

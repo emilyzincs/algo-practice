@@ -51,11 +51,11 @@ json getJsonFromPath(string path) {
 bool AgnosticComparator::operator()(const json& a, const json& b) const {
   if (a.type() != b.type()) printErr("Types in a collection are no the same.");
   if (a.is_array()) {
-    if (a.size() != b.size()) return a.size() < b.size();
-    for (size_t i = 0; i < a.size(); ++i) {
+    size_t minSize = std::min(a.size(), b.size());
+    for (size_t i = 0; i < minSize; ++i) {
       if (a[i] != b[i]) return operator()(a[i], b[i]);
     }
-    return false;
+    return a.size() < b.size();
   }
   return a < b;
 }

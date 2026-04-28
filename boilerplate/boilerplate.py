@@ -1,5 +1,6 @@
-from util.file_paths import get_boilerplate_language_file_path
+from util.file_paths import get_boilerplate_language_file_path, get_info_path
 from typing import assert_never, Any
+from util.file_io import read_json
 from util.enums import (
   Language,
   ParseType,
@@ -17,6 +18,35 @@ from boilerplate.interface import BpInterface
 BP_LANG_INSTANCE: BpInterface
 
 
+def get_boilerplate(
+    alg: SpecificAlgorithm,
+    lang: Language,
+    tab_size: int,
+    required_class_name: str,
+    required_method_name: str,
+    implementation_dir: str
+  ) -> str:
+  info_file_path = get_info_path(alg)
+  alg_name = member_to_capitalized_words(alg)
+
+  data = read_json(info_file_path)
+  parameter_names = data['parameter_names']
+  input_types = data["input_types"]
+  expected_type = data["expected_type"]
+  one_indent = " " * tab_size
+  
+  return _get_boilerplate_helper(
+    parameter_names,
+    input_types, 
+    expected_type, 
+    one_indent,
+    alg_name,
+    required_class_name,
+    required_method_name,
+    lang,
+    implementation_dir
+  )
+
 # Gets the boilerplate text to prepopulate a practice file with
 # if the prepopulate boilerplate setting is set to true
 #
@@ -27,37 +57,38 @@ BP_LANG_INSTANCE: BpInterface
 # - expected_type: Recursive language-agnostic representation of the return type
 # - one_indent: The string to use as one indent (e.g. "  ")
 # - alg_name: The name of the algorithm this is boilerplate for
-# - comment_symbol: The line-level comment symbol for the current language (e.g. '#' for Python)
 # - solution_class_name: Name to use for the class
-# - solution_function_name: Name to use for the method that tests call
+# - SOLUTION_METHOD_NAME: Name to use for the method that tests call
 # - language: The current program language
-def get_boilerplate_text(
+# - implementation_dir: The path to the directory that will contain the boilerplate
+def _get_boilerplate_helper(
   parameter_names: list[str],
   input_types: list[dict[str, Any]],
   expected_type: dict[str, Any],
   one_indent: str,
-  comment_symbol: str,
   alg_name: str,
   solution_class_name: str,
-  solution_function_name: str,
-  language: Language
+  SOLUTION_METHOD_NAME: str,
+  language: Language,
+  implementation_dir: str
 ) -> str:
+  comment_symbol = language.comment_symbol
   _set_bp_lang_class(language)
   alg: SpecificAlgorithm = SpecificAlgorithm.from_input(alg_name)
   parameter_type_strings = [BP_LANG_INSTANCE.parse_type_string(input_type) for input_type in input_types]
   return_type_string = BP_LANG_INSTANCE.parse_type_string(expected_type)
   included_types: set[ParseType] = _add_all_nested_types(input_types, expected_type)
 
-  start = BP_LANG_INSTANCE.get_start()
+  start = BP_LANG_INSTANCE.get_start(implementation_dir)
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
   class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n" 
-  class_prefix += _to_comment(_get_algorithm_description(alg), comment_symbol)
+  class_prefix += _to_comment(get_algorithm_description(alg), comment_symbol)
   class_declaration = (class_prefix + 
           BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent))
   
   method_declaration = BP_LANG_INSTANCE.get_method_declaration(
-    solution_function_name,
+    SOLUTION_METHOD_NAME,
     parameter_names, 
     parameter_type_strings, 
     return_type_string, 
@@ -144,7 +175,7 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
       assert_never(curr_type)
 
 
-def _get_algorithm_description(alg: SpecificAlgorithm) -> str:
+def get_algorithm_description(alg: SpecificAlgorithm) -> str:
   description: str
   min_dist_def = ("(The minimum distance from one vertex to another is defined to be"
       "\ninfinity (represented by the provided sentinel) if there is no path"
@@ -183,9 +214,6 @@ def _get_algorithm_description(alg: SpecificAlgorithm) -> str:
     case SpecificAlgorithm.KRUSKAL | SpecificAlgorithm.PRIM:
       description = ("Returns the minimum cost of a spanning forest for the given"
         "\nundirected weighted graph.")
-    case SpecificAlgorithm.KAHN:
-      description = ("Returns the unique topological ordering of the given DAG"
-                    "\nmatching this algorithm (see solution for exact implementation).")
     case SpecificAlgorithm.FORD_FULKERSON:
       description = ("Returns the maximum flow on the given network.")
     case SpecificAlgorithm.TARJAN:

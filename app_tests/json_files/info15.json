@@ -1,0 +1,12 @@
+{
+  "unique_answer": true,
+  "parameter_names": [],
+  "input_types": [],
+  "expected_type": { 
+    "type": "unordered_list",
+    "items": { 
+      "type": "unordered_list",
+      "items": { "type": "int" }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+#include <vector>
+
+using std::vector;
+
+// Algorithm: Test.
+class Solution {
+ public:
+  vector<vector<int>> solve() {
+    
+  }
+};

@@ -14,8 +14,8 @@
     },
     { "type": "int" },
     { "type": "int" },
-    { "type": "int" },
-    { "type": "int" }
+    { "type": "long" },
+    { "type": "long" }
   ],
-  "expected_type": { "type": "int" }
+  "expected_type": { "type": "long" }
 }

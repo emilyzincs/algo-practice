@@ -7,6 +7,30 @@ from user_testing.test_commands.java import path_to_package
 
 TEST_PREFIX = "test_"
 
+# Parses command‑line arguments to set environment variables and decide whether to run all tests
+# or a specific test. Arguments: --lang, --test, --num, --alg, --debug.
+def main() -> None:
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--lang", help="Language (e.g., python, java).")
+  parser.add_argument("--test", help="Specific test name")
+  parser.add_argument("--num", help="Test number, if applicable.")
+  parser.add_argument("--alg", help="Algorithm, if applicable")
+  parser.add_argument("--debug", help="Whether to output test logs and stacktraces.")
+
+  args = parser.parse_args()
+  if args.lang:
+    os.environ["TEST_LANGUAGE"] = args.lang
+  if args.num:
+    os.environ["TEST_NUM"] = args.num
+  if args.alg:
+    os.environ["TEST_ALG"] = args.alg
+  if args.debug:
+    os.environ["TEST_DEBUG"] = args.debug
+  if not args.test:
+    run_all_tests()
+  else:
+    run_specific_test(args.test)
+
 
 # Discovers and runs all test files starting with 'TEST_PREFIX' inside the "app_tests" directory.
 # Exits with code 1 if any test fails.
@@ -33,31 +57,6 @@ def run_specific_test(test_name: str) -> None:
   result = runner.run(suite)
   if not result.wasSuccessful():
     sys.exit(1)
-
-
-# Parses command‑line arguments to set environment variables and decide whether to run all tests
-# or a specific test. Arguments: --lang, --test, --num, --alg, --debug.
-def main() -> None:
-  parser = argparse.ArgumentParser()
-  parser.add_argument("--lang", help="Language (e.g., python, java).")
-  parser.add_argument("--test", help="Specific test name")
-  parser.add_argument("--num", help="Test number, if applicable.")
-  parser.add_argument("--alg", help="Algorithm, if applicable")
-  parser.add_argument("--debug", help="Whether to output test logs and stacktraces.")
-
-  args = parser.parse_args()
-  if args.lang:
-    os.environ["TEST_LANGUAGE"] = args.lang
-  if args.num:
-    os.environ["TEST_NUM"] = args.num
-  if args.alg:
-    os.environ["TEST_ALG"] = args.alg
-  if args.debug:
-    os.environ["TEST_DEBUG"] = args.debug
-  if not args.test:
-    run_all_tests()
-  else:
-    run_specific_test(args.test)
 
 
 if __name__ == "__main__":
