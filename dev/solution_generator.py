@@ -1,6 +1,8 @@
+import sys
+sys.path.insert(0, ".") # add the project root
 import argparse
 from util.enums import is_member, member_from_string, Language, SpecificAlgorithm, member_to_string, member_to_capitalized_words
-from util.file_paths import get_solution_file_path
+from util.file_paths import get_solution_file_path, PROJECT_ROOT
 from boilerplate.boilerplate import get_boilerplate
 import os
 import subprocess
@@ -54,7 +56,7 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
 
   # Generate with api call
   prompt = get_prompt(alg, lang, boilerplate)
-  response: str = get_response(prompt)
+  # response: str = get_response(prompt)
 
   # Write the solution file
   with open(solution_path, "w", encoding="utf-8") as f:
@@ -77,7 +79,8 @@ def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
     python_solution_contents = f.read()
 
   alg_name = member_to_capitalized_words(alg)
-  lang_name = member_to_capitalized_words(alg)
+  lang_name = member_to_capitalized_words(lang)
+  solution_path = get_solution_file_path(alg, lang)
 
   prompt = (
     "You are an expert in algorithms and data structures "
@@ -91,8 +94,12 @@ def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
     "be ambigious. To further disambiguate, the implementation you write should " \
     "exactly match the behavior of the following Python implementation:\n"
     f"'{python_solution_contents}'.\n"
+    "Depending on the language, you may also find it useful to know that "
+    f"your reponse will be located in a file with path "
+    f"{solution_path[len(PROJECT_ROOT):]}. "
     "Respond with only the implementation and nothing else."
   )
+  print("PROMPT:", prompt)
   
   return prompt
 
