@@ -58,7 +58,7 @@ def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
 
   # Generate with api call
   prompt = get_prompt(alg, lang, boilerplate)
-  # response: str = get_response(prompt)
+  response: str = get_response(prompt)
 
   # Write the solution file
   with open(solution_path, "w", encoding="utf-8") as f:
@@ -101,7 +101,7 @@ def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
     f"{solution_path[len(PROJECT_ROOT):]}. "
     "Respond with only the implementation and nothing else."
   )
-  print("PROMPT:", prompt)
+  # print("PROMPT:", prompt)
   
   return prompt
 
