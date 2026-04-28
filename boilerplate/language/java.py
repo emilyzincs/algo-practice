@@ -17,9 +17,8 @@ class JavaBp(BpInterface):
   @override
   def get_imports(self, included_types: set[ParseType]) -> str:
     imports = ""
-    for t in [ParseType.LIST]:
-      if t in included_types:
-        imports += f"import java.util.{member_to_capitalized_words(t).capitalize()};\n"
+    if ParseType.LIST in included_types or ParseType.UNORDERED_LIST in included_types:
+      imports += f"import java.util.List;\n"
     return imports 
 
   @override
