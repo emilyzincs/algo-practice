@@ -1,11 +1,13 @@
 import argparse
-from util.enums import is_member, member_from_string, Language, SpecificAlgorithm, member_to_string
+from util.enums import is_member, member_from_string, Language, SpecificAlgorithm, member_to_string, member_to_capitalized_words
 from util.file_paths import get_solution_file_path
 from boilerplate.boilerplate import get_boilerplate
 import os
 import subprocess
 from app import settings
 from util.constants import SOLUTION_CLASS_NAME, SOLUTION_METHOD_NAME
+from dev.llm_api.abstract import get_response
+
 
 def main() -> None:
   parser = argparse.ArgumentParser()
@@ -21,17 +23,19 @@ def main() -> None:
     raise RuntimeError("The provided algorithm is invalid.")
 
   if args.alg:
-    generate_specific_language_solution(
+    generate_specific_solution(
         member_from_string(SpecificAlgorithm, args.alg), lang)
   else:  
-    generate_all_language_solutions(lang)
+    generate_all_solutions(lang)
   
-def generate_all_language_solutions(lang: Language) -> None:
+
+def generate_all_solutions(lang: Language) -> None:
   algs: list[SpecificAlgorithm] = list(SpecificAlgorithm)
   for alg in algs:
-    generate_specific_language_solution(alg, lang)
+    generate_specific_solution(alg, lang)
 
-def generate_specific_language_solution(alg: SpecificAlgorithm, lang: Language) -> None:
+
+def generate_specific_solution(alg: SpecificAlgorithm, lang: Language) -> None:
   alg_str = member_to_string(alg)
   lang_str = member_to_string(lang)
 
@@ -40,7 +44,7 @@ def generate_specific_language_solution(alg: SpecificAlgorithm, lang: Language) 
     raise RuntimeError(f"Cannot generate solution when it already exists for {alg_str}.")
   
   # Get boilerplate
-  template: str = get_boilerplate(
+  boilerplate: str = get_boilerplate(
     alg,
     lang,
     settings["tab_size"]["value"],
@@ -49,7 +53,12 @@ def generate_specific_language_solution(alg: SpecificAlgorithm, lang: Language) 
   )
 
   # Generate with api call
-  
+  prompt = get_prompt(alg, lang, boilerplate)
+  response: str = get_response(prompt)
+
+  # Write the solution file
+  with open(solution_path, "w", encoding="utf-8") as f:
+    f.write(response)
 
   # Test to ensure success
   cmd = ["python", "test.py", "--test", "run_tests", 
@@ -59,6 +68,33 @@ def generate_specific_language_solution(alg: SpecificAlgorithm, lang: Language) 
     raise RuntimeError(f"Generated solution failed for {alg_str}.")
   else:
     print(f"Generated solution successful for {alg_str}.")
+
+
+def get_prompt(alg: SpecificAlgorithm, lang: Language, boilerplate: str) -> str:
+  # use that every algorithm has a python solution
+  python_solution_file = get_solution_file_path(alg, Language.PYTHON)
+  with open(python_solution_file, "r", encoding="utf-8") as f:
+    python_solution_contents = f.read()
+
+  alg_name = member_to_capitalized_words(alg)
+  lang_name = member_to_capitalized_words(alg)
+
+  prompt = (
+    "You are an expert in algorithms and data structures "
+    "and you are very familiar with all famous computer science "
+    f"algorithms. Write a canonical implementation of the {alg_name} "
+    f"algorithm in {lang_name} by filling in the following template:\n"
+    f"'{boilerplate}'.\n"
+    "You may add to the template, but do NOT change/remove any original part of it. "
+    "Use the algorithm description and method signature given in the template "
+    "to accurately derive any necessary implementation details that may otherwise "
+    "be ambigious. To further disambiguate, the implementation you write should " \
+    "exactly match the behavior of the following Python implementation:\n"
+    f"'{python_solution_contents}'.\n"
+    "Respond with only the implementation and nothing else."
+  )
+  
+  return prompt
 
 
 if __name__ == "__main__":

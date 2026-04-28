@@ -79,7 +79,7 @@ def _get_boilerplate_helper(
   imports = BP_LANG_INSTANCE.get_imports(included_types)
 
   class_prefix = f"{comment_symbol} Algorithm: {alg_name}.\n" 
-  class_prefix += _to_comment(_get_algorithm_description(alg), comment_symbol)
+  class_prefix += _to_comment(get_algorithm_description(alg), comment_symbol)
   class_declaration = (class_prefix + 
           BP_LANG_INSTANCE.get_class_declaration(solution_class_name, one_indent))
   
@@ -171,7 +171,7 @@ def _find_type(typ: dict[str, Any], to_find: ParseType) -> dict[str, Any] | None
       assert_never(curr_type)
 
 
-def _get_algorithm_description(alg: SpecificAlgorithm) -> str:
+def get_algorithm_description(alg: SpecificAlgorithm) -> str:
   description: str
   min_dist_def = ("(The minimum distance from one vertex to another is defined to be"
       "\ninfinity (represented by the provided sentinel) if there is no path"
