@@ -34,6 +34,10 @@ def main() -> None:
 def generate_all_solutions(lang: Language) -> None:
   algs: list[SpecificAlgorithm] = list(SpecificAlgorithm)
   for alg in algs:
+    solution_path = get_solution_file_path(alg, lang)
+    if os.path.exists(solution_path):
+      print(f"Solution for {member_to_capitalized_words(alg)} already exists. Continuing...")
+      continue
     generate_specific_solution(alg, lang)
 
 
